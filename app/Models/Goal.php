@@ -13,4 +13,9 @@ class Goal extends Model
         'year_id',
         'goal'
     ];
+
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
+    }
 }

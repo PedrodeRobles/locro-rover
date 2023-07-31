@@ -15,4 +15,9 @@ class Parameter extends Model
         'promo_unit_price',
         'amount_for_promo',
     ];
+
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
+    }
 }

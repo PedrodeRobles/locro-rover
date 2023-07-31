@@ -22,4 +22,19 @@ class Order extends Model
         'mp',
         'last_edition',
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

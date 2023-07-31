@@ -16,4 +16,14 @@ class Client extends Model
         'direction',
         'postal_code',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function observations()
+    {
+        return $this->hasMany(Observation::class);
+    }
 }

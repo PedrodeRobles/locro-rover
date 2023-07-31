@@ -14,4 +14,14 @@ class Observation extends Model
         'year_id',
         'observation',
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
+    }
 }
