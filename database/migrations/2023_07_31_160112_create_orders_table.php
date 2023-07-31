@@ -24,15 +24,15 @@ return new class extends Migration
             $table->integer('amount')->nullable();
             $table->integer('money_collected')->nullable();
             $table->integer('to_collect')->nullable();
-            $table->bool('mp')->nullable();
+            $table->boolean('mp')->nullable();
             $table->string('last_edition')->nullable();
             // $table->string('comment');   // Analizar si es necesario
             $table->timestamps();
 
 
-            $table->foreign('clients')->references('client_id')->on('id');
-            $table->foreign('years')->references('year_id')->on('id');
-            $table->foreign('users')->references('user_id')->on('id');
+            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('year_id')->references('id')->on('years');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
