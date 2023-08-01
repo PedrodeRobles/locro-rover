@@ -17,7 +17,8 @@ class YearFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'year'   => 2023,
+            'active' => true
         ];
     }
 }

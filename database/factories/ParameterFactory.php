@@ -17,7 +17,10 @@ class ParameterFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'year_id'          => 1,
+            'unit_price'       => 2000,
+            'promo_unit_price' => 1850,
+            'amount_for_promo' => 4,
         ];
     }
 }

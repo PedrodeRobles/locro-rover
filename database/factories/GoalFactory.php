@@ -17,7 +17,8 @@ class GoalFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'year_id' => 1,
+            'goal' => 1500,
         ];
     }
 }
