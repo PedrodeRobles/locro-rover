@@ -13,10 +13,10 @@ class PageController extends Controller
     {
         // $orders = Order::all();
 
-        $orders = Order::limit(14)
-        ->get()
+        $orders = Order::all()
         ->map(function($order) {
             return [
+                'id'              => $order->id,
                 'client_id'       => $order->client->id,
                 'year_id'         => $order->year->id,
                 'user_id'         => $order->user ? $order->user->id : null,
@@ -41,7 +41,8 @@ class PageController extends Controller
                 // 'observation_year_id'     => 1,
                 'client_observations' => $order->client->observations,
             ];
-        });
+        })
+        ->sortBy('id');
 
         return Inertia::render('List',[
             'orders' => $orders

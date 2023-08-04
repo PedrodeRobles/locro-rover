@@ -2,10 +2,10 @@
     <div>
         <Header></Header>
 
-        <div class="bg-gray-800 text-white pt-20">
-            <div class="overflow-x-auto">
+        <div class="bg-gray-800 text-white pt-32">
+            <div class="overflow-x-auto  table-wrp">
                 <table class="w-full table-auto">
-                    <thead>
+                    <thead class="bg-gray-900 w-full sticky top-0">
                         <tr>
                             <th class="px-4 py-2 border border-gray-600">Rover encargado</th>
                             <th class="px-4 py-2 border border-gray-600">Nombre</th>
@@ -24,7 +24,7 @@
                             <th class="px-4 py-2 border border-gray-600">MP</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="">
                         <tr v-for="order in orders" :key="order.id">
                             <td class="px-4 py-2 border border-gray-600" v-if="order.user_id">{{ order.user_name }}</td>
                             <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
@@ -69,8 +69,24 @@
             </div>
         </div>
 
+        <!-- <div class="w-full h-20 bg-red-500">
+            Hola
+        </div> -->
+
     </div>
 </template>
+
+<style>
+.table-wrp  {
+  max-height: 85vh;
+  overflow-y: auto;
+  display:block;
+}
+thead{
+  position:sticky;
+  top:0
+}
+</style>
 
 <script setup>
 import { defineProps } from 'vue';

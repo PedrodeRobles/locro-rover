@@ -1,6 +1,6 @@
 <template>
     <div class="bg-red-700 border border-slate-600 rounded-md text-white fixed mt-1 right-1 animate__animated animate__fadeIn">
-        <div class="p-2 w-28 space-y-1">
+        <div class="p-2 w-28">
             <div>
                 <!-- <Link :href="route('editProfile', userLoggedId)">
                     Editar perfil
