@@ -66,13 +66,16 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="orders.length == 0" class="flex mt-4">
+                  <h1 class="px-4 py-2 border border-gray-600">No tenes clientes en tu lista. Ponete las pilas porfa.</h1>
+                  <div class="border border-red-500">
+                    <img src="../../img/cosas/sin-lista.jpg" alt="Sos ese">
+                    <p class="text-center">{{ user_auth_name }}</p>
+                  </div>
+                  <h2></h2>
+                </div>
             </div>
         </div>
-
-        <!-- <div class="w-full h-20 bg-red-500">
-            Hola
-        </div> -->
-
     </div>
 </template>
 
@@ -88,7 +91,7 @@ body {
   z-index: 1;
   margin: auto;
   overflow: auto;
-  height: 600px;
+  height: 80vh;
 }
 .table-scroll table {
   width: 100%;
@@ -146,6 +149,7 @@ const props = defineProps({
     orders: {
         type: Array,
     },
+    user_auth_name: String
 });
 
 // console.log(props.orders[0].client.observations);

@@ -17,7 +17,8 @@ Route::redirect('/', 'register');
 //     ]);
 // });
 
-Route::get('/', [PageController::class, 'home']);
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
 
 Route::middleware([
     'auth:sanctum',
