@@ -3,9 +3,9 @@
         <Header></Header>
 
         <div class="bg-gray-800 text-white pt-32">
-            <div class="overflow-x-auto  table-wrp">
-                <table class="w-full table-auto">
-                    <thead class="bg-gray-900 w-full sticky top-0">
+            <div  id="table-scroll" class="table-scroll" >
+                <table id="main-table" class="main-table">
+                    <thead class="bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 border border-gray-600">Rover encargado</th>
                             <th class="px-4 py-2 border border-gray-600">Nombre</th>
@@ -24,13 +24,13 @@
                             <th class="px-4 py-2 border border-gray-600">MP</th>
                         </tr>
                     </thead>
-                    <tbody class="">
+                    <tbody>
                         <tr v-for="order in orders" :key="order.id">
-                            <td class="px-4 py-2 border border-gray-600" v-if="order.user_id">{{ order.user_name }}</td>
-                            <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
+                            <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">{{ order.user_name }}</th>
+                            <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
-                            <td class="px-4 py-2 border border-gray-600">{{ order.client_name }}</td>
-                            <td class="px-4 py-2 border border-gray-600">{{ order.client_last_name }}</td>
+                            <th class="px-4 py-2 border border-gray-600">{{ order.client_name }}</th>
+                            <th class="px-4 py-2 border border-gray-600">{{ order.client_last_name }}</th>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_phone_number }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
@@ -77,14 +77,65 @@
 </template>
 
 <style>
-.table-wrp  {
-  max-height: 85vh;
-  overflow-y: auto;
-  display:block;
+body {
+  overflow-y: hidden;
+  background-color: #11111f;
 }
-thead{
-  position:sticky;
-  top:0
+
+.table-scroll {
+  position: relative;
+  width:100%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+  height: 600px;
+}
+.table-scroll table {
+  width: 100%;
+  min-width: 1280px;
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-wrap {
+  position: relative;
+}
+.table-scroll th,
+.table-scroll td {
+  padding: 5px 10px;
+  /* border: 1px solid #000;
+  background: #fff; */
+  vertical-align: top;
+}
+.table-scroll thead th {
+  background: #161616;
+  color: #fff;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #202020;
+  color: #fff;
+  z-index:4;
+}
+
+th:nth-child(-n + 3) {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #383737;
+}
+thead th:nth-child(-n + 3),
+tfoot th:first-child {
+  z-index: 5;
 }
 </style>
 
