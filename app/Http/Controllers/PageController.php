@@ -82,8 +82,6 @@ class PageController extends Controller
 
                 'user_name'         => $order->user ? $order->user->name : null,
 
-                // 'observations_client_id'   => $order->client->observations,
-                // 'observation_year_id'     => 1,
                 'client_observations' => $order->client->observations,
             ];
         })
