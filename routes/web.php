@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,9 @@ Route::redirect('/', 'register');
 
 Route::get('/', [PageController::class, 'home'])->name('list');
 Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
+
+Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');
+Route::post('/client/create', [ClientController::class, 'store'])->name('client.store');
 
 Route::middleware([
     'auth:sanctum',

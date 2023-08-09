@@ -83,7 +83,7 @@
 <style>
 body {
   overflow-y: hidden;
-  background-color: #11111f;
+  background-color: #1f2937;
 }
 
 .table-scroll {

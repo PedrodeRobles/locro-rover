@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ClientController extends Controller
 {
@@ -20,15 +22,17 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Client/Form');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ClientRequest $request)
     {
-        //
+        Client::create($request->validated());
+
+        return to_route('client.create');
     }
 
     /**
