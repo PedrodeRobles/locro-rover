@@ -28,8 +28,11 @@
                     <input type="text" placeholder="Ingrese código postal" class="bg-gray-900" v-model="form.postal_code" >
                 </div>
                 <div class="flex justify-center">
-                    <button class="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md">
+                    <button v-if="form.mode == 'create'" class="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md">
                         Crear
+                    </button>
+                    <button v-if="form.mode == 'edit'" class="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md">
+                        Editar
                     </button>
                 </div>
             </div>
@@ -40,6 +43,13 @@
 <script setup>
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    client: {
+        type: Object,
+    }
+});
 
 const form = reactive({
     name: null,
@@ -47,16 +57,32 @@ const form = reactive({
     phone_number: null,
     direction: null,
     postal_code: null,
+    mode: 'create'
 });
 
-function submit() {
-    router.post('/client/create', form)
+// Función para cargar los datos de un registro existente si estamos editando
+function cargarDatosRegistro(client) {
+    form.name = client.name;
+    form.last_name = client.last_name;
+    form.phone_number = client.phone_number;
+    form.direction = client.direction;
+    form.postal_code = client.postal_code;
+    form.mode = 'edit'; // Cambiamos a "editar" al cargar un registro existente
+}
 
-    // form.name = null;
-    // form.last_name = null;
-    // form.phone_number = null;
-    // form.direction = null;
-    // form.postal_code = null;
+// Evento para cargar los datos de un registro existente (editar)
+if (props.client) {
+    cargarDatosRegistro(props.client);
+}
+
+function submit() {
+    if (form.mode === 'create') {
+        // Realizar una solicitud POST para crear un nuevo registro
+        router.post('/client/create', form);
+    } else if (form.mode === 'edit') {
+        // Realizar una solicitud PUT para actualizar el registro existente
+        router.put(`/client/edit/${props.client.id}`, form);
+    }
 }
 
 </script>

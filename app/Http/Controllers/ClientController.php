@@ -48,15 +48,17 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        //
+        return Inertia::render('Client/Form', ['client' => $client]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client)
+    public function update(ClientRequest $request, Client $client)
     {
-        //
+        $client->update($request->validated());
+
+        return to_route('client.create');
     }
 
     /**

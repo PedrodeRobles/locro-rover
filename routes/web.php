@@ -23,6 +23,8 @@ Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
 
 Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');
 Route::post('/client/create', [ClientController::class, 'store'])->name('client.store');
+Route::get('/client/edit/{client}', [ClientController::class, 'edit'])->name('client.edit');
+Route::put('/client/edit/{client}', [ClientController::class, 'update'])->name('client.update');
 
 Route::middleware([
     'auth:sanctum',
