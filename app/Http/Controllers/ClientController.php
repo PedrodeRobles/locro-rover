@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClientRequest;
+use App\Imports\ClientsImport;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientController extends Controller
 {
@@ -67,5 +69,19 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
+    }
+
+    public function importView()
+    {
+        return Inertia::render('Client/Import'); 
+    }
+
+    public function importExcel(Request $request)
+    {
+        $file = $request->file('import_file');
+
+        Excel::import(new ClientsImport, $file);
+
+        // return redirect('/')->with('success', 'All good!');
     }
 }

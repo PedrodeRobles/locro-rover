@@ -25,6 +25,8 @@ Route::get('/client/create', [ClientController::class, 'create'])->name('client.
 Route::post('/client/create', [ClientController::class, 'store'])->name('client.store');
 Route::get('/client/edit/{client}', [ClientController::class, 'edit'])->name('client.edit');
 Route::put('/client/edit/{client}', [ClientController::class, 'update'])->name('client.update');
+Route::get('/client/import', [ClientController::class, 'importView'])->name('client.import_view');
+Route::post('/client/import-clients', [ClientController::class, 'importExcel'])->name('client.import');
 
 Route::middleware([
     'auth:sanctum',
