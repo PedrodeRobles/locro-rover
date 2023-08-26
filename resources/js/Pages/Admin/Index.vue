@@ -13,6 +13,12 @@
                 Importar clientes masivamente
             </div>
         </Link>
+
+        <Link :href="route('admin.years')" class="flex justify-center text-white">
+            <div class="bg-amber-500 hover:bg-amber-400 rounded-md p-2">
+                Gestionar años
+            </div>
+        </Link>
     </div>
 </template>
 

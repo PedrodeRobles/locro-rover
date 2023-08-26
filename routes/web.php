@@ -32,6 +32,8 @@ Route::get('/client/import', [ClientController::class, 'importView'])->name('cli
 Route::post('/client/import-clients', [ClientController::class, 'importExcel'])->name('client.import');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::get('/years', [AdminController::class, 'years'])->name('admin.years');
+Route::post('/year/store', [AdminController::class, 'createThisYear'])->name('admin.year.store');
 
 
 Route::middleware([
