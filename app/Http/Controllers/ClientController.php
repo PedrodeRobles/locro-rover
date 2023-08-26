@@ -72,7 +72,7 @@ class ClientController extends Controller
     {
         $client->delete();
 
-        return $this->index();
+        return to_route('client.index');
     }
 
     public function importView()
