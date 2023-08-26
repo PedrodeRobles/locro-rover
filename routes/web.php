@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PageController;
 use Illuminate\Foundation\Application;
@@ -21,12 +22,17 @@ Route::redirect('/', 'register');
 Route::get('/', [PageController::class, 'home'])->name('list');
 Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
 
+Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
 Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');
 Route::post('/client/create', [ClientController::class, 'store'])->name('client.store');
-Route::get('/client/edit/{client}', [ClientController::class, 'edit'])->name('client.edit');
+Route::get('/client/edit/{client:id}', [ClientController::class, 'edit'])->name('client.edit');
 Route::put('/client/edit/{client}', [ClientController::class, 'update'])->name('client.update');
+Route::delete('/client/delete/{client:id}', [ClientController::class, 'destroy'])->name('client.destroy');
 Route::get('/client/import', [ClientController::class, 'importView'])->name('client.import_view');
 Route::post('/client/import-clients', [ClientController::class, 'importExcel'])->name('client.import');
+
+Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
 
 Route::middleware([
     'auth:sanctum',

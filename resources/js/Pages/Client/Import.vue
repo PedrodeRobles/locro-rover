@@ -3,7 +3,7 @@
 
     <div class="pt-28 text-white flex justify-center">
       <div class="border border-gray-500 rounded-md p-2 mx-4">
-        <h1 class="border-b border-gray-500 text-center text-xl pb-2">Importar Datos de Excel</h1>
+        <h1 class="border-b border-gray-500 text-center text-xl pb-2">Importar Datos del Excel</h1>
         <form @submit.prevent="importFile" class="py-4">
             <input type="file" ref="import_file" accept=".xlsx, .xls" class="cursor-pointer">
             <div class="flex justify-center">

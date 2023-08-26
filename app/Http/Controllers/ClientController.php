@@ -16,7 +16,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $clients = Client::orderBy('id')->get();
+
+        return Inertia::render('Client/Index', ['clients' => $clients]);
     }
 
     /**
@@ -68,7 +70,9 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        //
+        $client->delete();
+
+        return $this->index();
     }
 
     public function importView()
