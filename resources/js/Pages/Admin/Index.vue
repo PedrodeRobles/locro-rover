@@ -19,6 +19,12 @@
                 Gestionar años
             </div>
         </Link>
+
+        <Link :href="route('admin.parameters')" class="flex justify-center text-white">
+            <div class="bg-sky-600 hover:bg-sky-500 rounded-md p-2">
+                Definir Parametros
+            </div>
+        </Link>
     </div>
 </template>
 
