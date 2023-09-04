@@ -62,7 +62,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function createParameters(Request $request)
+    public function storeParameters(Request $request)
     {
         $currentYear = Carbon::now()->year;
         $getCurrentYear = Year::where('year', $currentYear)->first();
@@ -74,6 +74,6 @@ class AdminController extends Controller
             'amount_for_promo'=> $request->amount_for_promo,
         ]);
 
-        return to_route('admin.years'); 
+        return to_route('admin.parameters'); 
     }
 }

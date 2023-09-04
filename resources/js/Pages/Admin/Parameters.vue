@@ -2,7 +2,8 @@
     <Header></Header>
 
     <div class="pt-28">
-        <div class="flex justify-center mt-4">
+
+        <div v-if="parameter === null" class="flex justify-center mt-4">
             <form @submit.prevent="submit" class="text-white border border-gray-600 rounded-lg mx-2 px-2 w-96">
                 <div class="p-2 border-b border-gray-600">
                     <h1 class="text-center text-xl">Definir parametros para la promoción {{ year.year }}</h1>
@@ -34,6 +35,17 @@
                 </div>
             </form>
         </div>
+
+        <div v-else class="flex justify-center text-white">
+            <div class="border border-gray-500 rounded-md p-2">
+                <div>
+                    <p>Precio por unidad: ${{ parameter.unit_price }}</p>
+                    <p>Precio por unidad promo: ${{ parameter.promo_unit_price }}</p>
+                    <p>Unidades para promo: {{ parameter.amount_for_promo }}</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -49,7 +61,7 @@ const props = defineProps({
         type: Object,
     }
 });
-
+console.log(props.parameter);
 const form = {
     unit_price: null,
     promo_unit_price: null,

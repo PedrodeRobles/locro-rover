@@ -34,8 +34,8 @@ Route::post('/client/import-clients', [ClientController::class, 'importExcel'])-
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/years', [AdminController::class, 'years'])->name('admin.years');
 Route::post('/year/store', [AdminController::class, 'createThisYear'])->name('admin.year.store');
-Route::get('/parameters', [AdminController::class, 'parameters'])->name('admin.parameters');
-Route::post('/parameters/store', [AdminController::class, 'createParameters'])->name('admin.parameters.store');
+Route::get('/parameters/{edit?}', [AdminController::class, 'parameters'])->name('admin.parameters');
+Route::post('/parameters/store', [AdminController::class, 'storeParameters'])->name('admin.parameters.store');
 
 
 Route::middleware([
