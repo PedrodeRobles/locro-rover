@@ -36,7 +36,7 @@ class ClientController extends Controller
     {
         Client::create($request->validated());
 
-        return to_route('client.create');
+        // return to_route('client.index');
     }
 
     /**
@@ -62,7 +62,7 @@ class ClientController extends Controller
     {
         $client->update($request->validated());
 
-        return to_route('client.create');
+        // return to_route('client.create');
     }
 
     /**

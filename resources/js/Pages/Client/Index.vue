@@ -4,10 +4,12 @@
     <div class="bg-gray-800 text-white pt-24">
         
         <div class="flex justify-center sm:justify-end sm:mr-10 pb-6">
-            <Link :href="route('client.create')" class="flex items-center rounded-md w-40 bg-green-500 hover:bg-green-400">
+            <!-- <Link :href="route('client.create')" class="flex items-center rounded-md w-40 bg-green-500 hover:bg-green-400"> -->
+            <div @click="openEditModal(client = null)" class="flex items-center rounded-md w-40 bg-green-500 hover:bg-green-400 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
                 Agregar cliente
-            </Link>
+            </div>
+            <!-- </Link> -->
         </div>
 
         <div  id="table-scroll" class="table-scroll">
@@ -33,14 +35,16 @@
                         <th class="px-4 py-2 border border-gray-600">{{ client.postal_code }}</th>
                         <th class="px-4 py-2 border border-gray-600">Aca va un rover</th>
 
-                        <Link :href="route('client.edit', client.id)">
-                            <td class="border border-gray-600 bg-blue-500 h-9">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                </svg>
+                        <!-- <Link :href="route('client.edit', client.id)"> -->
+                            <td class="border border-gray-600 bg-blue-500 h-9 cursor-pointer" @click="openEditModal(client)">
+                                <!-- <button @click="openEditModal(client)"> -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                    </svg>
+                                <!-- </button> -->
                             </td>
-                        </Link>
+                        <!-- </Link> -->
 
                         <td @click.prevent="destroy(client.id, client.name, client.last_name)" class="border border-gray-600 bg-red-600 h-9 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -51,6 +55,7 @@
                     </tr>
                 </tbody>
             </table>
+            <FormModal v-if="isFormModalOpen" :closeModal="closeEditModal" :client="selectedClient"/>
         </div>
     </div>
 </template>
@@ -122,6 +127,20 @@ tfoot th:first-child {
 <script setup>
 import { defineProps } from 'vue';
 import { router } from '@inertiajs/vue3'
+import { ref } from 'vue';
+import FormModal from './Modal.vue';
+
+const isFormModalOpen = ref(false);
+const selectedClient = ref(null);
+
+const openEditModal = (client) => {
+    selectedClient.value = client;
+    isFormModalOpen.value = true;
+};
+const closeEditModal = () => {
+    isFormModalOpen.value = false;
+    selectedClient.value = null;
+};
 
 const props = defineProps({
     clients: {
