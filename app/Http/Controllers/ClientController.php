@@ -16,7 +16,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::orderBy('id')->get();
+        $clients = Client::orderBy('id', 'desc')
+            ->get();
 
         return Inertia::render('Client/Index', ['clients' => $clients]);
     }

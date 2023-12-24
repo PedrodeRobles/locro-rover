@@ -1,16 +1,10 @@
 <template>
     <Header></Header>
 
-    <div class="pt-28 space-y-4">
+    <div class="pt-28 space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center md:items-center">
         <Link :href="route('client.index')" class="flex justify-center text-white">
             <div class="bg-blue-600 hover:bg-blue-500 rounded-md p-2">
                 Lista de clientes
-            </div>
-        </Link>
-
-        <Link :href="route('client.import_view')" class="flex justify-center text-white">
-            <div class="bg-blue-600 hover:bg-blue-500 rounded-md p-2">
-                Importar clientes masivamente
             </div>
         </Link>
 

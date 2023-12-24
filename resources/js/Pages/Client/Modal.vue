@@ -22,12 +22,6 @@ leave-class="opacity-100" leave-to-class="opacity-0"
                                 </div>
                             </div>
 
-                            <Link :href="route('client.import_view')" class="flex justify-center text-white">
-                                <div v-if="form.mode == 'create'" class="bg-blue-600 hover:bg-blue-500 rounded-md p-2">
-                                    Importar clientes masivamente
-                                </div>
-                            </Link>
-
                             <div class="flex justify-center">
                                 <form @submit.prevent="submit" class="text-white w-96 p-2 md:p-0">
                                     <div v-if="form.mode == 'create'" class="p-2 border-b border-gray-600">
@@ -39,17 +33,17 @@ leave-class="opacity-100" leave-to-class="opacity-0"
                                     <div class="space-y-4 my-4 text-[22px] sm:text-[25px]">
                                         <div class="space-x-2">
                                             <label for="" class="text-">Nombre:</label>
-                                            <input type="text" placeholder="Ingrese nombre" class="bg-gray-900" v-model="form.name" >
+                                            <input required type="text" placeholder="Ingrese nombre" class="bg-gray-900" v-model="form.name" >
                                             <p v-if="form.mode == 'edit'" class="text-[2vh] text-gray-400">Nombre anterior: {{ props.client.name }}</p>
                                         </div>
                                         <div class="space-x-2">
                                             <label for="">Apellido:</label>
-                                            <input type="text" placeholder="Ingrese apellido" class="bg-gray-900" v-model="form.last_name" >
+                                            <input required type="text" placeholder="Ingrese apellido" class="bg-gray-900" v-model="form.last_name" >
                                             <p v-if="form.mode == 'edit'" class="text-[2vh] text-gray-400">Apellido anterior: {{ props.client.last_name }}</p>
                                         </div>
                                         <div class="space-x-2">
                                             <label for="">Telefono:</label>
-                                            <input type="text" placeholder="Ingrese telefono" class="bg-gray-900" v-model="form.phone_number" >
+                                            <input required type="text" placeholder="Ingrese telefono" class="bg-gray-900" v-model="form.phone_number" >
                                             <p v-if="form.mode == 'edit'" class="text-[2vh] text-gray-400">Telefono anterior: {{ props.client.phone_number }}</p>
                                         </div>
                                         <div class="space-x-2">
