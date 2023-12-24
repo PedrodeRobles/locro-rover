@@ -14,9 +14,10 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $clients = Client::orderBy('id', 'desc')
+            ->where('last_name', 'LIKE', "%$request->search%")
             ->get();
 
         return Inertia::render('Client/Index', ['clients' => $clients]);
