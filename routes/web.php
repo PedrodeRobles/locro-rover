@@ -31,6 +31,8 @@ Route::delete('/client/delete/{client:id}', [ClientController::class, 'destroy']
 Route::get('/client/import', [ClientController::class, 'importView'])->name('client.import_view');
 Route::post('/client/import-clients', [ClientController::class, 'importExcel'])->name('client.import');
 Route::get('/client/clientHasOrder/{client:id}', [ClientController::class, 'clientHasOrder'])->name('client.clientHasOrder');
+Route::get('/client/deleteClients', [ClientController::class, 'deleteClients'])->name('client.deleteClients');
+Route::put('/client/rollback/{client}', [ClientController::class, 'rollbackClient'])->name('client.rollbackClient');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/years', [AdminController::class, 'years'])->name('admin.years');

@@ -105,4 +105,17 @@ class ClientController extends Controller
 
         return response()->json(['clientHasOrder' => $clientHasOrder]);
     }
+
+    public function deleteClients()
+    {
+        $deleteClients = Client::onlyTrashed()->get();
+
+        return Inertia::render('Client/Trash', ['clients' => $deleteClients]);
+    }
+
+    public function rollbackClient($id)
+    {
+        $client = Client::withTrashed()->find($id);
+        $client->restore();
+    }
 }
