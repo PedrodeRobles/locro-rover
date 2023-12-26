@@ -13,6 +13,12 @@
                 <span v-else>Importar</span>
               </button>
             </div>
+            <div class="flex justify-center ml-4">
+              <div>
+                <p>El orden las columnas debe ser:</p>
+                <p>Nombre / Apellido / Teléfono / Dirección / Cod. Postal</p>
+              </div>
+            </div>
         </form>
       </div>
     </div>
