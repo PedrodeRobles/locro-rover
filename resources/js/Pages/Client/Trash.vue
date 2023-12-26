@@ -62,7 +62,9 @@ body {
   overflow-y: hidden;
   background-color: #1f2937;
 }
-
+.primary-column {
+    width: 200px;
+}
 .table-scroll {
   position: relative;
   width:100% - 8px;

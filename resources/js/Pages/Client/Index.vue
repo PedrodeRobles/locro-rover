@@ -39,8 +39,8 @@
                 <thead class="bg-gray-900">
                     <tr>
                         <th class="px-4 py-2 border border-gray-600">ID</th>
-                        <th class="px-4 py-2 border border-gray-600">Nombre</th>
-                        <th class="px-4 py-2 border border-gray-600">Apellido</th>
+                        <th class="px-4 py-2 border border-gray-600 primary-column">Nombre</th>
+                        <th class="px-4 py-2 border border-gray-600 primary-column">Apellido</th>
                         <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                         <th class="px-4 py-2 border border-gray-600">Dirección</th>
                         <th class="px-4 py-2 border border-gray-600">Cod. Postal</th>
@@ -87,7 +87,9 @@ body {
   overflow-y: hidden;
   background-color: #1f2937;
 }
-
+.primary-column {
+    width: 200px;
+}
 .table-scroll {
   position: relative;
   width:100% - 8px;
