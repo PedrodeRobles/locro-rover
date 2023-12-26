@@ -12,7 +12,7 @@
                     <div class="flex items-center bg-blue-600 hover:bg-blue-500 rounded-md p-2 space-x-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20"><path fill="#ffffff" d="M12.5 4.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0m5 .5a2 2 0 1 1-4 0a2 2 0 0 1 4 0m-13 2a2 2 0 1 0 0-4a2 2 0 0 0 0 4M6 9.25C6 8.56 6.56 8 7.25 8h5.5a1.25 1.25 0 0 1 1.23 1.024a5.5 5.5 0 0 0-3.73 8.968A4 4 0 0 1 6 14zm8.989-.229c1.139.1 2.178.548 3.011 1.236V9.25C18 8.56 17.44 8 16.75 8h-2.129c.2.298.33.646.367 1.021M5 9.25c0-.463.14-.892.379-1.25H3.25C2.56 8 2 8.56 2 9.25V13a3 3 0 0 0 3.404 2.973A4.983 4.983 0 0 1 5 14zm14 5.25a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m-4-2a.5.5 0 0 0-1 0V14h-1.5a.5.5 0 0 0 0 1H14v1.5a.5.5 0 0 0 1 0V15h1.5a.5.5 0 0 0 0-1H15z"/></svg>
                         <p>
-                            Importar clientes masivamente
+                            Importar clientes
                         </p>
                     </div>
                 </Link>
@@ -143,9 +143,10 @@ tfoot th:first-child {
 
 <script setup>
 import { defineProps } from 'vue';
-import { router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import FormModal from './Modal.vue';
+import axios from 'axios';
 
 // SEARCH BAR
 const search = ref(null);
@@ -179,9 +180,23 @@ const props = defineProps({
     }
 });
 
-function destroy(id, name, last_name) {
-    if (confirm(`¿Estas seguro que queres eliminar a ${name} ${last_name}?`)) {
-        router.delete(`/client/delete/${id}`);
+async function destroy (id, name, last_name) {
+    try {
+        // Hacer la petición a la ruta de verificación usando Axios
+        const response = await axios.get(`/client/clientHasOrder/${id}`);
+
+        // Verificar si tiene órdenes antes de borrar
+        if (response.data.clientHasOrder) {
+            alert(`No podes borrar al cliente ${name} ${last_name} porque tiene una orden asociada.`);
+        } else {
+            // Borrar el cliente si no tiene órdenes
+            if (confirm('¿Estás seguro de borrar este cliente?')) {
+                router.delete(`/client/delete/${id}`);
+                // Realizar cualquier otra lógica necesaria después de borrar
+            }
+        }
+    } catch (error) {
+        console.error('Error al realizar la operación:', error);
     }
 }
 </script>

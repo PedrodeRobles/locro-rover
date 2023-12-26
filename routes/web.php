@@ -30,6 +30,7 @@ Route::put('/client/edit/{client}', [ClientController::class, 'update'])->name('
 Route::delete('/client/delete/{client:id}', [ClientController::class, 'destroy'])->name('client.destroy');
 Route::get('/client/import', [ClientController::class, 'importView'])->name('client.import_view');
 Route::post('/client/import-clients', [ClientController::class, 'importExcel'])->name('client.import');
+Route::get('/client/clientHasOrder/{client:id}', [ClientController::class, 'clientHasOrder'])->name('client.clientHasOrder');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/years', [AdminController::class, 'years'])->name('admin.years');

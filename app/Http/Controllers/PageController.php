@@ -11,8 +11,10 @@ class PageController extends Controller
 {
     public function home()
     {
-        // $orders = Order::all();
-
+        // $orders = Order::with(['client' => function ($query) {
+        //     $query->withTrashed();
+        // }])
+        // ->get()
         $orders = Order::all()
         ->map(function($order) {
             return [

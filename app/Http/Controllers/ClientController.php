@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClientRequest;
 use App\Imports\ClientsImport;
 use App\Models\Client;
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -89,5 +91,18 @@ class ClientController extends Controller
         Excel::import(new ClientsImport, $file);
 
         // return redirect('/')->with('success', 'All good!');
+    }
+
+    public function clientHasOrder($id)
+    {
+        $now = Carbon::now()->year;
+
+        $clientHasOrder = Order::where('client_id', $id)
+            ->whereHas('year', function ($query) use ($now) {
+                $query->where('year', $now);
+            })
+            ->exists();
+
+        return response()->json(['clientHasOrder' => $clientHasOrder]);
     }
 }
