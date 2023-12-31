@@ -1,6 +1,6 @@
 <template>
     <div class="fixed w-full">
-        <header class="flex items-center justify-between py-2 px-4 md:px-10 bg-red-800 text-white">
+        <header class="flex items-center justify-between py-2 px-2 md:px-4 md:px-10 bg-red-800 text-white">
             <div class="flex items-center space-x-4 md:space-x-12">
                 <img src="../../img/rover-logo.png" alt="Logo" class="w-10">
 
@@ -40,9 +40,13 @@
                         v-show="showOptions"
                     ></UserOptions>
                 </div>
-                <div v-else class="space-x-2">
-                    <Link :href="route('login')" class="text-white">Log in</Link>
-                    <Link :href="route('register')" class="text-white">Register</Link>
+                <div v-else class="space-y-2 sm:flex sm:items-center sm:space-y-0 sm:space-x-4">
+                    <div>
+                        <Link :href="route('login')" class="text-white">Log in</Link>
+                    </div>
+                    <div>
+                        <Link :href="route('register')" class="text-white">Register</Link>
+                    </div>
                 </div>
             </div>
             
