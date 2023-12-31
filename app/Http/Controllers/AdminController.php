@@ -76,4 +76,14 @@ class AdminController extends Controller
 
         return to_route('admin.parameters'); 
     }
+
+    public function updateParameters(Request $request, Parameter $parameter)
+    {
+        $parameter->unit_price = $request->unit_price;
+        $parameter->promo_unit_price = $request->promo_unit_price;
+        $parameter->amount_for_promo = $request->amount_for_promo;
+        $parameter->save();
+
+        dd("Aca se procesan todas las ordenes según estos parametros");
+    }
 }
