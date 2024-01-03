@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Parameter;
+use App\Models\Order;
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -84,6 +85,22 @@ class AdminController extends Controller
         $parameter->amount_for_promo = $request->amount_for_promo;
         $parameter->save();
 
-        dd("Aca se procesan todas las ordenes según estos parametros");
+        $currentYear = Carbon::now()->year;
+
+        try {
+            $orders = Order::whereHas('year', function ($query) use ($currentYear) {
+                $query->where('year', $currentYear);
+            })
+            ->orderBy('id')
+            ->get();
+    
+            foreach ($orders as $order) {
+                setPriceAccordingToParameters($order);
+            }
+            dd("Agregar mensaje de éxito");
+        } catch (\Exception $e) {
+            info($e);
+            return $e->getMessage();
+        }
     }
 }
