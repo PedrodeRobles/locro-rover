@@ -1,9 +1,15 @@
 <template>
     <Header></Header>
 
-    <div class="pt-28 text-white flex justify-center">
+    <div class="pt-28 pb-4 px-4 flex justify-center">
+      <p class="text-amber-300">
+        Este proceso importa clientes desde un archivo .xlsx. Tambien por cada uno de los clientes se genera una orden correspondiente, para el año actual
+      </p>
+    </div>
+
+    <div class="text-white flex justify-center">
       <div class="border border-gray-500 rounded-md p-2 mx-4">
-        <h1 class="border-b border-gray-500 text-center text-xl pb-2">Importar Datos del Excel</h1>
+        <h1 class="border-b border-gray-500 text-center text-xl pb-2">Importar clientes desde un Excel</h1>
         <form @submit.prevent="importFile" class="py-4">
             <input type="file" ref="import_file" accept=".xlsx, .xls" class="cursor-pointer">
             <div class="flex justify-center">
@@ -44,7 +50,7 @@ export default {
               const response = await axios.post('/client/import-clients', formData);
 
             // Puedes manejar la respuesta como desees, por ejemplo, mostrar un mensaje de éxito
-              alert('Archivo importado con éxito');
+              alert('Clientes importados con éxito');
 
               this.$inertia.visit('/');
           } catch (error) {

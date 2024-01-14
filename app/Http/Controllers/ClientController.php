@@ -88,9 +88,13 @@ class ClientController extends Controller
     {
         $file = $request->file('import_file');
 
-        Excel::import(new ClientsImport, $file);
-
-        // return redirect('/')->with('success', 'All good!');
+        try {
+            Excel::import(new ClientsImport, $file);
+            generateOrders();
+        } catch (\Exception $e) {
+            info($e);
+            return $e->getMessage();
+        }
     }
 
     public function clientHasOrder($id)
