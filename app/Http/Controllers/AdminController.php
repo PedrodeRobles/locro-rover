@@ -43,6 +43,8 @@ class AdminController extends Controller
             $oldYear->update(['active' => false]);
         }
 
+        generateOrders();
+
         return to_route('admin.years'); 
     }
 
