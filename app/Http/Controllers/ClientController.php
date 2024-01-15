@@ -6,6 +6,7 @@ use App\Http\Requests\ClientRequest;
 use App\Imports\ClientsImport;
 use App\Models\Client;
 use App\Models\Order;
+use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,7 +39,15 @@ class ClientController extends Controller
      */
     public function store(ClientRequest $request)
     {
-        Client::create($request->validated());
+        $currentYear   = Carbon::now()->year;
+        $actualYearDB  = Year::where('year', $currentYear)->first();
+
+        $client = Client::create($request->validated());
+
+        $order = new Order();
+        $order->client_id = $client->id;
+        $order->year_id   = $actualYearDB->id;
+        $order->save();
 
         // return to_route('client.index');
     }
