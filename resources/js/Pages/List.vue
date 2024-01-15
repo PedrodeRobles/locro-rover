@@ -40,7 +40,10 @@
                             <td class="px-4 py-2 border border-gray-600" v-else>-</td>
 
                             <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td>
-                            <td class="px-4 py-2 border border-gray-600">{{ '$' + order.amount }}</td>
+
+                            <th class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</th>
+                            <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
+
                             <td class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
 
                             <td v-if="order.client_observations" class="border border-gray-600">
