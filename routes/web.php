@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::redirect('/', 'register');
 
 Route::get('/', [PageController::class, 'home'])->name('list');
 Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
+Route::put('/order/{order:id}/edit', [OrderController::class, 'update'])->name('order.update');
 
 Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
 Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');

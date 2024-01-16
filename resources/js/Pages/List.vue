@@ -25,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="order in orders" :key="order.id">
+                        <tr v-for="(order, index) in orders" :key="order.id">
                             <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">{{ order.user_name }}</th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
@@ -39,7 +39,11 @@
                             <td class="px-4 py-2 border border-gray-600" v-else-if="order.take_away == 1">Sí</td>
                             <td class="px-4 py-2 border border-gray-600" v-else>-</td>
 
-                            <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td>
+                            <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
+                            <td @click="startEditing(index)" class="px-4 py-2 border border-gray-600">
+                              <div v-if="!isEditing(index)">{{ order.portions }}</div>
+                              <input v-else type="number" v-model="editedNumber" @blur="stopEditing(index)" @keydown.enter="stopEditing(index)" class="text-black w-20">
+                            </td>
 
                             <th class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
@@ -151,11 +155,46 @@ tfoot th:first-child {
 
 <script setup>
 import { defineProps } from 'vue';
+import { ref } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     orders: {
-        type: Array,
+        type: Object,
     },
     user_auth_name: String
 });
+
+const editingIndex = ref(null);
+const editedNumber = ref(null);
+
+const startEditing = (index) => {
+  editingIndex.value = index;
+  editedNumber.value = props.orders[index].portions;
+};
+
+const stopEditing = (index) => {
+  const orderId = props.orders[index].id;
+  updateOrder(orderId, index);
+  editingIndex.value = null;
+};
+
+async function updateOrder(orderId, index) {
+    try {
+      // Hacer la petición a la ruta de verificación usando Axios
+      const response = await axios.put(`/order/${orderId}/edit`, {
+        number: editedNumber.value,
+      });
+
+      props.orders[index] = response.data.order;
+
+      // editingIndex.value = null;
+    } catch (error) {
+        console.error('Error al realizar la operación:', error);
+    }
+}
+
+const isEditing = (index) => {
+  return editingIndex.value === index;
+};
 </script>
