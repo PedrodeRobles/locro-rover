@@ -41,8 +41,13 @@
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
                             <td @click="startEditing(index)" class="px-4 py-2 border border-gray-600">
-                              <div v-if="!isEditing(index)">{{ order.portions }}</div>
-                              <input v-else type="number" v-model="editedNumber" @blur="stopEditing(index)" @keydown.enter="stopEditing(index)" class="text-black w-20">
+                              <div :id="'portion-' + index" :class="{'portion': !isEditing(index), 'hidden': isEditing(index) || (loading && loadingIndex === index)}">
+                                {{ order.portions }}
+                              </div>
+                              <input v-show="isEditing(index)" type="number" v-model="editedNumber" @blur="stopEditing(index)" @keydown.enter="stopEditing(index)" class="text-black w-20">
+                              <div v-if="loading && loadingIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
                             </td>
 
                             <th class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</th>
@@ -167,6 +172,8 @@ const props = defineProps({
 
 const editingIndex = ref(null);
 const editedNumber = ref(null);
+const loading = ref(false);
+const loadingIndex = ref(null);
 
 const startEditing = (index) => {
   editingIndex.value = index;
@@ -181,17 +188,22 @@ const stopEditing = (index) => {
 
 async function updateOrder(orderId, index) {
     try {
-      // Hacer la petición a la ruta de verificación usando Axios
+      loading.value = true;
+      loadingIndex.value = index;
+
       const response = await axios.put(`/order/${orderId}/edit`, {
         number: editedNumber.value,
       });
 
       props.orders[index] = response.data.order;
 
-      // editingIndex.value = null;
+      editingIndex.value = null;
     } catch (error) {
         console.error('Error al realizar la operación:', error);
-    }
+    } finally {
+    loading.value = false;
+    loadingIndex.value = null;
+  }
 }
 
 const isEditing = (index) => {
