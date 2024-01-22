@@ -44,7 +44,7 @@
                               <div :id="'portion-' + index" :class="{'portion': !isEditing(index), 'hidden': isEditing(index) || (loading && loadingIndex === index)}">
                                 {{ order.portions }}
                               </div>
-                              <input v-show="isEditing(index)" type="number" v-model="editedNumber" @blur="stopEditing(index)" @keydown.enter="stopEditing(index)" class="text-black w-20">
+                              <input v-show="isEditing(index)" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions')" @keydown.enter="stopEditing(index, 'portions')" class="text-black w-20">
                               <div v-if="loading && loadingIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -180,20 +180,22 @@ const startEditing = (index) => {
   editedNumber.value = props.orders[index].portions;
 };
 
-const stopEditing = (index) => {
+const stopEditing = (index, field) => {
   const orderId = props.orders[index].id;
-  updateOrder(orderId, index);
+  updateOrder(orderId, index, field);
   editingIndex.value = null;
 };
 
-async function updateOrder(orderId, index) {
+async function updateOrder(orderId, index, field) {
     try {
       loading.value = true;
       loadingIndex.value = index;
 
-      const response = await axios.put(`/order/${orderId}/edit`, {
-        number: editedNumber.value,
-      });
+      const dataToUpdate = {
+        [field]: editedNumber.value,
+      };
+      
+      const response = await axios.put(`/order/${orderId}/edit/${field}`, dataToUpdate);
 
       props.orders[index] = response.data.order;
 

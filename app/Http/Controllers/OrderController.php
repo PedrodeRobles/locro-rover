@@ -50,11 +50,11 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $field)
     {
         $order = Order::find($id);
         $order->update([
-            'portions' => $request->number
+            $field => $request->input($field),
         ]);
 
         $transformedOrder = [
