@@ -57,6 +57,8 @@ class OrderController extends Controller
             $field => $request->input($field),
         ]);
 
+        setPriceAccordingToParameters($order);
+
         $transformedOrder = [
             'id'              => $order->id,
             'client_id'       => $order->client->id,
