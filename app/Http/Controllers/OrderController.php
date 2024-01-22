@@ -59,6 +59,10 @@ class OrderController extends Controller
 
         setPriceAccordingToParameters($order);
 
+        if($field == 'portions') {
+            $this->setSauceAmount($order);
+        }
+
         $transformedOrder = [
             'id'              => $order->id,
             'client_id'       => $order->client->id,
@@ -91,5 +95,31 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function setSauceAmount(Order $order)
+    {
+        // Obtengo el resto de la cantidad de porciones entre 2
+        //con esto determino si la cantidad de porciones son par o impar
+        $res = $order->portions % 2;
+
+        //La cantidad de porciones es par
+        if ($res == 0) {
+            $div = $order->portions / 2;
+            $order->sauces = $div;
+
+        //La cantidad de porciones es impar
+        } else {
+            $pairPortionAmount = $order->portions - 1;
+            $div = $pairPortionAmount / 2;
+            $order->sauces = $div;
+        }
+
+        //Caso donde solo se pide una porción se le agrega una salsa
+        if($order->portions == 1) {
+            $order->sauces = 1;
+        }
+
+        $order->save();
     }
 }
