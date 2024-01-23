@@ -26,11 +26,19 @@
                     </thead>
                     <tbody>
                         <tr v-for="(order, index) in orders" :key="order.id">
-                            <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">{{ order.user_name }}</th>
+                            <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">
+                              <div class="w-32 truncate">
+                                {{ order.user_name }}
+                              </div>
+                            </th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
                             <th class="px-4 py-2 border border-gray-600">{{ order.client_name }}</th>
-                            <th class="px-4 py-2 border border-gray-600">{{ order.client_last_name }}</th>
+                            <th class="px-4 py-2 border border-gray-600">
+                              <div class="w-32 truncate">
+                                {{ order.client_last_name }}
+                              </div>
+                            </th>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_phone_number }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
@@ -50,8 +58,8 @@
                               </div>
                             </td>
 
-                            <th class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</th>
-                            <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
+                            <td class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</td>
+                            <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
 
                             <td class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
 
@@ -65,7 +73,14 @@
                                 <td class="px-4 py-2 border border-gray-600">{{ observation }}</td>
                             </div> -->
 
-                            <td class="px-4 py-2 border border-gray-600">Dato 4</td>
+                            <td class="px-4 py-2 border border-gray-600">
+                              <div class="w-20 overflow-x-auto">
+                                {{ order.updated_at }}   
+                              </div>
+                              <div>
+                                {{ order.last_edition }} 
+                              </div>
+                            </td>
                             <td class="px-4 py-2 border border-gray-600">Dato 5</td>
                             <td class="px-4 py-2 border border-gray-600">Dato 6</td>
                             <td class="px-4 py-2 border border-gray-600">Dato 6</td>

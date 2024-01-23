@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -55,6 +57,7 @@ class OrderController extends Controller
         $order = Order::find($id);
         $order->update([
             $field => $request->input($field),
+            'last_edition' => Auth::user()->name,
         ]);
 
         setPriceAccordingToParameters($order);
@@ -76,6 +79,7 @@ class OrderController extends Controller
             'to_collect'      => $order->to_collect,
             'mp'              => $order->mp,
             'last_edition'    => $order->last_edition,
+            'updated_at'      => Carbon::parse($order->updated_at)->format('d-m-y'),
             'client_name'         => $order->client->name,
             'client_last_name'    => $order->client->last_name,
             'client_phone_number' => $order->client->phone_number,
