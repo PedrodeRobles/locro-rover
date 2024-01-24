@@ -3,11 +3,37 @@
 namespace App\Utils;
 
 use Carbon\Carbon;
+use App\Models\Year;
 
 class OrderUtils
 {
     public static function getOrderArray($order)
     {
+        $currentYear = Carbon::now()->year;
+        $year = Year::where('year', $currentYear)->first();
+
+        $clientObservations = $order->client->observations
+        ->where('year_id', $year->id)
+        ->sortByDesc('id')
+        ->values();
+
+        // Si no hay observaciones para el año actual, obtén las del año pasado
+        if ($clientObservations->isEmpty()) {
+            $lastYear = Year::where('year', $currentYear - 1)->first();
+
+            if(!$lastYear) {
+                $lastYear = Year::create([
+                    'year' => $currentYear - 1,
+                    'active' => 0
+                ]);
+            }
+
+            $clientObservations = $order->client->observations
+                ->where('year_id', $lastYear->id)
+                ->sortByDesc('id')
+                ->values();
+        }
+
         return [
             'id'              => $order->id,
             'client_id'       => $order->client->id,
@@ -30,7 +56,7 @@ class OrderUtils
             'client_direction'  => $order->client->direction,
             'client_postal_code' => $order->client->postal_code,
             'user_name'         => $order->user ? $order->user->name : null,
-            'client_observations' => $order->client->observations->sortByDesc('id')->values(),
+            'client_observations' => $clientObservations
         ];
     }
 }

@@ -43,7 +43,7 @@ class OrderController extends Controller
         Observation::create([
             'client_id'   => $order->client->id,
             'year_id'     => $year->id,
-            'observation' => $request->observation,
+            'observation' => $request->observation . ' (' . $year->year . ')',
         ]);
 
         $order->update([
