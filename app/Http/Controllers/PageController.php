@@ -29,13 +29,14 @@ class PageController extends Controller
                 'last_edition'    => $order->last_edition,
                 'updated_at'      => Carbon::parse($order->updated_at)->format('d-m-y'),
 
+                'client_id'         => $order->client->id,
                 'client_name'         => $order->client->name,
                 'client_last_name'    => $order->client->last_name,
                 'client_phone_number' => $order->client->phone_number,
                 'client_direction'    => $order->client->direction,
                 'client_postal_code'  => $order->client->postal_code,
                 'user_name'           => $order->user ? $order->user->name : null,
-                'client_observations' => $order->client->observations,
+                'client_observations' => $order->client->observations->sortByDesc('id')->values(),
             ];
         })
         ->sortBy('id');

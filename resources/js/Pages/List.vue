@@ -63,15 +63,21 @@
 
                             <td class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
 
-                            <td v-if="order.client_observations" class="border border-gray-600">
-                                <div v-for="observation in order.client_observations" class="w-96 h-full px-4 border border-gray-600">
-                                    {{ observation.observation }}
+                            <td v-if="order.client_observations" @click="editObservation(order)" class="border border-gray-600">
+                              <div v-if="editMode && activeOrderId == order.id">
+                                <input v-model="newObservation" v-show="!loadingObservation" @blur="saveObservation(order.id, index)" class="text-black"/>
+                                <div v-if="loadingObservation">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path>
+                                  </svg>
                                 </div>
+                              </div>
+                              <div v-for="observation in order.client_observations" class="w-96 h-full px-4 border border-gray-600">
+                                  {{ observation.observation }}
+                              </div>
                             </td>
                             <td v-else class="px-4 py-2 border border-gray-600">-</td>
-                            <!-- <div v-if="order.client.observations" v-for="observation in order.client.observations">
-                                <td class="px-4 py-2 border border-gray-600">{{ observation }}</td>
-                            </div> -->
+
 
                             <td class="px-4 py-2 border border-gray-600">
                               <div class="w-20 overflow-x-auto">
@@ -185,6 +191,45 @@ const props = defineProps({
     user_auth_name: String
 });
 
+// AGREGAR OBSERVACIONES
+const editMode = ref(false);
+const activeOrderId = ref(null);
+const newObservation = ref('');
+const loadingObservation = ref(false);
+
+const editObservation = (order) => {
+  // Habilita el modo de edición y configura la orden actual
+  activeOrderId.value = order.id;
+  editMode.value = true;
+  newObservation.value = order.observation;
+};
+
+const saveObservation = async (order_id, index) => {
+  try {
+    loadingObservation.value = true;
+
+    const dataToUpdate = {
+      observation: newObservation.value,
+    };
+
+    // Realiza la solicitud POST para guardar la nueva observación
+    const response = await axios.post(`/order/${order_id}/addObservation`, dataToUpdate);
+
+    props.orders[index] = response.data.order;
+
+    // Desactiva el modo de edición
+    activeOrderId.value = null;
+    editMode.value = false;
+  } catch (error) {
+    console.error('Error al realizar la operación:', error);
+  } finally {
+    loadingObservation.value = false;
+  }
+};
+
+//FIN AGREGAR OBSERVACIONES
+
+// EDITAR PORCIONES
 const editingIndex = ref(null);
 const editedNumber = ref(null);
 const loading = ref(false);
@@ -226,4 +271,5 @@ async function updateOrder(orderId, index, field) {
 const isEditing = (index) => {
   return editingIndex.value === index;
 };
+// FIN EDITAR PORCIONES
 </script>

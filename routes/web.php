@@ -23,6 +23,7 @@ Route::redirect('/', 'register');
 Route::get('/', [PageController::class, 'home'])->name('list');
 Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
 Route::put('/order/{order:id}/edit/{field}', [OrderController::class, 'update'])->name('order.update');
+Route::post('/order/{order:id}/addObservation', [OrderController::class, 'addObservation'])->name('order.addObservation');
 
 Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
 Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');
