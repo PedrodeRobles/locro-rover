@@ -34,24 +34,28 @@ class OrderController extends Controller
 
     public function addObservation(Request $request, $order_id)
     {
-        $currentYear = Carbon::now()->year;
-
-        $year = Year::where('year', $currentYear)->first();
-
         $order = Order::find($order_id);
 
-        Observation::create([
-            'client_id'   => $order->client->id,
-            'year_id'     => $year->id,
-            'observation' => $request->observation . ' (' . $year->year . ')',
-        ]);
+        if ($request->observation != '') {
+            $currentYear = Carbon::now()->year;
 
-        $order->update([
-            'last_edition' => Auth::user()->name,
-        ]);
+            $year = Year::where('year', $currentYear)->first();
 
+            Observation::create([
+                'client_id'   => $order->client->id,
+                'year_id'     => $year->id,
+                'observation' => $request->observation . ' (' . $year->year . ')',
+            ]);
+    
+            $order->update([
+                'last_edition' => Auth::user()->name,
+            ]);
+    
+            $transformedOrder = OrderUtils::getOrderArray($order);
+    
+            return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+        }
         $transformedOrder = OrderUtils::getOrderArray($order);
-
         return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
     }
 
