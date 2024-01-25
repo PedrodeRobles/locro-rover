@@ -53,7 +53,10 @@
                                 @click="confirmUpdateTakeAway(order, index, 'take_away', !order.take_away)"
                                 :id="'take-away-checkbox-' + order.id"
                                 class="cursor-pointer"
-                              />                            
+                              />
+                              <div v-if="loadingTakeAway && loadingTakeAwayIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>                    
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
@@ -287,30 +290,51 @@ const startEditing = (index) => {
 
 const stopEditing = (index, field) => {
   const orderId = props.orders[index].id;
-  updateOrder(orderId, index, field);
+  updatePortions(orderId, index, field);
   editingIndex.value = null;
 };
 
-async function updateOrder(orderId, index, field, value = null) {
-    try {
-      loading.value = true;
-      loadingIndex.value = index;
+function updatePortions(orderId, index, field) {
+  loading.value = true;
+  loadingIndex.value = index;
 
-      let dataToUpdate = null;
-      // Si se edita porciones
-      if (editedNumber.value != null) {
-        dataToUpdate = {
+  const dataToUpdate = {
           [field]: editedNumber.value,
         };
-      }
-      
-      // Si se trata de campos diferentes a porciones
-      if (field != 'portions') {
-        dataToUpdate = {
-          [field]: value,
-        };
-      }
+  updateOrder(orderId, index, field, dataToUpdate);
+}
 
+const isEditing = (index) => {
+  return editingIndex.value === index;
+};
+// FIN EDITAR PORCIONES
+
+// EDITAR DELIVERY
+const loadingTakeAway = ref(false);
+const loadingTakeAwayIndex = ref(null);
+
+const confirmUpdateTakeAway = (order, index, field, value) => {
+    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
+
+    if (!confirm(confirmationText)) {
+      // Si se cancela el confirm, revertir el cambio en el checkbox
+      // order.take_away = !value;
+      event.preventDefault();
+    } else {
+      loadingTakeAway.value = true;
+      loadingTakeAwayIndex.value = index;
+
+      const dataToUpdate = {
+          [field]: value,
+      };
+      updateOrder(order.id, index, field, dataToUpdate);
+    }
+}
+// FIN EDITAR DELIVERY
+
+// FUNCION MAIN PARA EDITAR ORDENES
+async function updateOrder(orderId, index, field, dataToUpdate) {
+    try {
       const response = await axios.put(`/order/${orderId}/edit/${field}`, dataToUpdate);
 
       props.orders[index] = response.data.order;
@@ -321,23 +345,9 @@ async function updateOrder(orderId, index, field, value = null) {
     } finally {
     loading.value = false;
     loadingIndex.value = null;
-  }
-}
-
-const isEditing = (index) => {
-  return editingIndex.value === index;
-};
-
-const confirmUpdateTakeAway = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
-
-    if (!confirm(confirmationText)) {
-      // Si se cancela el confirm, revertir el cambio en el checkbox
-      // order.take_away = !value;
-      event.preventDefault();
-    } else {
-      updateOrder(order.id, index, field, value);
+    loadingTakeAway.value = false;
+    loadingTakeAwayIndex.value = null;
     }
 }
-// FIN EDITAR PORCIONES
+// FIN FUNCION MAIN PARA EDITAR ORDENES
 </script>

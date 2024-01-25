@@ -44,7 +44,7 @@ class OrderController extends Controller
         // Si la info que recibo es igual a la que ya esta guarda no hago nada
         else {
             $transformedOrder = OrderUtils::getOrderArray($order);
-            return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+            return response()->json(['message' => 'La orden no tuvo modificaciones', 'order' => $transformedOrder]);
         }
     }
 
