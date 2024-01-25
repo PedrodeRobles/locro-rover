@@ -17,21 +17,29 @@ class OrderController extends Controller
         $field == 'portions' ? $columnName = 'cantidades' : $columnName = null;
 
         $order = Order::find($id);
-        $order->update([
-            $field => $request->input($field),
-            'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
-        ]);
 
-        setPriceAccordingToParameters($order);
-
-        if($field == 'portions') {
-            $this->setSauceAmount($order);
-        }
-
-        $transformedOrder = OrderUtils::getOrderArray($order);
+        // Si hay diferencias entre la columna de mi orden y el dato que quiero entonces efectuo el cambio
+        if ($order->$field != $request->input($field)) {
+            $order->update([
+                $field => $request->input($field),
+                'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
+            ]);
     
-        // Devuelve los datos transformados
-        return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+            setPriceAccordingToParameters($order);
+    
+            if($field == 'portions') {
+                $this->setSauceAmount($order);
+            }
+    
+            $transformedOrder = OrderUtils::getOrderArray($order);
+            return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+        } 
+
+        // Si la info que recibo es igual a la que ya esta guarda no hago nada
+        else {
+            $transformedOrder = OrderUtils::getOrderArray($order);
+            return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+        }
     }
 
     public function addObservation(Request $request, $order_id)
