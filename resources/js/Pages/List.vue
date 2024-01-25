@@ -75,7 +75,7 @@
                               <div v-for="observation in order.client_observations" class="w-52 h-full px-4 border border-gray-600">
                                 <div class="flex items-center justify-between">
                                   <div>
-                                      {{ observation.observation }}
+                                    <div v-html="formatObservation(observation)"></div>
                                   </div>
                                   <div @click="deleteObservation(observation, order.id, index)" class="cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="#e11d48" d="m9.4 16.5l2.6-2.6l2.6 2.6l1.4-1.4l-2.6-2.6L16 9.9l-1.4-1.4l-2.6 2.6l-2.6-2.6L8 9.9l2.6 2.6L8 15.1zM7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21z"/></svg>
@@ -197,6 +197,16 @@ const props = defineProps({
     },
     user_auth_name: String
 });
+
+const formatObservation = (observation) => {
+  // Asegúrate de tener esta función en tu código
+  function nl2br(str) {
+      return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+  }
+
+  // Usa nl2br y escape para evitar inyecciones de código
+  return nl2br(observation.observation);
+}
 
 // ELIMINAR OBSERVACION
 const deleteObservation = async (observation, order_id, index) => {

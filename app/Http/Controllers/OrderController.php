@@ -14,10 +14,12 @@ class OrderController extends Controller
 {
     public function update(Request $request, $id, $field)
     {
+        $field == 'portions' ? $columnName = 'cantidades' : $columnName = null;
+
         $order = Order::find($id);
         $order->update([
             $field => $request->input($field),
-            'last_edition' => Auth::user()->name,
+            'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
         ]);
 
         setPriceAccordingToParameters($order);
@@ -44,11 +46,11 @@ class OrderController extends Controller
             Observation::create([
                 'client_id'   => $order->client->id,
                 'year_id'     => $year->id,
-                'observation' => $request->observation . ' (' . $year->year . ')',
+                'observation' => $request->observation . "<br> (" . Carbon::now()->format("d-m-Y") . ")",
             ]);
     
             $order->update([
-                'last_edition' => Auth::user()->name,
+                'last_edition' => Auth::user()->name . ' -Agrego una observación-',
             ]);
     
             $transformedOrder = OrderUtils::getOrderArray($order);
@@ -65,6 +67,9 @@ class OrderController extends Controller
         $order = Order::find($order_id);
         $observation = Observation::find($observation_id);
         $observation->delete();
+        $order->update([
+            'last_edition' => Auth::user()->name . ' -Elimino una observación-',
+        ]);
         $transformedOrder = OrderUtils::getOrderArray($order);
         return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
     }
