@@ -73,7 +73,14 @@
                                 </div>
                               </div>
                               <div v-for="observation in order.client_observations" class="w-52 h-full px-4 border border-gray-600">
-                                  {{ observation.observation }}
+                                <div class="flex items-center justify-between">
+                                  <div>
+                                      {{ observation.observation }}
+                                  </div>
+                                  <div @click="deleteObservation(observation, order.id, index)" class="cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><path fill="#e11d48" d="m9.4 16.5l2.6-2.6l2.6 2.6l1.4-1.4l-2.6-2.6L16 9.9l-1.4-1.4l-2.6 2.6l-2.6-2.6L8 9.9l2.6 2.6L8 15.1zM7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21z"/></svg>
+                                  </div>
+                                </div> 
                               </div>
                             </td>
                             <td v-else class="px-4 py-2 border border-gray-600">-</td>
@@ -190,6 +197,26 @@ const props = defineProps({
     },
     user_auth_name: String
 });
+
+// ELIMINAR OBSERVACION
+const deleteObservation = async (observation, order_id, index) => {
+  if(confirm(`¿Deseas eliminar la observación: ${observation.observation}?`)){
+    try {
+      loadingObservation.value = true;
+
+      // Realiza la solicitud POST para guardar la nueva observación
+      const response = await axios.delete(`/order/${order_id}/${observation.id}/deleteObservation`);
+
+      props.orders[index] = response.data.order;
+    } catch (error) {
+      console.error('Error al eliminar observación:', error);
+    } finally {
+      loadingObservation.value = false;
+    }
+    }
+}
+;
+// FIN ELIMINAR OBSERVACION
 
 // AGREGAR OBSERVACIONES
 const editMode = ref(false);

@@ -59,12 +59,14 @@ class OrderController extends Controller
         return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
+
+    public function deleteObservation($order_id, $observation_id)
     {
-        //
+        $order = Order::find($order_id);
+        $observation = Observation::find($observation_id);
+        $observation->delete();
+        $transformedOrder = OrderUtils::getOrderArray($order);
+        return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
     }
 
     public function setSauceAmount(Order $order)
