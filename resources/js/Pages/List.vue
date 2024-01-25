@@ -47,7 +47,13 @@
                               <label :for="'take-away-checkbox-' + order.id" class="mr-2">
                                 {{ order.take_away ? 'SI' : 'NO' }}
                               </label>
-                              <input type="checkbox" v-model="order.take_away" @click="updateOrder(order.id, index, 'take_away', !order.take_away)" :id="'take-away-checkbox-' + order.id"  class="cursor-pointer"/>
+                              <input
+                                type="checkbox"
+                                v-model="order.take_away"
+                                @click="confirmUpdateTakeAway(order, index, 'take_away', !order.take_away)"
+                                :id="'take-away-checkbox-' + order.id"
+                                class="cursor-pointer"
+                              />                            
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
@@ -321,5 +327,17 @@ async function updateOrder(orderId, index, field, value = null) {
 const isEditing = (index) => {
   return editingIndex.value === index;
 };
+
+const confirmUpdateTakeAway = (order, index, field, value) => {
+    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
+
+    if (!confirm(confirmationText)) {
+      // Si se cancela el confirm, revertir el cambio en el checkbox
+      // order.take_away = !value;
+      event.preventDefault();
+    } else {
+      updateOrder(order.id, index, field, value);
+    }
+}
 // FIN EDITAR PORCIONES
 </script>
