@@ -15,6 +15,7 @@ class OrderController extends Controller
     public function update(Request $request, $id, $field)
     {
         $field == 'portions' ? $columnName = 'cantidades' : $columnName = null;
+        $field == 'take_away' ? $columnName = 'delivery' : $columnName = null;
 
         $order = Order::find($id);
 

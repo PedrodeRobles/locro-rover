@@ -43,9 +43,12 @@
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
 
-                            <td class="px-4 py-2 border border-gray-600" v-if="order.take_away == 0">No</td>
-                            <td class="px-4 py-2 border border-gray-600" v-else-if="order.take_away == 1">Sí</td>
-                            <td class="px-4 py-2 border border-gray-600" v-else>-</td>
+                            <td class="px-4 py-2 border border-gray-600">
+                              <label :for="'take-away-checkbox-' + order.id" class="mr-2">
+                                {{ order.take_away ? 'SI' : 'NO' }}
+                              </label>
+                              <input type="checkbox" v-model="order.take_away" @click="updateOrder(order.id, index, 'take_away', !order.take_away)" :id="'take-away-checkbox-' + order.id"  class="cursor-pointer"/>
+                            </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
                             <td @click="startEditing(index)" class="px-4 py-2 border border-gray-600">
@@ -263,10 +266,9 @@ const saveObservation = async (order_id, index) => {
     loadingObservation.value = false;
   }
 };
-
 //FIN AGREGAR OBSERVACIONES
 
-// EDITAR PORCIONES
+// EDITAR PORCIONES, DELIVERY
 const editingIndex = ref(null);
 const editedNumber = ref(null);
 const loading = ref(false);
@@ -283,15 +285,26 @@ const stopEditing = (index, field) => {
   editingIndex.value = null;
 };
 
-async function updateOrder(orderId, index, field) {
+async function updateOrder(orderId, index, field, value = null) {
     try {
       loading.value = true;
       loadingIndex.value = index;
 
-      const dataToUpdate = {
-        [field]: editedNumber.value,
-      };
+      let dataToUpdate = null;
+      // Si se edita porciones
+      if (editedNumber.value != null) {
+        dataToUpdate = {
+          [field]: editedNumber.value,
+        };
+      }
       
+      // Si se trata de campos diferentes a porciones
+      if (field != 'portions') {
+        dataToUpdate = {
+          [field]: value,
+        };
+      }
+
       const response = await axios.put(`/order/${orderId}/edit/${field}`, dataToUpdate);
 
       props.orders[index] = response.data.order;

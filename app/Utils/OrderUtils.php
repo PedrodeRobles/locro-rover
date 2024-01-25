@@ -40,7 +40,7 @@ class OrderUtils
             'year_id'         => $order->year->id,
             'user_id'         => $order->user ? $order->user->id : null,
             'portions'        => $order->portions,
-            'take_away'       => $order->take_away,
+            'take_away'       => (bool)$order->take_away,
             'sauces'          => $order->sauces,
             'amount'          => $order->amount,
             'money_collected' => $order->money_collected,
