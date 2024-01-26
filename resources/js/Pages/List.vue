@@ -60,11 +60,11 @@
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
-                            <td @click="startEditing(index)" class="px-4 py-2 border border-gray-600">
-                              <div :id="'portion-' + index" :class="{'portion': !isEditing(index), 'hidden': isEditing(index) || (loading && loadingIndex === index)}">
+                            <td @click="startEditing(index, 'portions')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'portion-' + index" :class="{'portion': !isEditing(index, 'portions'), 'hidden': isEditing(index, 'portions') || (loading && loadingIndex === index)}">
                                 {{ order.portions }}
                               </div>
-                              <input v-show="isEditing(index)" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions')" @keydown.enter="stopEditing(index, 'portions')" class="text-black w-20">
+                              <input v-show="isEditing(index, 'portions')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions', order)" @keydown.enter="stopEditing(index, 'portions', order)" class="text-black w-20">
                               <div v-if="loading && loadingIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -106,8 +106,18 @@
                                 {{ order.last_edition }} 
                               </div>
                             </td>
-                            <td class="px-4 py-2 border border-gray-600">Dato 5</td>
-                            <td class="px-4 py-2 border border-gray-600">Dato 6</td>
+
+                            <td @click="startEditing(index, 'money_collected')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
+                                ${{ order.money_collected }}
+                              </div>
+                              <input v-show="isEditing(index, 'money_collected')" type="number" v-model="order.money_collected" @blur="stopEditing(index, 'money_collected', order)" class="text-black w-20">
+                              <div v-if="loadingMoneyCollected && loadingMoneyCollectedIndex == index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
+                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
                             <td class="px-4 py-2 border border-gray-600">Dato 6</td>
                             <td class="px-4 py-2 border border-gray-600 bg-blue-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -283,17 +293,6 @@ const editedNumber = ref(null);
 const loading = ref(false);
 const loadingIndex = ref(null);
 
-const startEditing = (index) => {
-  editingIndex.value = index;
-  editedNumber.value = props.orders[index].portions;
-};
-
-const stopEditing = (index, field) => {
-  const orderId = props.orders[index].id;
-  updatePortions(orderId, index, field);
-  editingIndex.value = null;
-};
-
 function updatePortions(orderId, index, field) {
   loading.value = true;
   loadingIndex.value = index;
@@ -304,10 +303,30 @@ function updatePortions(orderId, index, field) {
   updateOrder(orderId, index, field, dataToUpdate);
 }
 
-const isEditing = (index) => {
-  return editingIndex.value === index;
+const isEditing = (index, field) => {
+  return editingIndex.value === index + '-' + field;
 };
 // FIN EDITAR PORCIONES
+
+// EDITAR DINERO COBRADO
+const loadingMoneyCollected = ref(false);
+const loadingMoneyCollectedIndex = ref(null);
+
+const updateMoneyCollected = (order, index, field, value) => {
+    // console.log(index);
+    // const confirmationText = `¿Deseas cobrar $${value} a la orden de ${order.client_name} ${order.client_last_name}?`;
+
+    // if (confirm(confirmationText)) {
+      loadingMoneyCollected.value = true;
+      loadingMoneyCollectedIndex.value = index;
+
+      const dataToUpdate = {
+          [field]: value,
+      };
+      updateOrder(order.id, index, field, dataToUpdate);
+    // }
+}
+// FIN EDITAR DINERO COBRADO
 
 // EDITAR DELIVERY
 const loadingTakeAway = ref(false);
@@ -332,6 +351,25 @@ const confirmUpdateTakeAway = (order, index, field, value) => {
 }
 // FIN EDITAR DELIVERY
 
+// Iniciar edicion de celda
+const startEditing = (index, field) => {
+  editingIndex.value = index + '-' + field;
+  editedNumber.value = props.orders[index][field];
+};
+
+const stopEditing = (index, field, order) => {
+  if (field == 'portions') {
+    updatePortions(order.id, index, field);
+    editingIndex.value = null;
+  }
+
+  if (field == 'money_collected') {
+    updateMoneyCollected(order, index, field, order.money_collected);
+    editingIndex.value = null;
+  }
+};
+// FIN Iniciar edicion de celda
+
 // FUNCION MAIN PARA EDITAR ORDENES
 async function updateOrder(orderId, index, field, dataToUpdate) {
     try {
@@ -347,6 +385,8 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
     loadingIndex.value = null;
     loadingTakeAway.value = false;
     loadingTakeAwayIndex.value = null;
+    loadingMoneyCollected.value = false;
+    loadingMoneyCollectedIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES

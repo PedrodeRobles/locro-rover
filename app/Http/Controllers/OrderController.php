@@ -22,6 +22,10 @@ class OrderController extends Controller
             $columnName = 'delivery';
         }
 
+        if ($field == 'money_collected') {
+            $columnName = 'cobro';
+        }
+
         $order = Order::find($id);
 
         // Si hay diferencias entre la columna de mi orden y el dato que quiero entonces efectuo el cambio
@@ -30,11 +34,15 @@ class OrderController extends Controller
                 $field => $request->input($field),
                 'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
             ]);
-    
-            setPriceAccordingToParameters($order);
-    
+
             if($field == 'portions') {
+                setPriceAccordingToParameters($order);
+                $this->calculateToCollect($order);
                 $this->setSauceAmount($order);
+            }
+
+            if($field == 'money_collected') {
+                $this->calculateToCollect($order);
             }
     
             $transformedOrder = OrderUtils::getOrderArray($order);
@@ -111,6 +119,16 @@ class OrderController extends Controller
             $order->sauces = 1;
         }
 
+        $order->save();
+    }
+
+    public function calculateToCollect(Order $order)
+    {  
+        $amount = $order->amount;
+        $money_collected = $order->money_collected;
+
+        $calculation = $amount - $money_collected;
+        $order->to_collect = $calculation;
         $order->save();
     }
 }
