@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Inertia\Inertia;
 use App\Utils\OrderUtils;
+use Carbon\Carbon;
+use App\Models\Year;
 
 class PageController extends Controller
 {
     public function home()
     {
-        $orders = Order::all()
+        $currentYear = Carbon::now()->year;
+        $year = Year::where('year', $currentYear)->first();
+
+        $orders = Order::where('year_id', $year->id)->get()
         ->map(function($order) {
             return OrderUtils::getOrderArray($order);
         })
@@ -29,7 +34,11 @@ class PageController extends Controller
             return response("Tenes que estar logeado papu: 404" ,404);
         }
 
+        $currentYear = Carbon::now()->year;
+        $year = Year::where('year', $currentYear)->first();
+
         $orders = Order::where('user_id', $user_auth_id)
+        ->where('year_id', $year->id)
         ->get()
         ->map(function($order) {
             return OrderUtils::getOrderArray($order);
