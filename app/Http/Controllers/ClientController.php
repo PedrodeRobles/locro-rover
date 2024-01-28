@@ -20,7 +20,12 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $clients = Client::orderBy('id', 'desc')
-            ->where('last_name', 'LIKE', "%$request->search%")
+            ->where(function ($query) use ($request) {
+                $query->where('last_name', 'LIKE', "%$request->search%")
+                    ->orWhere('phone_number', 'LIKE', "%$request->search%")
+                    ->orWhere('direction', 'LIKE', "%$request->search%")
+                    ->orWhere('name', 'LIKE', "%$request->search%");
+            })
             ->get();
 
         return Inertia::render('Client/Index', ['clients' => $clients]);
