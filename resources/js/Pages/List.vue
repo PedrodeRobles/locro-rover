@@ -3,6 +3,13 @@
         <Header></Header>
 
         <div class="bg-gray-800 text-white pt-32">
+
+            <div class="flex justify-center hidden md:block pb-2 pl-2">
+                <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
+            </div>
+            <div class="flex justify-center mb-2 md:hidden">
+                <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
+            </div>
             <div  id="table-scroll" class="table-scroll" >
                 <table id="main-table" class="main-table">
                     <thead class="bg-gray-900">
@@ -225,7 +232,8 @@ tfoot th:first-child {
 
 <script setup>
 import { defineProps } from 'vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 
 const props = defineProps({
@@ -234,6 +242,18 @@ const props = defineProps({
     },
     user_auth_name: String
 });
+
+// BUSCAR ORDENES
+const search = ref(null);
+watch(search, value => {
+    router.get('/', {search: value}, 
+    {
+        preserveState: true,
+        replace: true,
+    }
+    );
+});
+// FIN BUSCAR ORDENES
 
 const formatObservation = (observation) => {
   // Asegúrate de tener esta función en tu código

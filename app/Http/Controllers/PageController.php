@@ -7,18 +7,30 @@ use Inertia\Inertia;
 use App\Utils\OrderUtils;
 use Carbon\Carbon;
 use App\Models\Year;
+use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
+        // dd($request);
+
         $currentYear = Carbon::now()->year;
         $year = Year::where('year', $currentYear)->first();
 
-        $orders = Order::where('year_id', $year->id)->get()
-        ->map(function($order) {
-            return OrderUtils::getOrderArray($order);
-        })
+        $orders = Order::where('year_id', $year->id)
+            ->whereHas('client', function($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('last_name', 'LIKE', "%$request->search%")
+                        ->orWhere('phone_number', 'LIKE', "%$request->search%")
+                        ->orWhere('direction', 'LIKE', "%$request->search%")
+                        ->orWhere('name', 'LIKE', "%$request->search%");
+                });
+            })
+            ->get()
+            ->map(function($order) {
+                return OrderUtils::getOrderArray($order);
+            })
         ->sortBy('id');
 
         return Inertia::render('List',[
