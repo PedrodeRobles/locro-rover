@@ -26,6 +26,10 @@ class OrderController extends Controller
             $columnName = 'cobro';
         }
 
+        if ($field == 'mp') {
+            $columnName = 'forma de pago';
+        }
+
         $order = Order::find($id);
 
         // Si hay diferencias entre la columna de mi orden y el dato que quiero entonces efectuo el cambio

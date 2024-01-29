@@ -118,7 +118,22 @@
                             </td>
 
                             <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
-                            <td class="px-4 py-2 border border-gray-600">Dato 6</td>
+
+                            <td class="px-4 py-2 border border-gray-600">
+                              <label :for="'mp-checkbox-' + order.id" class="mr-2">
+                                {{ order.mp ? 'SI' : 'NO' }}
+                              </label>
+                              <input
+                                type="checkbox"
+                                v-model="order.mp"
+                                @click="confirmUpdateMP(order, index, 'mp', !order.mp)"
+                                :id="'mp-checkbox-' + order.id"
+                                class="cursor-pointer"
+                              />
+                              <div v-if="loadingMP && loadingMPIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>                    
+                            </td>
                             <td class="px-4 py-2 border border-gray-600 bg-blue-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -328,6 +343,30 @@ const updateMoneyCollected = (order, index, field, value) => {
 }
 // FIN EDITAR DINERO COBRADO
 
+
+// EDITAR MERCADO PAGO
+const loadingMP = ref(false);
+const loadingMPIndex = ref(null);
+
+const confirmUpdateMP = (order, index, field, value) => {
+    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} paga con mercado pago?`;
+
+    if (!confirm(confirmationText)) {
+      // Si se cancela el confirm, revertir el cambio en el checkbox
+      // order.take_away = !value;
+      event.preventDefault();
+    } else {
+      loadingMP.value = true;
+      loadingMPIndex.value = index;
+
+      const dataToUpdate = {
+          [field]: value,
+      };
+      updateOrder(order.id, index, field, dataToUpdate);
+    }
+}
+// FIN EDITAR MERCADO PAGO
+
 // EDITAR DELIVERY
 const loadingTakeAway = ref(false);
 const loadingTakeAwayIndex = ref(null);
@@ -387,6 +426,8 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
     loadingTakeAwayIndex.value = null;
     loadingMoneyCollected.value = false;
     loadingMoneyCollectedIndex.value = null;
+    loadingMP.value = false;
+    loadingMPIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES

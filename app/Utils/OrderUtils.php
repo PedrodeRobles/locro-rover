@@ -45,7 +45,7 @@ class OrderUtils
             'amount'          => $order->amount,
             'money_collected' => $order->money_collected,
             'to_collect'      => $order->to_collect,
-            'mp'              => $order->mp,
+            'mp'              => (bool)$order->mp,
             'last_edition'    => $order->last_edition,
             'updated_at'      => Carbon::parse($order->updated_at)->format('d-m-y'),
 
