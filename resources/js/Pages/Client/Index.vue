@@ -5,7 +5,7 @@
         
         <div class="flex justify-center md:justify-between items-center pb-6 md:px-4">
             <div class="flex justify-center hidden md:block">
-                <input type="text" v-model="search" class="bg-gray-700 rounded-md" placeholder="Buscar por apellido">
+                <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
             </div>
             <div class="flex space-x-4">
                 <Link :href="route('client.deleteClients')" class="flex items-center rounded-md bg-red-600 hover:bg-red-500 cursor-pointer p-2">
@@ -31,7 +31,7 @@
         </div>
 
         <div class="flex justify-center mb-2 md:hidden">
-            <input type="text" v-model="search" class="bg-gray-700 rounded-md" placeholder="Buscar por apellido">
+            <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
         </div>
 
         <div  id="table-scroll" class="table-scroll">
