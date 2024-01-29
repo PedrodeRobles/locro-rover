@@ -151,14 +151,23 @@
                     </tbody>
                 </table>
 
-                <div v-if="orders.length == 0" class="flex mt-4">
-                  <h1 class="px-4 py-2 border border-gray-600">No tenes clientes en tu lista. Ponete las pilas porfa.</h1>
+                <div v-if="!user_has_orders && list_type !== 'general'" class="flex mt-4">
+                  <h1 class="px-4 py-2 border border-gray-600 text-[30px]">No tenes clientes en tu lista. Ponete las pilas porfa.</h1>
                   <div class="border border-red-500">
                     <img src="../../img/cosas/sin-lista.jpg" alt="Sos ese">
-                    <p class="text-center">{{ user_auth_name }}</p>
+                    <p class="text-center text-[20px]">{{ user_auth_name }}</p>
                   </div>
                 </div>
 
+                <div v-if="orders.length == 0 && list_type === 'my_list' && user_has_orders" class="mt-4">
+                  <p class="px-4 py-2 text-[30px] text-red-400">No existen ordenes con estos datos</p>
+                    <img src="../../img/cosas/busqueda-erronea-mi-lista.jpg" alt="Sos ese buscando">
+                </div>
+
+                <div v-if="orders.length == 0 && list_type === 'general'" class="mt-4">
+                  <p class="px-4 py-2 text-[30px] text-red-400">No existen ordenes con estos datos</p>
+                    <img src="../../img/cosas/busqueda-erronea.jpg" alt="Sos ese buscando">
+                </div>
             </div>
         </div>
     </div>
@@ -240,18 +249,31 @@ const props = defineProps({
     orders: {
         type: Object,
     },
-    user_auth_name: String
+    user_auth_name: String,
+    list_type: String,
+    user_has_orders: Boolean
 });
 
 // BUSCAR ORDENES
 const search = ref(null);
 watch(search, value => {
-    router.get('/', {search: value}, 
-    {
-        preserveState: true,
-        replace: true,
+    if (props.list_type === 'general') {
+      router.get('/', {search: value}, 
+        {
+            preserveState: true,
+            replace: true,
+        }
+      );
     }
-    );
+
+    if (props.list_type === 'my_list') {
+      router.get('/my-list', {search: value}, 
+        {
+            preserveState: true,
+            replace: true,
+        }
+      );
+    }
 });
 // FIN BUSCAR ORDENES
 

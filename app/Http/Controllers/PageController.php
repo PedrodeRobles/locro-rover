@@ -13,8 +13,6 @@ class PageController extends Controller
 {
     public function home(Request $request)
     {
-        // dd($request);
-
         $currentYear = Carbon::now()->year;
         $year = Year::where('year', $currentYear)->first();
 
@@ -34,11 +32,12 @@ class PageController extends Controller
         ->sortBy('id');
 
         return Inertia::render('List',[
-            'orders' => $orders
+            'orders' => $orders,
+            'list_type' => 'general'
         ]);
     }
 
-    public function myList()
+    public function myList(Request $request)
     {
         if(auth()->check()) {
             $user_auth_id = auth()->user()->id;
@@ -51,15 +50,29 @@ class PageController extends Controller
 
         $orders = Order::where('user_id', $user_auth_id)
         ->where('year_id', $year->id)
+        ->whereHas('client', function($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('last_name', 'LIKE', "%$request->search%")
+                    ->orWhere('phone_number', 'LIKE', "%$request->search%")
+                    ->orWhere('direction', 'LIKE', "%$request->search%")
+                    ->orWhere('name', 'LIKE', "%$request->search%");
+            });
+        })
         ->get()
         ->map(function($order) {
             return OrderUtils::getOrderArray($order);
         })
         ->sortBy('id');
 
+        $userHasOrders = Order::where('user_id', $user_auth_id)
+            ->where('year_id', $year->id)
+            ->exists();
+
         return Inertia::render('List',[
-            'orders' => $orders,
-            'user_auth_name' => auth()->user()->name,
+            'orders'          => $orders,
+            'user_auth_name'  => auth()->user()->name,
+            'list_type'       => 'my_list',
+            'user_has_orders' => $userHasOrders
         ]);
     }
 }
