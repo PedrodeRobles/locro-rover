@@ -143,6 +143,10 @@ class ClientController extends Controller
     {
         $columnName = null;
 
+        if ($field == 'name') {
+            $columnName = 'nombre del cliente';
+        }
+
         if ($field == 'last_name') {
             $columnName = 'apellido del cliente';
         }
@@ -168,6 +172,7 @@ class ClientController extends Controller
                     'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
                 ]);
             }
+            $order = Order::find($id);
 
             $transformedOrder = OrderUtils::getOrderArray($order);
             return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);

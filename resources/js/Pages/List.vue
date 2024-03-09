@@ -40,14 +40,16 @@
                             </th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
-                            <th class="px-4 py-2 border border-gray-600">{{ order.client_name }}</th>
-
-
-                            <!-- <th class="px-4 py-2 border border-gray-600">
-                              <div class="w-32 truncate">
-                                {{ order.client_last_name }}
+                            <td @click="startEditing(index, 'client_name')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_name'), 'hidden': isEditing(index, 'client_name') || (loadingName && loadingNameIndex === index)}">
+                                {{ order.client_name }}
                               </div>
-                            </th> -->
+                              <input v-show="isEditing(index, 'client_name')" type="text" v-model="editedName" @blur="stopEditing(index, 'client_name', order)" @keydown.enter="stopEditing(index, 'client_name', order)" class="text-black w-20">
+                              <div v-if="loadingName && loadingNameIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
                             <td @click="startEditing(index, 'client_last_name')" class="px-4 py-2 border border-gray-600">
                               <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_last_name'), 'hidden': isEditing(index, 'client_last_name') || (loadingLastName && loadingLastNameIndex === index)}">
                                 {{ order.client_last_name }}
@@ -357,6 +359,25 @@ const deleteObservation = async (observation, order_id, index) => {
 ;
 // FIN ELIMINAR OBSERVACION
 
+// EDITAR NOMBRE
+const editingNameIndex = ref(null);
+const editedName = ref(null);
+const loadingName = ref(false);
+const loadingNameIndex = ref(null);
+
+function updateName(order_id, index, field) {
+  console.log('editar nombre');
+  loadingName.value = true;
+  loadingNameIndex.value = index;
+
+  const dataToUpdate = {
+          [field]: editedName.value,
+        };
+
+  updateClient(order_id, index, field, dataToUpdate);
+}
+// FIN EDITAR NOMBRE
+
 // EDITAR APELLIDO
 const editingLastNameIndex = ref(null);
 const editedLastName = ref(null);
@@ -364,7 +385,6 @@ const loadingLastName = ref(false);
 const loadingLastNameIndex = ref(null);
 
 function updateLastName(order_id, index, field) {
-  console.log('editar apellido');
   loadingLastName.value = true;
   loadingLastNameIndex.value = index;
 
@@ -469,6 +489,7 @@ const startEditing = (index, field) => {
   editingIndex.value = index + '-' + field;
   editedNumber.value = props.orders[index][field];
   editedLastName.value = props.orders[index][field];
+  editedName.value = props.orders[index][field];
 };
 
 const stopEditing = (index, field, order) => {
@@ -484,6 +505,11 @@ const stopEditing = (index, field, order) => {
 
   if (field == 'client_last_name') {
     updateLastName(order.id, index, 'last_name');
+    editingIndex.value = null;
+  }
+
+  if (field == 'client_name') {
+    updateName(order.id, index, 'name');
     editingIndex.value = null;
   }
 };
@@ -517,7 +543,7 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
 async function updateClient(order_id, index, field, dataToUpdate) {
     try {
       const response = await axios.put(`/client/${order_id}/edit/${field}`, dataToUpdate);
-      console.log(response.data.orders);
+
       props.orders[index] = response.data.order;
 
       editingIndex.value = null;
@@ -526,6 +552,8 @@ async function updateClient(order_id, index, field, dataToUpdate) {
     } finally {
     loadingLastName.value = false;
     loadingLastNameIndex.value = null;
+    loadingName.value = null;
+    loadingNameIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES
