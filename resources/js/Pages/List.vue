@@ -60,7 +60,16 @@
                               </div>
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600">{{ order.client_phone_number }}</td>
+                            <td @click="startEditing(index, 'client_phone_number')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_phone_number-' + index" :class="{'client_phone_number': !isEditing(index, 'client_phone_number'), 'hidden': isEditing(index, 'client_phone_number') || (loadingLastName && loadingLastNameIndex === index)}">
+                                {{ order.client_phone_number }}
+                              </div>
+                              <input v-show="isEditing(index, 'client_phone_number')" type="text" v-model="editedPhoneNumber" @blur="stopEditing(index, 'client_phone_number', order)" @keydown.enter="stopEditing(index, 'client_phone_number', order)" class="text-black w-20">
+                              <div v-if="loadingPhoneNumber && loadingPhoneNumberIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
 
@@ -366,7 +375,6 @@ const loadingName = ref(false);
 const loadingNameIndex = ref(null);
 
 function updateName(order_id, index, field) {
-  console.log('editar nombre');
   loadingName.value = true;
   loadingNameIndex.value = index;
 
@@ -395,6 +403,24 @@ function updateLastName(order_id, index, field) {
   updateClient(order_id, index, field, dataToUpdate);
 }
 // FIN EDITAR APELLIDO
+
+// EDITAR NUMERO DE TELEFONO
+const editingPhoneNumberIndex = ref(null);
+const editedPhoneNumber = ref(null);
+const loadingPhoneNumber = ref(false);
+const loadingPhoneNumberIndex = ref(null);
+
+function updatePhoneNumber(order_id, index, field) {
+  loadingPhoneNumber.value = true;
+  loadingPhoneNumberIndex.value = index;
+
+  const dataToUpdate = {
+          [field]: editedPhoneNumber.value,
+        };
+
+  updateClient(order_id, index, field, dataToUpdate);
+}
+// FIN EDITAR NUMERO DE TELEFONO
 
 // EDITAR PORCIONES, DELIVERY
 const editingIndex = ref(null);
@@ -490,6 +516,7 @@ const startEditing = (index, field) => {
   editedNumber.value = props.orders[index][field];
   editedLastName.value = props.orders[index][field];
   editedName.value = props.orders[index][field];
+  editedPhoneNumber.value = props.orders[index][field];
 };
 
 const stopEditing = (index, field, order) => {
@@ -503,13 +530,18 @@ const stopEditing = (index, field, order) => {
     editingIndex.value = null;
   }
 
+  if (field == 'client_name') {
+    updateName(order.id, index, 'name');
+    editingIndex.value = null;
+  }
+
   if (field == 'client_last_name') {
     updateLastName(order.id, index, 'last_name');
     editingIndex.value = null;
   }
 
-  if (field == 'client_name') {
-    updateName(order.id, index, 'name');
+  if (field == 'client_phone_number') {
+    updatePhoneNumber(order.id, index, 'phone_number');
     editingIndex.value = null;
   }
 };
@@ -554,6 +586,8 @@ async function updateClient(order_id, index, field, dataToUpdate) {
     loadingLastNameIndex.value = null;
     loadingName.value = null;
     loadingNameIndex.value = null;
+    loadingPhoneNumber.value = null;
+    loadingPhoneNumberIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES
