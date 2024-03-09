@@ -41,11 +41,23 @@
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
                             <th class="px-4 py-2 border border-gray-600">{{ order.client_name }}</th>
-                            <th class="px-4 py-2 border border-gray-600">
+
+
+                            <!-- <th class="px-4 py-2 border border-gray-600">
                               <div class="w-32 truncate">
                                 {{ order.client_last_name }}
                               </div>
-                            </th>
+                            </th> -->
+                            <td @click="startEditing(index, 'client_last_name')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_last_name'), 'hidden': isEditing(index, 'client_last_name') || (loadingLastName && loadingLastNameIndex === index)}">
+                                {{ order.client_last_name }}
+                              </div>
+                              <input v-show="isEditing(index, 'client_last_name')" type="text" v-model="editedLastName" @blur="stopEditing(index, 'client_last_name', order)" @keydown.enter="stopEditing(index, 'client_last_name', order)" class="text-black w-20">
+                              <div v-if="loadingLastName && loadingLastNameIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_phone_number }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
                             <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
@@ -287,26 +299,6 @@ const formatObservation = (observation) => {
   return nl2br(observation.observation);
 }
 
-// ELIMINAR OBSERVACION
-const deleteObservation = async (observation, order_id, index) => {
-  if(confirm(`¿Deseas eliminar la observación: ${observation.observation}?`)){
-    try {
-      loadingObservation.value = true;
-
-      // Realiza la solicitud POST para guardar la nueva observación
-      const response = await axios.delete(`/order/${order_id}/${observation.id}/deleteObservation`);
-
-      props.orders[index] = response.data.order;
-    } catch (error) {
-      console.error('Error al eliminar observación:', error);
-    } finally {
-      loadingObservation.value = false;
-    }
-    }
-}
-;
-// FIN ELIMINAR OBSERVACION
-
 // AGREGAR OBSERVACIONES
 const editMode = ref(false);
 const activeOrderId = ref(null);
@@ -342,7 +334,47 @@ const saveObservation = async (order_id, index) => {
     loadingObservation.value = false;
   }
 };
-//FIN AGREGAR OBSERVACIONES
+// FIN AGREGAR OBSERVACIONES
+
+
+// ELIMINAR OBSERVACION
+const deleteObservation = async (observation, order_id, index) => {
+  if(confirm(`¿Deseas eliminar la observación: ${observation.observation}?`)){
+    try {
+      loadingObservation.value = true;
+
+      // Realiza la solicitud POST para guardar la nueva observación
+      const response = await axios.delete(`/order/${order_id}/${observation.id}/deleteObservation`);
+
+      props.orders[index] = response.data.order;
+    } catch (error) {
+      console.error('Error al eliminar observación:', error);
+    } finally {
+      loadingObservation.value = false;
+    }
+    }
+}
+;
+// FIN ELIMINAR OBSERVACION
+
+// EDITAR APELLIDO
+const editingLastNameIndex = ref(null);
+const editedLastName = ref(null);
+const loadingLastName = ref(false);
+const loadingLastNameIndex = ref(null);
+
+function updateLastName(order_id, index, field) {
+  console.log('editar apellido');
+  loadingLastName.value = true;
+  loadingLastNameIndex.value = index;
+
+  const dataToUpdate = {
+          [field]: editedLastName.value,
+        };
+
+  updateClient(order_id, index, field, dataToUpdate);
+}
+// FIN EDITAR APELLIDO
 
 // EDITAR PORCIONES, DELIVERY
 const editingIndex = ref(null);
@@ -436,6 +468,7 @@ const confirmUpdateTakeAway = (order, index, field, value) => {
 const startEditing = (index, field) => {
   editingIndex.value = index + '-' + field;
   editedNumber.value = props.orders[index][field];
+  editedLastName.value = props.orders[index][field];
 };
 
 const stopEditing = (index, field, order) => {
@@ -446,6 +479,11 @@ const stopEditing = (index, field, order) => {
 
   if (field == 'money_collected') {
     updateMoneyCollected(order, index, field, order.money_collected);
+    editingIndex.value = null;
+  }
+
+  if (field == 'client_last_name') {
+    updateLastName(order.id, index, 'last_name');
     editingIndex.value = null;
   }
 };
@@ -470,6 +508,24 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
     loadingMoneyCollectedIndex.value = null;
     loadingMP.value = false;
     loadingMPIndex.value = null;
+    }
+}
+// FIN FUNCION MAIN PARA EDITAR ORDENES
+
+
+// FUNCION MAIN PARA EDITAR CLIENTES
+async function updateClient(order_id, index, field, dataToUpdate) {
+    try {
+      const response = await axios.put(`/client/${order_id}/edit/${field}`, dataToUpdate);
+      console.log(response.data.orders);
+      props.orders[index] = response.data.order;
+
+      editingIndex.value = null;
+    } catch (error) {
+        console.error('Error al realizar la operación:', error);
+    } finally {
+    loadingLastName.value = false;
+    loadingLastNameIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES

@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
+use App\Utils\OrderUtils;
 
 class ClientController extends Controller
 {
@@ -135,5 +137,46 @@ class ClientController extends Controller
     {
         $client = Client::withTrashed()->find($id);
         $client->restore();
+    }
+
+    public function updateFromOrder(Request $request, $id, $field) 
+    {
+        $columnName = null;
+
+        if ($field == 'last_name') {
+            $columnName = 'apellido del cliente';
+        }
+
+        $currentYear   = Carbon::now()->year;
+        $actualYearDB  = Year::where('year', $currentYear)->first();
+
+        $order = Order::find($id);
+
+        $clientsOrders = Order::where('client_id', $order->client->id)
+            ->where('year_id', $actualYearDB->id)
+            ->get();
+
+        // Si hay diferencias entre la columna de mi orden y el dato que quiero entonces efectuo el cambio
+        if ($order->client->$field != $request->input($field)) {
+
+            $order->client->update([
+                $field => $request->input($field)
+            ]);
+
+            foreach ($clientsOrders as $clientOrder) {
+                $clientOrder->update([
+                    'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
+                ]);
+            }
+
+            $transformedOrder = OrderUtils::getOrderArray($order);
+            return response()->json(['message' => 'Orden actualizada con éxito', 'order' => $transformedOrder]);
+        } 
+
+        // Si la info que recibo es igual a la que ya esta guarda no hago nada
+        else {
+            $transformedOrder = OrderUtils::getOrderArray($order);
+            return response()->json(['message' => 'La orden no tuvo modificaciones', 'order' => $transformedOrder]);
+        }
     }
 }

@@ -37,6 +37,8 @@ Route::post('/client/import-clients', [ClientController::class, 'importExcel'])-
 Route::get('/client/clientHasOrder/{client:id}', [ClientController::class, 'clientHasOrder'])->name('client.clientHasOrder');
 Route::get('/client/deleteClients', [ClientController::class, 'deleteClients'])->name('client.deleteClients');
 Route::put('/client/rollback/{client}', [ClientController::class, 'rollbackClient'])->name('client.rollbackClient');
+Route::put('/client/{order:id}/edit/{field}', [ClientController::class, 'updateFromOrder'])->name('client.updateFromOrder');
+
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::get('/years', [AdminController::class, 'years'])->name('admin.years');
