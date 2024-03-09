@@ -61,7 +61,7 @@
                             </td>
 
                             <td @click="startEditing(index, 'client_phone_number')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'client_phone_number-' + index" :class="{'client_phone_number': !isEditing(index, 'client_phone_number'), 'hidden': isEditing(index, 'client_phone_number') || (loadingLastName && loadingLastNameIndex === index)}">
+                              <div :id="'client_phone_number-' + index" :class="{'client_phone_number': !isEditing(index, 'client_phone_number'), 'hidden': isEditing(index, 'client_phone_number') || (loadingPhoneNumber && loadingPhoneNumberIndex === index)}">
                                 {{ order.client_phone_number }}
                               </div>
                               <input v-show="isEditing(index, 'client_phone_number')" type="text" v-model="editedPhoneNumber" @blur="stopEditing(index, 'client_phone_number', order)" @keydown.enter="stopEditing(index, 'client_phone_number', order)" class="text-black w-20">
@@ -70,8 +70,26 @@
                               </div>
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600">{{ order.client_direction }}</td>
-                            <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td>
+                            <td @click="startEditing(index, 'client_direction')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_direction-' + index" :class="{'client_direction': !isEditing(index, 'client_direction'), 'hidden': isEditing(index, 'client_direction') || (loadingDirection && loadingDirectionIndex === index)}">
+                                {{ order.client_direction }}
+                              </div>
+                              <input v-show="isEditing(index, 'client_direction')" type="text" v-model="editedDirection" @blur="stopEditing(index, 'client_direction', order)" @keydown.enter="stopEditing(index, 'client_direction', order)" class="text-black w-20">
+                              <div v-if="loadingDirection && loadingDirectionIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
+                            <!-- <td class="px-4 py-2 border border-gray-600">{{ order.client_postal_code }}</td> -->
+                            <td @click="startEditing(index, 'client_postal_code')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_postal_code-' + index" :class="{'client_postal_code': !isEditing(index, 'client_postal_code'), 'hidden': isEditing(index, 'client_postal_code') || (loadingPostalCode && loadingPostalCodeIndex === index)}">
+                                {{ order.client_postal_code }}
+                              </div>
+                              <input v-show="isEditing(index, 'client_postal_code')" type="text" v-model="editedPostalCode" @blur="stopEditing(index, 'client_postal_code', order)" @keydown.enter="stopEditing(index, 'client_postal_code', order)" class="text-black w-20">
+                              <div v-if="loadingPostalCode && loadingPostalCodeIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
 
                             <td class="px-4 py-2 border border-gray-600">
                               <label :for="'take-away-checkbox-' + order.id" class="mr-2">
@@ -422,6 +440,42 @@ function updatePhoneNumber(order_id, index, field) {
 }
 // FIN EDITAR NUMERO DE TELEFONO
 
+// EDITAR DIRECCION
+const editingDirection = ref(null);
+const editedDirection = ref(null);
+const loadingDirection= ref(false);
+const loadingDirectionIndex = ref(null);
+
+function updateDirection(order_id, index, field) {
+  loadingDirection.value = true;
+  loadingDirectionIndex.value = index;
+
+  const dataToUpdate = {
+          [field]: editedDirection.value,
+        };
+
+  updateClient(order_id, index, field, dataToUpdate);
+}
+// FIN EDITAR DIRECCION
+
+// EDITAR CODIGO POSTAL
+const editingPostalCode = ref(null);
+const editedPostalCode = ref(null);
+const loadingPostalCode= ref(false);
+const loadingPostalCodeIndex = ref(null);
+
+function updatePostalCode(order_id, index, field) {
+  loadingPostalCode.value = true;
+  loadingPostalCodeIndex.value = index;
+
+  const dataToUpdate = {
+          [field]: editedPostalCode.value,
+        };
+
+  updateClient(order_id, index, field, dataToUpdate);
+}
+// FIN CODIGO POSTAL
+
 // EDITAR PORCIONES, DELIVERY
 const editingIndex = ref(null);
 const editedNumber = ref(null);
@@ -517,6 +571,8 @@ const startEditing = (index, field) => {
   editedLastName.value = props.orders[index][field];
   editedName.value = props.orders[index][field];
   editedPhoneNumber.value = props.orders[index][field];
+  editedDirection.value = props.orders[index][field];
+  editedPostalCode.value = props.orders[index][field];
 };
 
 const stopEditing = (index, field, order) => {
@@ -542,6 +598,16 @@ const stopEditing = (index, field, order) => {
 
   if (field == 'client_phone_number') {
     updatePhoneNumber(order.id, index, 'phone_number');
+    editingIndex.value = null;
+  }
+
+  if (field == 'client_direction') {
+    updateDirection(order.id, index, 'direction');
+    editingIndex.value = null;
+  }
+
+  if (field == 'client_postal_code') {
+    updatePostalCode(order.id, index, 'postal_code');
     editingIndex.value = null;
   }
 };
@@ -588,6 +654,10 @@ async function updateClient(order_id, index, field, dataToUpdate) {
     loadingNameIndex.value = null;
     loadingPhoneNumber.value = null;
     loadingPhoneNumberIndex.value = null;
+    loadingDirection.value = null;
+    loadingDirectionIndex.value = null;
+    loadingPostalCode.value = null;
+    loadingPostalCodeIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES

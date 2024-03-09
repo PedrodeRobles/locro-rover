@@ -155,6 +155,14 @@ class ClientController extends Controller
             $columnName = 'número del cliente';
         }
 
+        if ($field == 'direction') {
+            $columnName = 'dirección del cliente';
+        }
+
+        if ($field == 'postal_code') {
+            $columnName = 'código postal del cliente';
+        }
+
         $currentYear   = Carbon::now()->year;
         $actualYearDB  = Year::where('year', $currentYear)->first();
 
