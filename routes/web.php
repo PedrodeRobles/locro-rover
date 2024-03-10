@@ -39,6 +39,7 @@ Route::get('/client/clientHasOrder/{client:id}', [ClientController::class, 'clie
 Route::get('/client/deleteClients', [ClientController::class, 'deleteClients'])->name('client.deleteClients');
 Route::put('/client/rollback/{client}', [ClientController::class, 'rollbackClient'])->name('client.rollbackClient');
 Route::put('/client/{order:id}/edit/{field}', [ClientController::class, 'updateFromOrder'])->name('client.updateFromOrder');
+Route::post('/client/{order:id}/add-order', [ClientController::class, 'addOrder'])->name('client.addOrder');
 
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');

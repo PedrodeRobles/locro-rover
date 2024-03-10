@@ -21,6 +21,9 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
+        $currentYear   = Carbon::now()->year;
+        $actualYearDB  = Year::where('year', $currentYear)->first();
+
         $clients = Client::orderBy('id', 'desc')
             ->where(function ($query) use ($request) {
                 $query->where('last_name', 'LIKE', "%$request->search%")
@@ -28,6 +31,9 @@ class ClientController extends Controller
                     ->orWhere('direction', 'LIKE', "%$request->search%")
                     ->orWhere('name', 'LIKE', "%$request->search%");
             })
+            ->with(['orders' => function ($query) use ($actualYearDB) {
+                $query->where('year_id', $actualYearDB->id);
+            }])
             ->get();
 
         return Inertia::render('Client/Index', ['clients' => $clients]);
@@ -57,14 +63,6 @@ class ClientController extends Controller
         $order->save();
 
         // return to_route('client.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Client $client)
-    {
-        //
     }
 
     /**
@@ -195,5 +193,18 @@ class ClientController extends Controller
             $transformedOrder = OrderUtils::getOrderArray($order);
             return response()->json(['message' => 'La orden no tuvo modificaciones', 'order' => $transformedOrder]);
         }
+    }
+
+    public function addOrder($client_id)
+    {
+        $client = Client::find($client_id);
+
+        $currentYear   = Carbon::now()->year;
+        $actualYearDB  = Year::where('year', $currentYear)->first();
+
+        $order = new Order();
+        $order->client_id = $client->id;
+        $order->year_id   = $actualYearDB->id;
+        $order->save();
     }
 }
