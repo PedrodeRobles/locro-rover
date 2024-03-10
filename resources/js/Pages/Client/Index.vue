@@ -198,7 +198,7 @@ async function destroy (id, name, last_name) {
 
         // Verificar si tiene órdenes antes de borrar
         if (response.data.clientHasOrder) {
-            alert(`No podes borrar al cliente ${name} ${last_name} porque tiene una orden asociada.`);
+            alert(`No podes borrar al cliente ${name} ${last_name} porque tiene una orden actual asociada.`);
         } else {
             // Borrar el cliente si no tiene órdenes
             if (confirm(`¿Estás seguro que queres borrar este cliente? ${name} ${last_name}`)) {

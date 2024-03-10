@@ -44,7 +44,7 @@
                               <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_name'), 'hidden': isEditing(index, 'client_name') || (loadingName && loadingNameIndex === index)}">
                                 {{ order.client_name }}
                               </div>
-                              <input v-show="isEditing(index, 'client_name')" type="text" v-model="editedName" @blur="stopEditing(index, 'client_name', order)" @keydown.enter="stopEditing(index, 'client_name', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'client_name')" type="text" v-model="editedName" @blur="stopEditing(index, 'client_name', order)" @keydown.enter="stopEditing(index, 'client_name', order)" class="text-black w-full">
                               <div v-if="loadingName && loadingNameIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -54,27 +54,27 @@
                               <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_last_name'), 'hidden': isEditing(index, 'client_last_name') || (loadingLastName && loadingLastNameIndex === index)}">
                                 {{ order.client_last_name }}
                               </div>
-                              <input v-show="isEditing(index, 'client_last_name')" type="text" v-model="editedLastName" @blur="stopEditing(index, 'client_last_name', order)" @keydown.enter="stopEditing(index, 'client_last_name', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'client_last_name')" type="text" v-model="editedLastName" @blur="stopEditing(index, 'client_last_name', order)" @keydown.enter="stopEditing(index, 'client_last_name', order)" class="text-black w-full">
                               <div v-if="loadingLastName && loadingLastNameIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
                             </td>
 
                             <td @click="startEditing(index, 'client_phone_number')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'client_phone_number-' + index" :class="{'client_phone_number': !isEditing(index, 'client_phone_number'), 'hidden': isEditing(index, 'client_phone_number') || (loadingPhoneNumber && loadingPhoneNumberIndex === index)}">
+                              <div :id="'client_phone_number-' + index" :class="{'client_phone_number': !isEditing(index, 'client_phone_number'), 'hidden': isEditing(index, 'client_phone_number') || (loadingPhoneNumber && loadingPhoneNumberIndex === index)}" class="w-32">
                                 {{ order.client_phone_number }}
                               </div>
-                              <input v-show="isEditing(index, 'client_phone_number')" type="text" v-model="editedPhoneNumber" @blur="stopEditing(index, 'client_phone_number', order)" @keydown.enter="stopEditing(index, 'client_phone_number', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'client_phone_number')" type="text" v-model="editedPhoneNumber" @blur="stopEditing(index, 'client_phone_number', order)" @keydown.enter="stopEditing(index, 'client_phone_number', order)" class="text-black w-full">
                               <div v-if="loadingPhoneNumber && loadingPhoneNumberIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
                             </td>
 
                             <td @click="startEditing(index, 'client_direction')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'client_direction-' + index" :class="{'client_direction': !isEditing(index, 'client_direction'), 'hidden': isEditing(index, 'client_direction') || (loadingDirection && loadingDirectionIndex === index)}">
+                              <div :id="'client_direction-' + index" :class="{'client_direction': !isEditing(index, 'client_direction'), 'hidden': isEditing(index, 'client_direction') || (loadingDirection && loadingDirectionIndex === index)}" class="w-32 md:w-44">
                                 {{ order.client_direction }}
                               </div>
-                              <input v-show="isEditing(index, 'client_direction')" type="text" v-model="editedDirection" @blur="stopEditing(index, 'client_direction', order)" @keydown.enter="stopEditing(index, 'client_direction', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'client_direction')" type="text" v-model="editedDirection" @blur="stopEditing(index, 'client_direction', order)" @keydown.enter="stopEditing(index, 'client_direction', order)" class="text-black w-full">
                               <div v-if="loadingDirection && loadingDirectionIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -85,7 +85,7 @@
                               <div :id="'client_postal_code-' + index" :class="{'client_postal_code': !isEditing(index, 'client_postal_code'), 'hidden': isEditing(index, 'client_postal_code') || (loadingPostalCode && loadingPostalCodeIndex === index)}">
                                 {{ order.client_postal_code }}
                               </div>
-                              <input v-show="isEditing(index, 'client_postal_code')" type="text" v-model="editedPostalCode" @blur="stopEditing(index, 'client_postal_code', order)" @keydown.enter="stopEditing(index, 'client_postal_code', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'client_postal_code')" type="text" v-model="editedPostalCode" @blur="stopEditing(index, 'client_postal_code', order)" @keydown.enter="stopEditing(index, 'client_postal_code', order)" class="text-black w-full">
                               <div v-if="loadingPostalCode && loadingPostalCodeIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -112,7 +112,7 @@
                               <div :id="'portion-' + index" :class="{'portion': !isEditing(index, 'portions'), 'hidden': isEditing(index, 'portions') || (loading && loadingIndex === index)}">
                                 {{ order.portions }}
                               </div>
-                              <input v-show="isEditing(index, 'portions')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions', order)" @keydown.enter="stopEditing(index, 'portions', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'portions')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions', order)" @keydown.enter="stopEditing(index, 'portions', order)" class="text-black w-full">
                               <div v-if="loading && loadingIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
