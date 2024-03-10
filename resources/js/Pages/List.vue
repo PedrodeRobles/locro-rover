@@ -15,8 +15,8 @@
                     <thead class="bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 border border-gray-600">Rover encargado</th>
-                            <th class="px-4 py-2 border border-gray-600 primary-column">Nombre</th>
-                            <th class="px-4 py-2 border border-gray-600 primary-column">Apellido</th>
+                            <th class="px-4 py-2 border border-gray-600">Nombre</th>
+                            <th class="px-4 py-2 border border-gray-600">Apellido</th>
                             <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                             <th class="px-4 py-2 border border-gray-600">Dirección</th>
                             <th class="px-4 py-2 border border-gray-600">Cod. Postal</th>
@@ -51,7 +51,7 @@
                             </td>
 
                             <td @click="startEditing(index, 'client_last_name')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_last_name'), 'hidden': isEditing(index, 'client_last_name') || (loadingLastName && loadingLastNameIndex === index)}">
+                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_last_name'), 'hidden': isEditing(index, 'client_last_name') || (loadingLastName && loadingLastNameIndex === index)}" class="w-[128px]">
                                 {{ order.client_last_name }}
                               </div>
                               <input v-show="isEditing(index, 'client_last_name')" type="text" v-model="editedLastName" @blur="stopEditing(index, 'client_last_name', order)" @keydown.enter="stopEditing(index, 'client_last_name', order)" class="text-black w-full">
@@ -219,12 +219,9 @@ body {
   overflow-y: hidden;
   background-color: #1f2937;
 }
-.primary-column {
-    width: 200px;
-}
 .table-scroll {
   position: relative;
-  width:100% - 8px;
+  width: calc(100% - 8px);
   z-index: 1;
   margin: auto;
   overflow: auto;
@@ -267,16 +264,16 @@ body {
   z-index:4;
 }
 
-th:nth-child(-n + 3) {
-  position: -webkit-sticky;
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: #383737;
+th:nth-child(-n + 3), td:nth-child(-n + 3) {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 3; /* Modificado de 2 a 3 */
+    background: #383737;
 }
 thead th:nth-child(-n + 3),
 tfoot th:first-child {
-  z-index: 5;
+        z-index: 5;
 }
 </style>
 
