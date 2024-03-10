@@ -34,6 +34,10 @@
             <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
         </div>
 
+        <div class="text-xl">
+            Clientes:
+        </div>
+
         <div  id="table-scroll" class="table-scroll">
             <table id="main-table" class="main-table">
                 <thead class="bg-gray-900">
