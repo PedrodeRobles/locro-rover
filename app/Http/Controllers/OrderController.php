@@ -135,4 +135,10 @@ class OrderController extends Controller
         $order->to_collect = $calculation;
         $order->save();
     }
+
+    public function destroy($id)
+    {
+        $order = Order::find($id);
+        $order->delete();
+    }
 }
