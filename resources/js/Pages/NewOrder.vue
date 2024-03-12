@@ -87,37 +87,40 @@
             </div>
         </div>
     </transition>
-    
-    </template>
-    
-    <script setup>
-    import { reactive } from 'vue'
-    import { router } from '@inertiajs/vue3'
-    import { defineProps } from 'vue';
-    
-    const props = defineProps({
-        closeModal: Function
-    });
-    
-    const form = reactive({
-        name: null,
-        last_name: null,
-        phone_number: null,
-        direction: null,
-        postal_code: null,
-        portions: null,
-        take_away: null,
-        observation: null,
-        assign_order: true
-    });
+</template>
 
-    async function submit() {
-        try {
-            await router.post('/order/create', form);
-            props.closeModal();
-        } catch (error) {
-            console.error('Error:', error);
-        }
+<script setup>
+import { reactive } from 'vue'
+import { router } from '@inertiajs/vue3'
+import { defineProps } from 'vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
+const props = defineProps({
+    closeModal: Function
+});
+
+const form = reactive({
+    name: null,
+    last_name: null,
+    phone_number: null,
+    direction: null,
+    postal_code: null,
+    portions: null,
+    take_away: null,
+    observation: null,
+    assign_order: true
+});
+
+async function submit() {
+    try {
+        await router.post('/order/create', form);
+        props.closeModal();
+        await toast.success(`Orden generada con éxito!`, { autoClose: 4000 });
+    } catch (error) {
+        console.error('Error:', error);
+        await toast.error('Error al generar orden!');
     }
-    
-    </script>
+}
+
+</script>

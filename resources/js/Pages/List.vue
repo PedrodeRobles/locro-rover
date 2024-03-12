@@ -304,6 +304,8 @@ import { ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import FormOrderModal from './NewOrder.vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const props = defineProps({
     orders: {
@@ -640,8 +642,11 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
       props.orders[index] = response.data.order;
 
       editingIndex.value = null;
+
+      await toast.success(`Orden de ${props.orders[index].client_name} editado con éxito!`, { autoClose: 4000 });
     } catch (error) {
         console.error('Error al realizar la operación:', error);
+        await toast.error('Error al editar orden!');
     } finally {
     loading.value = false;
     loadingIndex.value = null;
@@ -664,8 +669,10 @@ async function updateClient(order_id, index, field, dataToUpdate) {
       props.orders[index] = response.data.order;
 
       editingIndex.value = null;
+      await toast.success(`Cliente ${props.orders[index].client_name} editado con éxito!`, { autoClose: 4000 });
     } catch (error) {
         console.error('Error al realizar la operación:', error);
+        await toast.error('Error al editar cliente!');
     } finally {
     loadingLastName.value = false;
     loadingLastNameIndex.value = null;
@@ -685,10 +692,12 @@ async function updateClient(order_id, index, field, dataToUpdate) {
 async function destroy(order_id, name, last_name) {
     try {
         if (confirm(`¿Estás seguro que queres borrar la orden de ${name} ${last_name}?`)) {
-            router.delete(`/order/${order_id}/delete`);
+            await router.delete(`/order/${order_id}/delete`);
         }
+        await toast.success(`Orden de ${name} eliminada con éxito!`);
     } catch (error) {
         console.error('Error al realizar la operación:', error);
+        await toast.error('Error al eliminar orden!');
     }
 }
 // FIN ELIMINAR ORDEN
