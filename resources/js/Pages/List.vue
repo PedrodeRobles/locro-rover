@@ -2,13 +2,26 @@
     <div>
         <Header></Header>
 
-        <div class="bg-gray-800 text-white pt-32">
+        <div class="bg-gray-800 text-white pt-24 md:pt-32">
 
-            <div class="flex justify-center hidden md:block pb-2 pl-2">
+            <div class="pb-2 pl-2 flex justify-between">
+              <div class="flex justify-center hidden md:block">
                 <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
+              </div>
+              <div @click="openNewOrder()" class="rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-1 mx-2 hidden md:block md:flex md:items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
+                <p class="text-xl">Agregar orden</p>
+              </div>
             </div>
-            <div class="flex justify-center mb-2 md:hidden">
-                <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
+
+            <div class="mb-2 md:hidden space-y-2">
+              <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
+                  <p class="text-xl">Agregar orden</p>
+              </div>
+              <div class="flex justify-center px-2">
+                  <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
+              </div>
             </div>
             <div  id="table-scroll" class="table-scroll" >
                 <table id="main-table" class="main-table">
@@ -219,6 +232,7 @@
             </div>
         </div>
     </div>
+    <FormOrderModal v-if="isFormModalOpen" :closeModal="closeEditModal"/>
 </template>
 
 <style>
@@ -289,6 +303,7 @@ import { defineProps } from 'vue';
 import { ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
+import FormOrderModal from './NewOrder.vue';
 
 const props = defineProps({
     orders: {
@@ -677,4 +692,14 @@ async function destroy(order_id, name, last_name) {
     }
 }
 // FIN ELIMINAR ORDEN
+
+// NUEVA ORDEN
+const isFormModalOpen = ref(false);
+const openNewOrder = () => {
+    isFormModalOpen.value = true;
+};
+const closeEditModal = () => {
+    isFormModalOpen.value = false;
+};
+// FIN NUEVA ORDEN
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Observation;
 use App\Models\Order;
 use App\Models\Year;
@@ -12,6 +13,41 @@ use App\Utils\OrderUtils;
 
 class OrderController extends Controller
 {
+    public function store(Request $request)
+    {
+        $currentYear = Carbon::now()->year;
+        $getCurrentYear = Year::where('year', $currentYear)->first();
+
+        $client = new Client;
+        $client->name = $request->name;
+        $client->last_name = $request->last_name;
+        $client->phone_number = $request->phone_number;
+        $client->direction = $request->direction;
+        $client->postal_code = $request->postal_code;
+        $client->save();
+
+        $order = new Order;
+        $order->client_id = $client->id;
+        $order->portions = $request->portions;
+        $order->take_away = $request->take_away;
+        $order->year_id = $getCurrentYear->id;
+        if ($request->assign_order) {
+            $order->user_id = Auth::user()->id;
+        }
+        $order->save();
+        setPriceAccordingToParameters($order);
+        $this->setSauceAmount($order);
+
+        if($request->observation != null) {
+            $observation = new Observation;
+            $observation->client_id = $client->id;
+            $observation->year_id = $getCurrentYear->id;
+            $observation->observation = $request->observation;
+            $observation->save();
+        }
+
+    }
+
     public function update(Request $request, $id, $field)
     {
         $columnName = null;

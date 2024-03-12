@@ -26,6 +26,7 @@ Route::put('/order/{order:id}/edit/{field}', [OrderController::class, 'update'])
 Route::post('/order/{order:id}/addObservation', [OrderController::class, 'addObservation'])->name('order.addObservation');
 Route::delete('/order/{order:id}/{observation:id}/deleteObservation', [OrderController::class, 'deleteObservation'])->name('order.deleteObservation');
 Route::delete('/order/{order:id}/delete', [OrderController::class, 'destroy'])->name('order.destroy');
+Route::post('/order/create', [OrderController::class, 'store'])->name('order.store');
 
 Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
 Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');
