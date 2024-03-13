@@ -50,7 +50,7 @@ class OrderUtils
             'updated_at'      => Carbon::parse($order->updated_at)->format('d-m-y'),
 
             'client_id'         => $order->client->id,
-            'client_name'       => $order->client->name,
+            'name'                => $order->client->name,
             'client_last_name'  => $order->client->last_name,
             'client_phone_number' => $order->client->phone_number,
             'client_direction'  => $order->client->direction,

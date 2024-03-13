@@ -54,11 +54,11 @@
                             </th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
-                            <td @click="startEditing(index, 'client_name')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'client_name'), 'hidden': isEditing(index, 'client_name') || (loadingName && loadingNameIndex === index)}">
-                                {{ order.client_name }}
+                            <td @click="startEditing(index, 'name')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'client_last_name-' + index" :class="{'client_last_name': !isEditing(index, 'name'), 'hidden': isEditing(index, 'name') || (loadingName && loadingNameIndex === index)}">
+                                {{ order.name }}
                               </div>
-                              <input v-show="isEditing(index, 'client_name')" type="text" v-model="editedName" @blur="stopEditing(index, 'client_name', order)" @keydown.enter="stopEditing(index, 'client_name', order)" class="text-black w-full">
+                              <input v-show="isEditing(index, 'name')" type="text" v-model="editedName" @blur="stopEditing(index, 'name', order)" @keydown.enter="stopEditing(index, 'name', order)" class="text-black w-full">
                               <div v-if="loadingName && loadingNameIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -204,7 +204,7 @@
                                   </svg>
                               </td>
                               
-                              <td @click.prevent="destroy(order.id, order.client_name, order.client_last_name)" class="border border-gray-600 h-9 cursor-pointer" style="background-color: #dc2626;">
+                              <td @click.prevent="destroy(order.id, order.name, order.client_last_name)" class="border border-gray-600 h-9 cursor-pointer" style="background-color: #dc2626;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"/></svg>
                               </td>
                             </td>
@@ -510,7 +510,7 @@ function updatePortions(orderId, index, field) {
   const dataToUpdate = {
           [field]: editedNumber.value,
         };
-  updateOrder(orderId, index, field, dataToUpdate);
+  updateOrder(orderId, index, field, dataToUpdate, fieldOriginal);
 }
 
 const isEditing = (index, field) => {
@@ -524,7 +524,7 @@ const loadingMoneyCollectedIndex = ref(null);
 
 const updateMoneyCollected = (order, index, field, value) => {
     // console.log(index);
-    // const confirmationText = `¿Deseas cobrar $${value} a la orden de ${order.client_name} ${order.client_last_name}?`;
+    // const confirmationText = `¿Deseas cobrar $${value} a la orden de ${order.name} ${order.client_last_name}?`;
 
     // if (confirm(confirmationText)) {
       loadingMoneyCollected.value = true;
@@ -544,7 +544,7 @@ const loadingMP = ref(false);
 const loadingMPIndex = ref(null);
 
 const confirmUpdateMP = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} paga con mercado pago?`;
+    const confirmationText = `¿Confirmas que ${order.name} ${order.client_last_name} ${value ? "SI" : "NO"} paga con mercado pago?`;
 
     if (!confirm(confirmationText)) {
       // Si se cancela el confirm, revertir el cambio en el checkbox
@@ -567,7 +567,7 @@ const loadingTakeAway = ref(false);
 const loadingTakeAwayIndex = ref(null);
 
 const confirmUpdateTakeAway = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.client_name} ${order.client_last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
+    const confirmationText = `¿Confirmas que ${order.name} ${order.client_last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
 
     if (!confirm(confirmationText)) {
       // Si se cancela el confirm, revertir el cambio en el checkbox
@@ -607,7 +607,7 @@ const stopEditing = (index, field, order) => {
     editingIndex.value = null;
   }
 
-  if (field == 'client_name') {
+  if (field == 'name') {
     updateName(order.id, index, 'name');
     editingIndex.value = null;
   }
@@ -643,7 +643,7 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
 
       editingIndex.value = null;
 
-      await toast.success(`Orden de ${props.orders[index].client_name} editado con éxito!`, { autoClose: 4000 });
+      await toast.success(`Orden de ${props.orders[index].name} editado con éxito!`, { autoClose: 4000 });
     } catch (error) {
         console.error('Error al realizar la operación:', error);
         await toast.error('Error al editar orden!');
@@ -664,12 +664,16 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
 // FUNCION MAIN PARA EDITAR CLIENTES
 async function updateClient(order_id, index, field, dataToUpdate) {
     try {
-      const response = await axios.put(`/client/${order_id}/edit/${field}`, dataToUpdate);
-
-      props.orders[index] = response.data.order;
-
-      editingIndex.value = null;
-      await toast.success(`Cliente ${props.orders[index].client_name} editado con éxito!`, { autoClose: 4000 });
+      if (dataToUpdate[field] != props.orders[index][field]) {
+        console.log(props.orders[index][field]);
+        console.log(dataToUpdate[field]);
+        const response = await axios.put(`/client/${order_id}/edit/${field}`, dataToUpdate);
+  
+        props.orders[index] = response.data.order;
+  
+        editingIndex.value = null;
+        await toast.success(`Cliente ${props.orders[index].name} editado con éxito!`, { autoClose: 4000 });
+      }
     } catch (error) {
         console.error('Error al realizar la operación:', error);
         await toast.error('Error al editar cliente!');
