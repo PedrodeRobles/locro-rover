@@ -48,7 +48,7 @@
                         <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                         <th class="px-4 py-2 border border-gray-600">Dirección</th>
                         <th class="px-4 py-2 border border-gray-600">Cod. Postal</th>
-                        <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
+                        <!-- <th class="px-4 py-2 border border-gray-600">Últ. edición</th> -->
                         <th class="px-4 py-2 border border-gray-600" style="z-index: 10;">Acciones</th>
                     </tr>
                 </thead>
@@ -60,7 +60,7 @@
                         <th class="px-4 py-2 border border-gray-600">{{ client.phone_number }}</th>
                         <th class="px-4 py-2 border border-gray-600">{{ client.direction }}</th>
                         <th class="px-4 py-2 border border-gray-600">{{ client.postal_code }}</th>
-                        <th class="px-4 py-2 border border-gray-600">Aca va un rover</th>
+                        <!-- <th class="px-4 py-2 border border-gray-600">Aca va un rover</th> -->
 
                         <!-- <Link :href="route('client.edit', client.id)"> -->
                         <td class="px-4 py-2 border border-gray-600">
