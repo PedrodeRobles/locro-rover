@@ -173,7 +173,7 @@
                               <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
                                 ${{ order.money_collected }}
                               </div>
-                              <input v-show="isEditing(index, 'money_collected')" type="number" v-model="order.money_collected" @blur="stopEditing(index, 'money_collected', order)" class="text-black w-20">
+                              <input v-show="isEditing(index, 'money_collected')" type="number" v-model="editedMoneyCollected" @blur="stopEditing(index, 'money_collected', order)" class="text-black w-20">
                               <div v-if="loadingMoneyCollected && loadingMoneyCollectedIndex == index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
@@ -510,7 +510,7 @@ function updatePortions(orderId, index, field) {
   const dataToUpdate = {
           [field]: editedNumber.value,
         };
-  updateOrder(orderId, index, field, dataToUpdate, fieldOriginal);
+  updateOrder(orderId, index, field, dataToUpdate);
 }
 
 const isEditing = (index, field) => {
@@ -519,22 +519,18 @@ const isEditing = (index, field) => {
 // FIN EDITAR PORCIONES
 
 // EDITAR DINERO COBRADO
+const editedMoneyCollected  = ref(false);
 const loadingMoneyCollected = ref(false);
 const loadingMoneyCollectedIndex = ref(null);
 
-const updateMoneyCollected = (order, index, field, value) => {
-    // console.log(index);
-    // const confirmationText = `¿Deseas cobrar $${value} a la orden de ${order.name} ${order.last_name}?`;
-
-    // if (confirm(confirmationText)) {
+const updateMoneyCollected = (order, index, field) => {
       loadingMoneyCollected.value = true;
       loadingMoneyCollectedIndex.value = index;
 
       const dataToUpdate = {
-          [field]: value,
+          [field]: editedMoneyCollected.value,
       };
       updateOrder(order.id, index, field, dataToUpdate);
-    // }
 }
 // FIN EDITAR DINERO COBRADO
 
@@ -589,6 +585,7 @@ const confirmUpdateTakeAway = (order, index, field, value) => {
 const startEditing = (index, field) => {
   editingIndex.value = index + '-' + field;
   editedNumber.value = props.orders[index][field];
+  editedMoneyCollected.value = props.orders[index][field];
   editedLastName.value = props.orders[index][field];
   editedName.value = props.orders[index][field];
   editedPhoneNumber.value = props.orders[index][field];
@@ -603,7 +600,7 @@ const stopEditing = (index, field, order) => {
   }
 
   if (field == 'money_collected') {
-    updateMoneyCollected(order, index, field, order.money_collected);
+    updateMoneyCollected(order, index, field);
     editingIndex.value = null;
   }
 
@@ -637,13 +634,15 @@ const stopEditing = (index, field, order) => {
 // FUNCION MAIN PARA EDITAR ORDENES
 async function updateOrder(orderId, index, field, dataToUpdate) {
     try {
-      const response = await axios.put(`/order/${orderId}/edit/${field}`, dataToUpdate);
-
-      props.orders[index] = response.data.order;
-
-      editingIndex.value = null;
-
-      await toast.success(`Orden de ${props.orders[index].name} editado con éxito!`, { autoClose: 4000 });
+      if (dataToUpdate[field] != props.orders[index][field]) {
+        const response = await axios.put(`/order/${orderId}/edit/${field}`, dataToUpdate);
+  
+        props.orders[index] = response.data.order;
+  
+        editingIndex.value = null;
+  
+        await toast.success(`Orden de ${props.orders[index].name} editada con éxito!`, { autoClose: 4000 });
+      }
     } catch (error) {
         console.error('Error al realizar la operación:', error);
         await toast.error('Error al editar orden!');
