@@ -49,13 +49,13 @@ class OrderUtils
             'last_edition'    => $order->last_edition,
             'updated_at'      => Carbon::parse($order->updated_at)->format('d-m-y'),
 
-            'client_id'         => $order->client->id,
+            'client_id'           => $order->client->id,
             'name'                => $order->client->name,
-            'client_last_name'  => $order->client->last_name,
-            'client_phone_number' => $order->client->phone_number,
-            'client_direction'  => $order->client->direction,
-            'client_postal_code' => $order->client->postal_code,
-            'user_name'         => $order->user ? $order->user->name : null,
+            'last_name'           => $order->client->last_name,
+            'phone_number'        => $order->client->phone_number,
+            'direction'           => $order->client->direction,
+            'postal_code'         => $order->client->postal_code,
+            'user_name'           => $order->user ? $order->user->name : null,
             'client_observations' => $clientObservations
         ];
     }
