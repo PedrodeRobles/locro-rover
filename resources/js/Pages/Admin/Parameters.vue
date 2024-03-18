@@ -119,6 +119,8 @@
 import { defineProps } from 'vue';
 import { router } from '@inertiajs/vue3'
 import { ref } from 'vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const props = defineProps({
     year: {
@@ -146,21 +148,24 @@ const form = {
     amount_for_promo: null,
 };
 
-function submit() {
+async function submit() {
     // Realizar una solicitud POST para crear un nuevo registro
-    router.post('/parameters/store', form);
+    await router.post('/parameters/store', form);
+    await toast.success(`Precios definidos con éxito!`, { autoClose: 4000 });
 }
 
-function update() {
+async function update() {
     try {
         // Realizar una solicitud PUT para actualizar el registro existente
         if (confirm(`Editar los parametros tambien actualizara todas las ordenes de este año con los precios y promos que se asignen en esta edición
         ¿Confirmas estos cambios?`)) {
-            router.put(`/parameters/edit/${props.parameter.id}`, form);
+            await router.put(`/parameters/edit/${props.parameter.id}`, form);
+            await toast.success(`Precios editados con éxito!`, { autoClose: 4000 });
         }
         closeEditModal();
     } catch (error) {
         console.error('Error:', error);
+        await toast.error(`Error al editar precios`, { autoClose: 4000 });
     }
 }
 </script>

@@ -23,7 +23,7 @@ leave-class="opacity-100" leave-to-class="opacity-0"
                             </div>
 
                             <div class="flex justify-center">
-                                <form @submit.prevent="submit" class="text-white w-96 p-2 md:p-0">
+                                <form @submit.prevent="submit(client)" class="text-white w-96 p-2 md:p-0">
                                     <div v-if="form.mode == 'create'" class="p-2 border-b border-gray-600">
                                         <h1 class="text-center text-[45px]">Agregar cliente</h1>
                                     </div>
@@ -81,6 +81,8 @@ leave-class="opacity-100" leave-to-class="opacity-0"
 import { reactive } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { defineProps } from 'vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const props = defineProps({
     client: {
@@ -114,19 +116,22 @@ if (props.client) {
     cargarDatosRegistro(props.client);
 }
 
-function submit() {
+async function submit(client) {
     try {
         if (form.mode === 'create') {
             // Realizar una solicitud POST para crear un nuevo registro
-            router.post('/client/create', form);
+            await router.post('/client/create', form);
             props.closeModal();
+            await toast.success(`Cliente creado con éxito!`, { autoClose: 4000 });
         } else if (form.mode === 'edit') {
             // Realizar una solicitud PUT para actualizar el registro existente
-            router.put(`/client/edit/${props.client.id}`, form);
+            await router.put(`/client/edit/${props.client.id}`, form);
             props.closeModal();
+            await toast.success(`Cliente ${client.id} editado con éxito!`, { autoClose: 4000 });
         }
     } catch (error) {
         console.error('Error:', error);
+        await toast.error("Error " + `al editar cliente ${client.id}!`);
     }
 }
 

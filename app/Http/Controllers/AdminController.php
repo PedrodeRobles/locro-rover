@@ -99,7 +99,6 @@ class AdminController extends Controller
             foreach ($orders as $order) {
                 setPriceAccordingToParameters($order);
             }
-            dd("Agregar mensaje de éxito");
         } catch (\Exception $e) {
             info($e);
             return $e->getMessage();

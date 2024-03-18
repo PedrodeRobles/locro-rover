@@ -162,6 +162,8 @@ import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import FormModal from './Modal.vue';
 import axios from 'axios';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 // SEARCH BAR
 const search = ref(null);
@@ -206,11 +208,13 @@ async function destroy (id, name, last_name) {
         } else {
             // Borrar el cliente si no tiene órdenes
             if (confirm(`¿Estás seguro que queres borrar este cliente? ${name} ${last_name}`)) {
-                router.delete(`/client/delete/${id}`);
+                await router.delete(`/client/delete/${id}`);
+                await toast.success(`Cliente ${name} ${last_name} eliminado con éxito!`, { autoClose: 4000 });
             }
         }
     } catch (error) {
         console.error('Error al realizar la operación:', error);
+        await toast.error(`Error al eliminar cliente: ${name} ${last_name}`, { autoClose: 4000 });
     }
 }
 
@@ -222,11 +226,13 @@ async function addOrder(client_id, name, last_name) {
             // Deshabilitar el botón para evitar múltiples clics
             const clientIndex = props.clients.findIndex(client => client.id === client_id);
             props.clients[clientIndex].isAddingOrder = true;
-            router.post(`/client/${client_id}/add-order`);
+            await router.post(`/client/${client_id}/add-order`);
+            await toast.success(`Orden del cliente ${client_id} generada con éxito!`, { autoClose: 4000 });
         }
     } catch (error) {
         console.error('Error al crear orden para el cliente:', error);
-        alert('Error al crear orden para el cliente:', error);
+        await toast.error(`Error al crear orden para el cliente: ${client_id}`, { autoClose: 4000 });
+        await alert('Error al crear orden para el cliente:', error);
     }
 }
 </script>
