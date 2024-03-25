@@ -19,6 +19,12 @@
                 Definir Parametros
             </div>
         </Link>
+
+        <a href="/admin/export-orders" class="flex justify-center text-white">
+            <div class="bg-orange-600 hover:bg-orange-500 rounded-md p-2">
+                Exportar listado de ordenes
+            </div>
+        </a>
     </div>
 </template>
 

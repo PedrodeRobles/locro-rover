@@ -664,8 +664,6 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
 async function updateClient(order_id, index, field, dataToUpdate) {
     try {
       if (dataToUpdate[field] != props.orders[index][field]) {
-        console.log(props.orders[index][field]);
-        console.log(dataToUpdate[field]);
         const response = await axios.put(`/client/${order_id}/edit/${field}`, dataToUpdate);
   
         props.orders[index] = response.data.order;

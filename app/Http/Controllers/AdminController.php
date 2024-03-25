@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrdersExport;
 use App\Models\Parameter;
 use App\Models\Order;
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -103,5 +105,11 @@ class AdminController extends Controller
             info($e);
             return $e->getMessage();
         }
+    }
+
+    public function exportOrders()
+    {
+        $currentYear = Carbon::now()->year;
+        return Excel::download(new OrdersExport, 'ordenes-' . $currentYear . '.xlsx');
     }
 }
