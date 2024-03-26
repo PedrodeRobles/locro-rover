@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Models\Client;
 use App\Models\Parameter;
 use App\Models\Order;
@@ -21,6 +22,8 @@ function setPriceAccordingToParameters(Order $order)
         $order->amount = $currentParameter->unit_price * $order->portions;
         $order->save();
     }
+    $orderController = new OrderController;
+    $orderController->calculateToCollect($order);
 }
 
 function generateOrders()
