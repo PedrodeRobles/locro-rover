@@ -240,15 +240,26 @@ body {
   overflow-y: hidden;
   background-color: #1f2937;
 }
+
 .table-scroll {
   position: relative;
   width: calc(100% - 8px);
   z-index: 1;
   margin: auto;
   overflow: auto;
-  height: 75vh;
   margin-left: 8px;
 }
+@media (max-width: 767px) {
+  .table-scroll {
+  height: 60vh;
+  }
+}
+@media (min-width: 768px) {
+  .table-scroll {
+  height: 75vh;
+  }
+}
+
 .table-scroll table {
   width: 100%;
   min-width: 1280px;
