@@ -246,7 +246,7 @@ body {
   z-index: 1;
   margin: auto;
   overflow: auto;
-  height: 80vh;
+  height: 75vh;
   margin-left: 8px;
 }
 .table-scroll table {
@@ -693,9 +693,9 @@ async function updateClient(order_id, index, field, dataToUpdate) {
 async function destroy(order_id, name, last_name) {
     try {
         if (confirm(`¿Estás seguro que queres borrar la orden de ${name} ${last_name}?`)) {
-            await router.delete(`/order/${order_id}/delete`);
+          await router.delete(`/order/${order_id}/delete`);
+          await toast.success(`Orden de ${name} eliminada con éxito!`);
         }
-        await toast.success(`Orden de ${name} eliminada con éxito!`);
     } catch (error) {
         console.error('Error al realizar la operación:', error);
         await toast.error('Error al eliminar orden!');
