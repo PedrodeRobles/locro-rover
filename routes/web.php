@@ -50,6 +50,7 @@ Route::get('/parameters/{edit?}', [AdminController::class, 'parameters'])->name(
 Route::post('/parameters/store', [AdminController::class, 'storeParameters'])->name('admin.parameters.store');
 Route::put('/parameters/edit/{parameter}', [AdminController::class, 'updateParameters'])->name('admin.parameters.update');
 Route::get('/admin/export-orders', [AdminController::class, 'exportOrders'])->name('admin.export-orders');
+Route::get('/admin/roles', [AdminController::class, 'roles'])->name('admin.roles');
 
 
 Route::middleware([

@@ -8,6 +8,12 @@
             </div>
         </Link>
 
+        <Link :href="route('admin.roles')" class="flex justify-center text-white">
+            <div class="bg-indigo-400 hover:bg-indigo-300 rounded-md p-2">
+                Roles de usuarios
+            </div>
+        </Link>
+
         <Link :href="route('admin.years')" class="flex justify-center text-white">
             <div class="bg-amber-500 hover:bg-amber-400 rounded-md p-2">
                 Gestionar años

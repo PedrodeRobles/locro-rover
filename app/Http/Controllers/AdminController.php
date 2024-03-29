@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Exports\OrdersExport;
 use App\Models\Parameter;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -111,5 +113,23 @@ class AdminController extends Controller
     {
         $currentYear = Carbon::now()->year;
         return Excel::download(new OrdersExport, 'ordenes-' . $currentYear . '.xlsx');
+    }
+
+    public function roles()
+    {
+        $roles = Role::all();
+        $users = User::get()
+            ->map(function($user) {
+                return [
+                    'id'    => $user->id,
+                    'name'  => $user->name,
+                    'roles' => $user->getRoleNames()
+                ];
+            });
+
+        return Inertia::render('Admin/Roles', [
+            'roles' => $roles,
+            'users' => $users,
+        ]);
     }
 }
