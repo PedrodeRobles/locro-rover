@@ -53,7 +53,8 @@ Route::get('/admin/export-orders', [AdminController::class, 'exportOrders'])->na
 Route::get('/admin/roles', [AdminController::class, 'roles'])->name('admin.roles');
 Route::put('/admin/assign_roles/{user_id}/{role_name}', [AdminController::class, 'assignRoles'])->name('admin.assign.roles');
 Route::put('/admin/users/{user_id}/softDelete', [AdminController::class, 'softDelete'])->name('admin.users.soft-delete');
-
+Route::get('/admin/users/softDeleted', [AdminController::class, 'softDeletedUsers'])->name('admin.users.soft-deleted');
+Route::put('/admin/users/{user_id}/rollbackUser', [AdminController::class, 'rollbackUser'])->name('admin.users.rollback-user');
 
 Route::middleware([
     'auth:sanctum',

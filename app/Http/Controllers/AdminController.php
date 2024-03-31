@@ -152,4 +152,27 @@ class AdminController extends Controller
         $user->active = 0;
         $user->save();
     }
+
+    public function softDeletedUsers()
+    {
+        $users = User::where('active', 0)->get()
+        ->map(function($user) {
+            return [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'roles' => $user->getRoleNames()
+            ];
+        });
+
+        return Inertia::render('Admin/SoftDeletedUsers', [
+            'users' => $users,
+        ]);
+    }
+
+    public function rollbackUser($user_id)
+    {
+        $user = User::find($user_id);
+        $user->active = 1;
+        $user->save();
+    }
 }
