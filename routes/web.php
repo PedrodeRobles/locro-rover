@@ -52,6 +52,7 @@ Route::put('/parameters/edit/{parameter}', [AdminController::class, 'updateParam
 Route::get('/admin/export-orders', [AdminController::class, 'exportOrders'])->name('admin.export-orders');
 Route::get('/admin/roles', [AdminController::class, 'roles'])->name('admin.roles');
 Route::put('/admin/assign_roles/{user_id}/{role_name}', [AdminController::class, 'assignRoles'])->name('admin.assign.roles');
+Route::put('/admin/users/{user_id}/softDelete', [AdminController::class, 'softDelete'])->name('admin.users.soft-delete');
 
 
 Route::middleware([

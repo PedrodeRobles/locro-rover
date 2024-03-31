@@ -10,7 +10,7 @@
 
         <Link :href="route('admin.roles')" class="flex justify-center text-white">
             <div class="bg-indigo-400 hover:bg-indigo-300 rounded-md p-2">
-                Roles de usuarios
+                Usuarios/Roles
             </div>
         </Link>
 

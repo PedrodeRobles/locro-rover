@@ -90,7 +90,7 @@
     </div>
 </template>
 
-<style>
+<styles scoped>
 body {
   overflow-y: hidden;
   background-color: #1f2937;
@@ -154,7 +154,7 @@ thead th:nth-child(-n + 3),
 tfoot th:first-child {
   z-index: 5;
 }
-</style>
+</styles>
 
 <script setup>
 import { defineProps } from 'vue';

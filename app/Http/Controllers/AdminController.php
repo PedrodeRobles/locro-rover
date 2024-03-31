@@ -118,7 +118,7 @@ class AdminController extends Controller
     public function roles()
     {
         $roles = Role::all();
-        $users = User::get()
+        $users = User::where('active', 1)->get()
             ->map(function($user) {
                 return [
                     'id'    => $user->id,
@@ -144,5 +144,12 @@ class AdminController extends Controller
             // Si el usuario no tiene el rol asignado, asigna el rol
             $user->assignRole($role);
         }
+    }
+
+    public function softDelete($user_id)
+    {
+        $user = User::find($user_id);
+        $user->active = 0;
+        $user->save();
     }
 }
