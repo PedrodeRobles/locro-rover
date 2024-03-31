@@ -132,4 +132,17 @@ class AdminController extends Controller
             'users' => $users,
         ]);
     }
+
+    public function assignRoles($user_id, $role_name)
+    {
+        $user = User::find($user_id);
+        $role = Role::where('name', $role_name)->first();
+        if ($user->hasRole($role_name)) {
+            // Si el usuario ya tiene el rol asignado, elimina el rol
+            $user->removeRole($role);
+        } else {
+            // Si el usuario no tiene el rol asignado, asigna el rol
+            $user->assignRole($role);
+        }
+    }
 }

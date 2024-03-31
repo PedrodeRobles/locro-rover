@@ -235,7 +235,7 @@
     <FormOrderModal v-if="isFormModalOpen" :closeModal="closeEditModal"/>
 </template>
 
-<style>
+<style scoped>
 body {
   overflow-y: hidden;
   background-color: #1f2937;
