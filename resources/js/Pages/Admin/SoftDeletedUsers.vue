@@ -21,7 +21,7 @@
                     <tr>
                         <th class="px-4 py-2 border border-gray-600">ID</th>
                         <th class="px-4 py-2 border border-gray-600 primary-column">Nombre</th>
-                        <th class="px-4 py-2 border border-gray-600">Recuperar rover</th>
+                        <th class="px-4 py-2 border border-gray-600">Activar/Recuperar rover</th>
                     </tr>
                 </thead>
                 <tbody>
