@@ -75,4 +75,9 @@ class PageController extends Controller
             'user_has_orders' => $userHasOrders
         ]);
     }
+
+    public function guest()
+    {
+        return Inertia::render('Guest'); 
+    }
 }

@@ -9,8 +9,9 @@ use Inertia\Inertia;
 
 Route::redirect('/', 'register');
 Route::redirect('/', 'login');
+Route::get('/guest', [PageController::class, 'guest'])->name('guest');
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth', 'active-user'])->group(function() {
     Route::get('/', [PageController::class, 'home'])->name('list');
     Route::get('/my-list', [PageController::class, 'myList'])->name('my-list');
     Route::put('/order/{order:id}/edit/{field}', [OrderController::class, 'update'])->name('order.update');
