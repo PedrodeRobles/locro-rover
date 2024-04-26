@@ -177,4 +177,11 @@ class OrderController extends Controller
         $order = Order::find($id);
         $order->delete();
     }
+
+    public function assignMeOrder($order_id) {
+        $authUserId = Auth::user()->id;
+        $order = Order::find($order_id);
+        $order->user_id = $authUserId;
+        $order->save();
+    }
 }
