@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Observation;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\Year;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -183,5 +184,19 @@ class OrderController extends Controller
         $order = Order::find($order_id);
         $order->user_id = $authUserId;
         $order->save();
+    }
+
+    public function assignOrders(Request $request)
+    {
+        $orders_id = $request->input('ordersID');
+        $rover_id = $request->input('roverID');
+
+        $orders = Order::whereIn('id', $orders_id)->get();
+        $rover = User::find($rover_id);
+
+        foreach ($orders as $order) {
+            $order->user_id = $rover->id;
+            $order->save();
+        }
     }
 }

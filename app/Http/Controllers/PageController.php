@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Utils\OrderUtils;
 use Carbon\Carbon;
@@ -31,9 +32,12 @@ class PageController extends Controller
             })
         ->sortBy('id');
 
+        $rovers = User::where('active', 1)->get();
+
         return Inertia::render('List',[
             'orders' => $orders,
-            'list_type' => 'general'
+            'list_type' => 'general',
+            'rovers' => $rovers
         ]);
     }
 
