@@ -87,11 +87,14 @@ const form = reactive({
 });
 
 function assign() {
-    console.log(form.rover);
     try {
-        router.put('/order/assignOrders', { ordersID: props.idsTildados, roverID: form.rover.id });
-        props.closeModal();
-        toast.success(`Ordenes asignadas con éxito para ${form.rover.name}!`, { autoClose: 4000 });
+        if(props.idsTildados[0] == undefined) {
+            toast.info(`No hay ordenes seleccionadas. Seleccionalas y vuelve a intentarlo`, { autoClose: 4000 });
+        } else {
+            router.put('/order/assignOrders', { ordersID: props.idsTildados, roverID: form.rover.id });
+            props.closeModal();
+            toast.success(`Ordenes asignadas con éxito para ${form.rover.name}!`, { autoClose: 4000 });
+        }
     } catch (error) {
         console.error('Error:', error);
         toast.error('Error al asignar ordenes masivamente!');

@@ -363,10 +363,10 @@ onMounted(() => {
         });
     });
 
-    boton.value.addEventListener('click', () => {
-        console.log('IDs de los registros con checkbox tildado:', idsTildados);
-        console.log('Nombres de los registros con checkbox tildado:', nombresTildados);
-    });
+    // boton.value.addEventListener('click', () => {
+    //     console.log('IDs de los registros con checkbox tildado:', idsTildados);
+    //     console.log('Nombres de los registros con checkbox tildado:', nombresTildados);
+    // });
 });
 // FIN MOSTRAR BOTÓN DE ASIGNACIÓN MASIVA
 
