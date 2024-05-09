@@ -37,16 +37,16 @@
                 <table id="main-table" class="main-table">
                     <thead class="bg-gray-900">
                         <tr>
-                            <th class="px-4 py-2 border border-gray-600">Rover encargado</th>
+                            <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Ventas de:' : 'Rover encargado' }}</th>
                             <th class="px-4 py-2 border border-gray-600">Nombre</th>
                             <th class="px-4 py-2 border border-gray-600">Apellido</th>
                             <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                             <th class="px-4 py-2 border border-gray-600">Dirección</th>
-                            <th class="px-4 py-2 border border-gray-600">Cod. Postal</th>
-                            <th class="px-4 py-2 border border-gray-600">¿Retira?</th>
-                            <th class="px-4 py-2 border border-gray-600">Cantidad</th>
+                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
+                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">¿Retira?</th>
+                            <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Cant. 1/2 docenas' : 'Cantidad' }}</th>
                             <th class="px-4 py-2 border border-gray-600">Importe</th>
-                            <th class="px-4 py-2 border border-gray-600">Salsas</th>
+                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Salsas</th>
                             <th class="px-4 py-2 border border-gray-600">Observaciones</th>
                             <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
                             <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
@@ -105,7 +105,7 @@
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.postal_code }}</td> -->
-                            <td @click="startEditing(index, 'postal_code')" class="px-4 py-2 border border-gray-600">
+                            <td v-if="!$page.props.pastelitosEvent" @click="startEditing(index, 'postal_code')" class="px-4 py-2 border border-gray-600">
                               <div :id="'postal_code-' + index" :class="{'postal_code': !isEditing(index, 'postal_code'), 'hidden': isEditing(index, 'postal_code') || (loadingPostalCode && loadingPostalCodeIndex === index)}" class="w-16">
                                 {{ order.postal_code }}
                               </div>
@@ -115,7 +115,8 @@
                               </div>
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600">
+                            <!-- Retira -->
+                            <td v-if="!$page.props.pastelitosEvent"  class="px-4 py-2 border border-gray-600">
                               <label :for="'take-away-checkbox-' + order.id" class="mr-2">
                                 {{ order.take_away ? 'SI' : 'NO' }}
                               </label>
@@ -145,7 +146,7 @@
                             <td class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</td>
                             <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
 
-                            <td class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
+                            <td v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
 
                             <td v-if="order.client_observations" @click="editObservation(order)" class="border border-gray-600">
                               <div v-if="editMode && activeOrderId == order.id">

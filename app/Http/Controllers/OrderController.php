@@ -36,7 +36,12 @@ class OrderController extends Controller
             $order->user_id = Auth::user()->id;
         }
         $order->save();
-        setPriceAccordingToParameters($order);
+
+        if (env('APP_EVENTO') == 'pastelitos') {
+            setPriceAccordingToParametersCupcakes($order);
+        } else {
+            setPriceAccordingToParameters($order);
+        }
         $this->setSauceAmount($order);
 
         if($request->observation != null) {
@@ -77,7 +82,11 @@ class OrderController extends Controller
             ]);
 
             if($field == 'portions') {
-                setPriceAccordingToParameters($order);
+                if (env('APP_EVENTO') == 'pastelitos') {
+                    setPriceAccordingToParametersCupcakes($order);
+                } else {
+                    setPriceAccordingToParameters($order);
+                }
                 $this->calculateToCollect($order);
                 $this->setSauceAmount($order);
             }

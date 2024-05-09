@@ -42,3 +42,30 @@ function generateOrders()
         $order->save();
     }
 }
+
+function setPriceAccordingToParametersCupcakes(Order $order)
+{
+    $currentYear = Carbon::now()->year;
+
+    $currentParameter = Parameter::whereHas('year', function ($query) use ($currentYear) {
+        $query->where('year', $currentYear);
+    })->first();
+
+    $isOdd = $order->portions % 2; // 0 es par 1 es impar
+
+    if ($isOdd) {
+        $docenas = floor($order->portions / 2); // 5 / 2 = 2.5 -> 2
+        $precioPorDocenas = $docenas * $currentParameter->promo_unit_price;
+        $precioTotal = $precioPorDocenas + $currentParameter->unit_price;
+        $order->amount = $precioTotal;
+        $order->save();
+    } else {
+        $docenas = $order->portions / 2;
+        $precioPorDocenas = $docenas * $currentParameter->promo_unit_price;
+        $order->amount = $precioPorDocenas;
+        $order->save();
+    }
+
+    $orderController = new OrderController;
+    $orderController->calculateToCollect($order);
+}
