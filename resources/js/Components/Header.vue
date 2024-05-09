@@ -2,7 +2,9 @@
     <div class="fixed w-full">
         <header class="flex items-center justify-between py-2 px-2 md:px-4 md:px-10 bg-red-800 text-white">
             <div class="flex items-center space-x-4 md:space-x-12">
-                <img src="../../img/rover-logo.png" alt="Logo" class="w-10">
+                <!-- <img src="../../img/rover-logo.png" alt="Logo" class="w-10"> -->
+                <img v-if="$page.props.pastelitosEvent" src="../../img/logo-unidad.png" alt="" class="w-12">
+                <img v-else src="../../img/rover-logo.png" alt="" class="w-10">
 
                 <Link :href="route('list')" class="flex items-center bg-gray-800 p-4 md:p-2 rounded-lg cursor-pointer hover:bg-gray-700 space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">

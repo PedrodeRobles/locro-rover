@@ -3,7 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="{{ asset('images/rover-logo.png') }}" type="image/x-icon">
+
+        @if (env('APP_EVENTO') == 'pastelitos')
+            <link rel="shortcut icon" href="{{ asset('images/logo-unidad.png') }}" type="image/x-icon">
+        @else
+            <link rel="shortcut icon" href="{{ asset('images/rover-logo.png') }}" type="image/x-icon">
+        @endif
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->

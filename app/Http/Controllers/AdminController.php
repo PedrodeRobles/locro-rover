@@ -101,7 +101,11 @@ class AdminController extends Controller
             ->get();
     
             foreach ($orders as $order) {
-                setPriceAccordingToParameters($order);
+                if (env('APP_EVENTO') == 'pastelitos') {
+                    setPriceAccordingToParametersCupcakes($order);
+                } else {
+                    setPriceAccordingToParameters($order);
+                }
             }
         } catch (\Exception $e) {
             info($e);
