@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
             'checkAuth'       => auth()->check(),
             'userRoles'       => auth()->check() ? auth()->user()->getRoleNames() : null,
             'pastelitosEvent' => env('APP_EVENTO') == 'pastelitos',
+            'quantitySold' => quantitySold(),
         ]);
     }
 }

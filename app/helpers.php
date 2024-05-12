@@ -69,3 +69,18 @@ function setPriceAccordingToParametersCupcakes(Order $order)
     $orderController = new OrderController;
     $orderController->calculateToCollect($order);
 }
+
+function quantitySold()
+{
+    $currentYear = Carbon::now()->year;
+
+    $countCurrentOrders = Order::whereHas('year', function ($query) use ($currentYear) {
+        $query->where('year', $currentYear);
+    })->count();
+
+    if (env('APP_EVENTO') == 'pastelitos') {
+        $countCurrentOrders = $countCurrentOrders / 2;
+    }
+
+    return $countCurrentOrders;
+}

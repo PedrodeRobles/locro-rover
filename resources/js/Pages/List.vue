@@ -2,7 +2,7 @@
     <div>
         <Header></Header>
 
-        <div class="bg-gray-800 text-white pt-24 md:pt-32">
+        <div class="bg-gray-800 text-white pt-20 md:pt-32">
 
             <div class="pb-2 pl-2 flex justify-between">
               <div class="flex justify-center hidden md:block">
@@ -22,6 +22,9 @@
             </div>
 
             <div class="mb-2 md:hidden space-y-2">
+              <p class="mx-2 text-lime-300">
+                {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+              </p>
               <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
                   <p class="text-xl">Agregar orden</p>
