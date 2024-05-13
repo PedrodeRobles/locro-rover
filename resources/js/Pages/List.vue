@@ -62,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(order, index) in orders" :key="order.id">
+                        <tr v-for="(order, index) in orders" :key="order.id" :class="{'bg-lime-700': order.to_collect === 0 && order.portions > 0, 'bg-red-700': order.to_collect < 0, 'bg-orange-600': order.to_collect > 0 && order.portions > 0}">
                             <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">
                               <div class="w-32 truncate">
                                 {{ order.user_name }}
@@ -246,6 +246,21 @@
                     <img src="../../img/cosas/busqueda-erronea.jpg" alt="Sos ese buscando">
                 </div>
             </div>
+
+            <section class="mt-4 ml-2 md:flex md:space-x-5">
+              <div class="flex items-center space-x-2">
+                <div class="bg-lime-600 w-4 h-4"></div>
+                <p>100% cobrado</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="bg-orange-600 w-4 h-4"></div>
+                <p>Falta cobrar</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="bg-red-600 w-4 h-4"></div>
+                <p>Devolver dinero</p>
+              </div>
+            </section>
         </div>
     </div>
     <FormOrderModal v-if="isFormModalOpen" :closeModal="closeEditModal"/>
@@ -631,7 +646,7 @@ const loadingMP = ref(false);
 const loadingMPIndex = ref(null);
 
 const confirmUpdateMP = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name} ${value ? "SI" : "NO"} paga con mercado pago?`;
+    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name}${value ? "" : " NO"} paga con mercado pago?`;
 
     if (!confirm(confirmationText)) {
       // Si se cancela el confirm, revertir el cambio en el checkbox
