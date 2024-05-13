@@ -2,10 +2,13 @@
     <div>
         <Header></Header>
 
-        <div class="bg-gray-800 text-white pt-20 md:pt-32">
+        <div class="bg-gray-800 text-white pt-20">
+            <p class="mx-2 text-lime-300 mb-2 hidden md:block">
+              {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+            </p>
 
             <div class="pb-2 pl-2 flex justify-between">
-              <div class="flex justify-center hidden md:block">
+              <div class="hidden md:block">
                 <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
               </div>
               <div class="flex">

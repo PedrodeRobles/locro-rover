@@ -76,7 +76,7 @@ function quantitySold()
 
     $countCurrentOrders = Order::whereHas('year', function ($query) use ($currentYear) {
         $query->where('year', $currentYear);
-    })->count();
+    })->sum('portions');
 
     if (env('APP_EVENTO') == 'pastelitos') {
         $countCurrentOrders = $countCurrentOrders / 2;
