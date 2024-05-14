@@ -3,6 +3,7 @@
         <Header></Header>
 
         <div class="bg-gray-800 text-white pt-20">
+
             <p class="mx-2 text-lime-300 mb-2 hidden md:block">
               {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
             </p>
@@ -28,9 +29,16 @@
               <p class="mx-2 text-lime-300">
                 {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
               </p>
-              <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
-                  <p class="text-xl">Agregar orden</p>
+              <div class="grid grid-cols-6 items-center gap-1">
+                <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2 col-span-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
+                    <p class="text-xl">Agregar orden</p>
+                </div>
+                <div class="col-span-1">
+                  <button class="bg-blue-500 p-2 rounded-md" @click="openColumnModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><path fill="#ffffff" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5zM1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5H5V1zM10 15V1H6v14zm1 0h3.5a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H11z"/></svg>
+                  </button>
+                </div>
               </div>
               <button id="boton" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 ml-2 animate__animated animate__fadeIn">
                 Asignar ordenes masivamente
@@ -39,6 +47,7 @@
                   <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
               </div>
             </div>
+
             <div  id="table-scroll" class="table-scroll" >
                 <table id="main-table" class="main-table">
                     <thead class="bg-gray-900">
@@ -46,18 +55,20 @@
                             <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Ventas de:' : 'Rover encargado' }}</th>
                             <th class="px-4 py-2 border border-gray-600">Nombre</th>
                             <th class="px-4 py-2 border border-gray-600">Apellido</th>
-                            <th class="px-4 py-2 border border-gray-600">Teléfono</th>
-                            <th class="px-4 py-2 border border-gray-600">Dirección</th>
-                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
-                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">¿Retira?</th>
-                            <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Cant. 1/2 docenas' : 'Cantidad' }}</th>
-                            <th class="px-4 py-2 border border-gray-600">Importe</th>
-                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Salsas</th>
-                            <th class="px-4 py-2 border border-gray-600">Observaciones</th>
-                            <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
-                            <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
-                            <th class="px-4 py-2 border border-gray-600">A cobrar</th>
-                            <th class="px-4 py-2 border border-gray-600">MP</th>
+                            <th v-if="columnStates ? columnStates.phone : true" class="px-4 py-2 border border-gray-600">Teléfono</th>
+                            <th v-if="columnStates ? columnStates.direction : true" class="px-4 py-2 border border-gray-600">Dirección</th>
+                            <th v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.postal_code : true)" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
+                            <th v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.take_away : true)" class="px-4 py-2 border border-gray-600">¿Retira?</th>
+                            <th v-if="columnStates ? columnStates.portions : true" class="px-4 py-2 border border-gray-600">
+                              {{ $page.props.pastelitosEvent ? 'Cant. 1/2 docenas' : 'Cantidad' }}
+                            </th>
+                            <th v-if="columnStates ? columnStates.amount : true" class="px-4 py-2 border border-gray-600">Importe</th>
+                            <th v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.sauces : true)" class="px-4 py-2 border border-gray-600">Salsas</th>
+                            <th v-if="columnStates ? columnStates.observations : true" class="px-4 py-2 border border-gray-600">Observaciones</th>
+                            <th v-if="columnStates ? columnStates.last_edition : true" class="px-4 py-2 border border-gray-600">Últ. edición</th>
+                            <th v-if="columnStates ? columnStates.money_collected : true" class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
+                            <th v-if="columnStates ? columnStates.to_pay : true" class="px-4 py-2 border border-gray-600">A cobrar</th>
+                            <th v-if="columnStates ? columnStates.mp : true" class="px-4 py-2 border border-gray-600">MP</th>
                             <th class="px-4 py-2 border border-gray-600" style="z-index: 10;">Acciones</th>
                         </tr>
                     </thead>
@@ -90,7 +101,7 @@
                               </div>
                             </td>
 
-                            <td @click="startEditing(index, 'phone_number')" class="px-4 py-2 border border-gray-600">
+                            <td @click="startEditing(index, 'phone_number')" v-if="columnStates ? columnStates.phone : true" class="px-4 py-2 border border-gray-600">
                               <div :id="'phone_number-' + index" :class="{'phone_number': !isEditing(index, 'phone_number'), 'hidden': isEditing(index, 'phone_number') || (loadingPhoneNumber && loadingPhoneNumberIndex === index)}" class="w-32">
                                 {{ order.phone_number }}
                               </div>
@@ -100,7 +111,7 @@
                               </div>
                             </td>
 
-                            <td @click="startEditing(index, 'direction')" class="px-4 py-2 border border-gray-600">
+                            <td @click="startEditing(index, 'direction')" v-if="columnStates ? columnStates.direction : true" class="px-4 py-2 border border-gray-600">
                               <div :id="'direction-' + index" :class="{'direction': !isEditing(index, 'direction'), 'hidden': isEditing(index, 'direction') || (loadingDirection && loadingDirectionIndex === index)}" class="w-32 md:w-44">
                                 {{ order.direction }}
                               </div>
@@ -111,7 +122,7 @@
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.postal_code }}</td> -->
-                            <td v-if="!$page.props.pastelitosEvent" @click="startEditing(index, 'postal_code')" class="px-4 py-2 border border-gray-600">
+                            <td v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.postal_code : true)" @click="startEditing(index, 'postal_code')" class="px-4 py-2 border border-gray-600">
                               <div :id="'postal_code-' + index" :class="{'postal_code': !isEditing(index, 'postal_code'), 'hidden': isEditing(index, 'postal_code') || (loadingPostalCode && loadingPostalCodeIndex === index)}" class="w-16">
                                 {{ order.postal_code }}
                               </div>
@@ -122,7 +133,7 @@
                             </td>
 
                             <!-- Retira -->
-                            <td v-if="!$page.props.pastelitosEvent"  class="px-4 py-2 border border-gray-600">
+                            <td v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.take_away : true)"  class="px-4 py-2 border border-gray-600">
                               <label :for="'take-away-checkbox-' + order.id" class="mr-2">
                                 {{ order.take_away ? 'SI' : 'NO' }}
                               </label>
@@ -139,7 +150,7 @@
                             </td>
 
                             <!-- <td class="px-4 py-2 border border-gray-600">{{ order.portions }}</td> -->
-                            <td @click="startEditing(index, 'portions')" class="px-4 py-2 border border-gray-600">
+                            <td @click="startEditing(index, 'portions')" v-if="columnStates ? columnStates.portions : true" class="px-4 py-2 border border-gray-600">
                               <div :id="'portion-' + index" :class="{'portion': !isEditing(index, 'portions'), 'hidden': isEditing(index, 'portions') || (loading && loadingIndex === index)}">
                                 {{ order.portions }}
                               </div>
@@ -149,12 +160,12 @@
                               </div>
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</td>
-                            <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
+                            <td class="px-4 py-2 border border-gray-600" v-if="order.amount && (columnStates ? columnStates.amount : true)">{{ '$' + order.amount }}</td>
+                            <td class="px-4 py-2 border border-gray-600" v-else-if="order.user_id && (columnStates ? columnStates.amount : true)">-</td>
 
-                            <td v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
+                            <td v-if="!$page.props.pastelitosEvent && (columnStates ? columnStates.sauces : true)" class="px-4 py-2 border border-gray-600">{{ order.sauces }}</td>
 
-                            <td v-if="order.client_observations" @click="editObservation(order)" class="border border-gray-600">
+                            <td v-if="order.client_observations && (columnStates ? columnStates.observations : true)" @click="editObservation(order)" class="border border-gray-600">
                               <div v-if="editMode && activeOrderId == order.id">
                                 <input v-model="newObservation" v-show="!loadingObservation" @blur="saveObservation(order.id, index)" class="text-black placeholder-gray-300" placeholder="Observación..."/>
                                 <div v-if="loadingObservation">
@@ -174,10 +185,9 @@
                                 </div> 
                               </div>
                             </td>
-                            <td v-else class="px-4 py-2 border border-gray-600">-</td>
+                            <td v-else-if="columnStates.observations" class="px-4 py-2 border border-gray-600">-</td>
 
-
-                            <td class="px-4 py-2 border border-gray-600">
+                            <td class="px-4 py-2 border border-gray-600" v-if="columnStates ? columnStates.last_edition : true">
                               <div class="w-20 overflow-x-auto">
                                 {{ order.updated_at }}   
                               </div>
@@ -186,7 +196,7 @@
                               </div>
                             </td>
 
-                            <td @click="startEditing(index, 'money_collected')" class="px-4 py-2 border border-gray-600">
+                            <td @click="startEditing(index, 'money_collected')" v-if="columnStates ? columnStates.money_collected : true" class="px-4 py-2 border border-gray-600">
                               <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
                                 ${{ order.money_collected }}
                               </div>
@@ -196,9 +206,9 @@
                               </div>
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
+                            <td class="px-4 py-2 border border-gray-600" v-if="columnStates ? columnStates.to_pay : true">${{ order.to_collect }}</td>
 
-                            <td class="px-4 py-2 border border-gray-600">
+                            <td class="px-4 py-2 border border-gray-600" v-if="columnStates ? columnStates.mp : true">
                               <label :for="'mp-checkbox-' + order.id" class="mr-2">
                                 {{ order.mp ? 'SI' : 'NO' }}
                               </label>
@@ -265,6 +275,7 @@
     </div>
     <FormOrderModal v-if="isFormModalOpen" :closeModal="closeEditModal"/>
     <AssignOrderModal v-if="isAssignModalOpen" :closeModal="closeAssignModal" :rovers="rovers" :idsTildados="idsTildados" :nombresTildados="nombresTildados"/>
+    <ColumnsModal v-if="isColumnModalOpen" @update:columnStates="columnStates = $event"  :closeModal="closeColumnModal"/>
 </template>
 
 <style scoped>
@@ -348,6 +359,7 @@ import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import FormOrderModal from './NewOrder.vue';
 import AssignOrderModal from './AssignOrderModal.vue';
+import ColumnsModal from './ColumnsModal.vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import 'animate.css';
@@ -384,13 +396,19 @@ onMounted(() => {
             }
         });
     });
-
-    // boton.value.addEventListener('click', () => {
-    //     console.log('IDs de los registros con checkbox tildado:', idsTildados);
-    //     console.log('Nombres de los registros con checkbox tildado:', nombresTildados);
-    // });
 });
 // FIN MOSTRAR BOTÓN DE ASIGNACIÓN MASIVA
+
+// MODAL COLUMNAS
+const isColumnModalOpen = ref(false);
+
+const openColumnModal = () => {
+    isColumnModalOpen.value = true;
+};
+const closeColumnModal = () => {
+    isColumnModalOpen.value = false;
+};
+// FIN MODAL COLUMNAS
 
 // MODAL 
 const isAssignModalOpen = ref(false);
