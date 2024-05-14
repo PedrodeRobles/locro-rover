@@ -56,7 +56,9 @@
                                             <h2 class="text-xl text-gray-400 p-2">Orden:</h2>
                                             <div class="space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
                                                 <div class="space-x-2">
-                                                    <label for="" class="text-">Cantidad*:</label>
+                                                    <label for="" class="text-">
+                                                        {{ $page.props.pastelitosEvent ? '1/2 docenas:*' : 'Porciones*:' }}
+                                                    </label>
                                                     <input required type="number" placeholder="Ingrese cantidad" class="bg-gray-900" v-model="form.portions">
                                                 </div>
                                                 <div class="space-x-2">
