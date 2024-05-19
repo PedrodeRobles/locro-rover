@@ -14,6 +14,7 @@ class Order extends Model
         'year_id',
         'user_id',
         'portions',
+        'batata',
         'take_away',
         'sauces',
         'amount',

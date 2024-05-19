@@ -57,9 +57,15 @@
                                             <div class="space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
                                                 <div class="space-x-2">
                                                     <label for="" class="text-">
-                                                        {{ $page.props.pastelitosEvent ? '1/2 docenas:*' : 'Porciones*:' }}
+                                                        {{ $page.props.pastelitosEvent ? '1/2 membrillo:' : 'Porciones:' }}
                                                     </label>
-                                                    <input required type="number" placeholder="Ingrese cantidad" class="bg-gray-900" v-model="form.portions">
+                                                    <input type="number" placeholder="Ingrese cantidad" class="bg-gray-900" v-model="form.portions">
+                                                </div>
+                                                <div class="space-x-2" v-if="$page.props.pastelitosEvent">
+                                                    <label for="" class="text-">
+                                                        1/2 Batata:
+                                                    </label>
+                                                    <input type="number" placeholder="Ingrese cantidad" class="bg-gray-900" v-model="form.batata">
                                                 </div>
                                                 <div class="space-x-2">
                                                     <label for="">¿Retira?:</label>
@@ -109,6 +115,7 @@ const form = reactive({
     direction: null,
     postal_code: null,
     portions: null,
+    batata: null,
     take_away: null,
     observation: null,
     assign_order: true

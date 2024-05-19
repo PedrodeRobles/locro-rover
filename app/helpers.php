@@ -51,16 +51,16 @@ function setPriceAccordingToParametersCupcakes(Order $order)
         $query->where('year', $currentYear);
     })->first();
 
-    $isOdd = $order->portions % 2; // 0 es par 1 es impar
+    $isOdd = ($order->portions + $order->batata) % 2; // 0 es par 1 es impar
 
     if ($isOdd) {
-        $docenas = floor($order->portions / 2); // 5 / 2 = 2.5 -> 2
+        $docenas = floor(($order->portions + $order->batata) / 2); // 5 / 2 = 2.5 -> 2
         $precioPorDocenas = $docenas * $currentParameter->promo_unit_price;
         $precioTotal = $precioPorDocenas + $currentParameter->unit_price;
         $order->amount = $precioTotal;
         $order->save();
     } else {
-        $docenas = $order->portions / 2;
+        $docenas = ($order->portions + $order->batata) / 2;
         $precioPorDocenas = $docenas * $currentParameter->promo_unit_price;
         $order->amount = $precioPorDocenas;
         $order->save();
@@ -76,11 +76,16 @@ function quantitySold()
 
     $countCurrentOrders = Order::whereHas('year', function ($query) use ($currentYear) {
         $query->where('year', $currentYear);
-    })->sum('portions');
+    })->select('portions', 'batata')  // Seleccionar solo las columnas necesarias
+    ->get();
+
+    $totalSum = $countCurrentOrders->sum(function($order) {
+        return $order->portions + $order->batata;  // Sumar las columnas seleccionadas
+    });
 
     if (env('APP_EVENTO') == 'pastelitos') {
-        $countCurrentOrders = $countCurrentOrders / 2;
+        $totalSum = $totalSum / 2;
     }
 
-    return $countCurrentOrders;
+    return $totalSum;
 }

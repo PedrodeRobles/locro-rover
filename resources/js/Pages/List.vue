@@ -6,12 +6,14 @@
             <p class="mx-2 text-lime-300 mb-2 hidden md:block">
               {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
             </p>
-
             <div class="pb-2 pl-2 flex justify-between">
               <div class="hidden md:block">
                 <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
               </div>
-              <div class="flex">
+              <div class="flex items-center">
+                <p class="mx-2 text-lime-300 hidden md:block" v-if="$page.props.pastelitosEvent">
+                  M:{{ totalPortions  }} B:{{ totalBatata }}
+                </p>
                 <div class="hidden md:block">
                   <button id="boton-desk" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 cursor-pointer text-xl animate__animated animate__fadeIn">
                     Asignar ordenes masivamente
@@ -27,6 +29,9 @@
             <div class="mb-2 md:hidden space-y-2">
               <p class="mx-2 text-lime-300">
                 {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+              </p>
+              <p class="mx-2 text-lime-300" v-if="$page.props.pastelitosEvent">
+                DM: {{ totalPortions  }} DB: {{ totalBatata }}
               </p>
               <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
@@ -50,7 +55,9 @@
                             <th class="px-4 py-2 border border-gray-600">Dirección</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">¿Retira?</th>
-                            <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Cant. 1/2 docenas' : 'Cantidad' }}</th>
+                            <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? '1/2 Membrillo' : 'Cantidad' }}</th>
+                            <th v-if="$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">1/2 Batata</th>
+                            <th v-if="$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Docenas</th>
                             <th class="px-4 py-2 border border-gray-600">Importe</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Salsas</th>
                             <th class="px-4 py-2 border border-gray-600">Observaciones</th>
@@ -143,11 +150,23 @@
                               <div :id="'portion-' + index" :class="{'portion': !isEditing(index, 'portions'), 'hidden': isEditing(index, 'portions') || (loading && loadingIndex === index)}">
                                 {{ order.portions }}
                               </div>
-                              <input v-show="isEditing(index, 'portions')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions', order)" @keydown.enter="stopEditing(index, 'portions', order)" class="text-black w-full">
+                              <input v-show="isEditing(index, 'portions')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'portions', order)" @keydown.enter="stopEditing(index, 'portions', order)" class="text-black w-[80px]">
                               <div v-if="loading && loadingIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
                             </td>
+
+                            <td @click="startEditing(index, 'batata')" class="px-4 py-2 border border-gray-600" v-if="$page.props.pastelitosEvent">
+                              <div :id="'portion-' + index" :class="{'portion': !isEditing(index, 'batata'), 'hidden': isEditing(index, 'batata') || (loading && loadingIndex === index)}">
+                                {{ order.batata }}
+                              </div>
+                              <input v-show="isEditing(index, 'batata')" type="number" v-model="editedNumber" @blur="stopEditing(index, 'batata', order)" @keydown.enter="stopEditing(index, 'batata', order)" class="text-black w-[80px]">
+                              <div v-if="loading && loadingIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
+                            <td class="px-4 py-2 border border-gray-600 bg-indigo-500" v-if="$page.props.pastelitosEvent">{{ (order.portions + order.batata) / 2 }}</td>
 
                             <td class="px-4 py-2 border border-gray-600" v-if="order.amount">{{ '$' + order.amount }}</td>
                             <td class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</td>
@@ -343,7 +362,7 @@ tfoot th:first-child {
 
 <script setup>
 import { defineProps } from 'vue';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import FormOrderModal from './NewOrder.vue';
@@ -391,6 +410,18 @@ onMounted(() => {
     // });
 });
 // FIN MOSTRAR BOTÓN DE ASIGNACIÓN MASIVA
+
+// Calcular la suma de portions
+const totalPortions = computed(() => {
+  const sum = props.orders.reduce((sum, order) => sum + order.portions, 0);
+  return sum / 2;
+});
+
+// Calcular la suma de batata
+const totalBatata = computed(() => {
+  const sum = props.orders.reduce((sum, order) => sum + order.batata, 0);
+  return sum / 2;
+});
 
 // MODAL 
 const isAssignModalOpen = ref(false);
@@ -701,6 +732,11 @@ const startEditing = (index, field) => {
 
 const stopEditing = (index, field, order) => {
   if (field == 'portions') {
+    updatePortions(order.id, index, field);
+    editingIndex.value = null;
+  }
+
+  if (field == 'batata') {
     updatePortions(order.id, index, field);
     editingIndex.value = null;
   }

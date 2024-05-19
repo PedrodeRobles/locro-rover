@@ -30,6 +30,7 @@ class OrderController extends Controller
         $order = new Order;
         $order->client_id = $client->id;
         $order->portions = $request->portions;
+        $order->batata = $request->batata;
         $order->take_away = $request->take_away;
         $order->year_id = $getCurrentYear->id;
         if ($request->assign_order) {
@@ -57,7 +58,7 @@ class OrderController extends Controller
     public function update(Request $request, $id, $field)
     {
         $columnName = null;
-        if ($field == 'portions') {
+        if ($field == 'portions' || $field == 'batata') {
             $columnName = 'cantidades';
         }
         if ($field == 'take_away') {
@@ -73,7 +74,6 @@ class OrderController extends Controller
         }
 
         $order = Order::find($id);
-
         // Si hay diferencias entre la columna de mi orden y el dato que quiero entonces efectuo el cambio
         if ($order->$field != $request->input($field)) {
             $order->update([
@@ -81,7 +81,7 @@ class OrderController extends Controller
                 'last_edition' => Auth::user()->name . ' -Actualizo ' . $columnName . '-',
             ]);
 
-            if($field == 'portions') {
+            if($field == 'portions' || $field == 'batata') {
                 if (env('APP_EVENTO') == 'pastelitos') {
                     setPriceAccordingToParametersCupcakes($order);
                 } else {
