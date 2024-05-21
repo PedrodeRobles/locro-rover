@@ -31,7 +31,7 @@
                 {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
               </p>
               <p class="mx-2 text-lime-300" v-if="$page.props.pastelitosEvent">
-                DM: {{ totalPortions  }} DB: {{ totalBatata }}
+                M: {{ totalPortions  }} B: {{ totalBatata }}
               </p>
               <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
@@ -69,7 +69,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(order, index) in orders" :key="order.id" :class="{'bg-lime-700': order.to_collect === 0 && order.portions > 0, 'bg-red-700': order.to_collect < 0, 'bg-orange-600': order.to_collect > 0 && order.portions > 0}">
+                        <tr v-for="(order, index) in orders" :key="order.id" :class="{'bg-lime-700': order.to_collect === 0 && (order.portions > 0 || order.batata > 0), 'bg-red-700': order.to_collect < 0, 'bg-orange-600': order.to_collect > 0 && (order.portions > 0 || order.batata > 0)}">
                             <th class="px-4 py-2 border border-gray-600" v-if="order.user_id">
                               <div class="w-32 truncate">
                                 {{ order.user_name }}

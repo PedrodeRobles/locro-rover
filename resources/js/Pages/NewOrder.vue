@@ -39,11 +39,11 @@
                                                     <input required type="text" placeholder="Ingrese apellido" class="bg-gray-900" v-model="form.last_name" >
                                                 </div>
                                                 <div class="space-x-2">
-                                                    <label for="">Telefono*:</label>
-                                                    <input required type="number" placeholder="Ingrese telefono" class="bg-gray-900" v-model="form.phone_number" >
+                                                    <label for="">Telefono:</label>
+                                                    <input type="number" placeholder="Ingrese telefono" class="bg-gray-900" v-model="form.phone_number" >
                                                 </div>
                                                 <div class="space-x-2">
-                                                    <label for="">Dirección*:</label>
+                                                    <label for="">Dirección:</label>
                                                     <input type="text" placeholder="Ingrese dirección" class="bg-gray-900" v-model="form.direction" >
                                                 </div>
                                                 <div class="space-x-2">
@@ -118,7 +118,7 @@ const form = reactive({
     batata: null,
     take_away: null,
     observation: null,
-    assign_order: true
+    assign_order: false
 });
 
 async function submit() {

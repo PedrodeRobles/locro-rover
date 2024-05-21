@@ -26,6 +26,11 @@ class PageController extends Controller
                         ->orWhere('name', 'LIKE', "%$request->search%");
                 });
             })
+            ->orWhereHas('user', function($query) use ($request) {
+                $query->where(function ($q) use ($request) {
+                    $q->where('name', 'LIKE', "%$request->search%");
+                });
+            })
             ->select('orders.*') // Seleccionamos todos los campos de la tabla orders
             ->orderByRaw(
                 "(SELECT last_name FROM clients WHERE clients.id = orders.client_id) ASC"
@@ -34,9 +39,8 @@ class PageController extends Controller
             ->map(function($order) {
                 return OrderUtils::getOrderArray($order);
             });
-        // ->sortBy('id');
 
-        $rovers = User::where('active', 1)->get();
+        $rovers = User::where('active', 1)->orderBy('name')->get();
 
         return Inertia::render('List',[
             'orders' => $orders,
