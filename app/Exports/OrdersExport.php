@@ -23,6 +23,9 @@ class OrdersExport implements FromView
             'orders' => Order::where('year_id', $getCurrentYear->id)
                             ->with('user')
                             ->with('client')
+                            ->orderByRaw(
+                                "(SELECT last_name FROM clients WHERE clients.id = orders.client_id) ASC"
+                            )
                             ->get(),
             'getCurrentYear' => $getCurrentYear,
             'getPrevioustYear' => $getPrevioustYear ? $getPrevioustYear : null,
