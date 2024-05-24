@@ -5,6 +5,7 @@
         <div class="bg-gray-800 text-white pt-20">
             <p class="mx-2 text-lime-300 mb-2 hidden md:block">
               {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+              <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
             </p>
             <div class="pb-2 pl-2 flex justify-between">
               <div class="hidden md:block">
@@ -13,6 +14,9 @@
               <div class="flex items-center">
                 <p class="mx-2 text-lime-300 hidden md:block" v-if="$page.props.pastelitosEvent">
                   M:{{ totalPortions  }} B:{{ totalBatata }}
+                </p>
+                <p class="mx-2 text-lime-300 hidden md:block">
+                  Ventas: ${{ totalSalesMoney }} Recaudado: ${{ totalMoneyCollected }}
                 </p>
                 <div class="hidden md:block">
                   <button id="boton-desk" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 cursor-pointer text-xl animate__animated animate__fadeIn">
@@ -29,9 +33,13 @@
             <div class="mb-2 md:hidden space-y-2">
               <p class="mx-2 text-lime-300">
                 {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+                <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
               </p>
               <p class="mx-2 text-lime-300" v-if="$page.props.pastelitosEvent">
                 M: {{ totalPortions  }} B: {{ totalBatata }}
+              </p>
+              <p class="mx-2 text-lime-300">
+                Ventas: ${{ totalSalesMoney }} Recaudado: ${{ totalMoneyCollected }}
               </p>
               <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
@@ -421,6 +429,24 @@ const totalPortions = computed(() => {
 const totalBatata = computed(() => {
   const sum = props.orders.reduce((sum, order) => sum + order.batata, 0);
   return sum / 2;
+});
+
+// Calcular la suma del dinero total de ventas
+const totalSalesMoney = computed(() => {
+  const sum = props.orders.reduce((sum, order) => sum + order.amount, 0);
+  return sum;
+});
+
+// Calcular la suma del dinero total del dinero cobrado
+const totalMoneyCollected = computed(() => {
+  const sum = props.orders.reduce((sum, order) => sum + order.money_collected, 0);
+  return sum;
+});
+
+// Calcular la suma total de salsas
+const totalSauces = computed(() => {
+  const sum = props.orders.reduce((sum, order) => sum + order.sauces, 0);
+  return sum;
 });
 
 // MODAL 
