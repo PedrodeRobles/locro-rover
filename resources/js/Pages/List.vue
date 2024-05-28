@@ -378,94 +378,8 @@ import AssignOrderModal from './AssignOrderModal.vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import 'animate.css';
-
-// MOSTRAR BOTÓN DE ASIGNACIÓN MASIVA
-const checkboxes = ref([]);
-const boton = ref(null);
-const boton_desk = ref(null);
-let idsTildados = [];
-let nombresTildados = [];
-
-onMounted(() => {
-    checkboxes.value = document.querySelectorAll('.checkbox');
-    boton.value = document.getElementById('boton');
-    boton_desk.value = document.getElementById('boton-desk');
-
-    checkboxes.value.forEach((checkbox, index) => {
-        checkbox.addEventListener('change', () => {
-            // Verificar si al menos un checkbox está marcado
-            const alMenosUnoMarcado = [...checkboxes.value].some(checkbox => checkbox.checked);
-
-            // Mostrar u ocultar el botón según el resultado
-            if (alMenosUnoMarcado) {
-                boton.value.classList.remove('hidden');
-                boton_desk.value.classList.remove('hidden');
-            } else {
-                boton.value.classList.add('hidden');
-                boton_desk.value.classList.add('hidden');
-            }
-
-            if (checkbox.checked) {
-                idsTildados.push(props.orders[index].id);
-                nombresTildados.push(props.orders[index].name + " " + props.orders[index].last_name );
-            }
-        });
-    });
-
-    // boton.value.addEventListener('click', () => {
-    //     console.log('IDs de los registros con checkbox tildado:', idsTildados);
-    //     console.log('Nombres de los registros con checkbox tildado:', nombresTildados);
-    // });
-});
-// FIN MOSTRAR BOTÓN DE ASIGNACIÓN MASIVA
-
-// Calcular la suma de portions
-const totalPortions = computed(() => {
-  const sum = props.orders.reduce((sum, order) => sum + order.portions, 0);
-  return sum / 2;
-});
-
-// Calcular la suma de batata
-const totalBatata = computed(() => {
-  const sum = props.orders.reduce((sum, order) => sum + order.batata, 0);
-  return sum / 2;
-});
-
-// Calcular la suma del dinero total de ventas
-const totalSalesMoney = computed(() => {
-  const sum = props.orders.reduce((sum, order) => sum + order.amount, 0);
-  return sum;
-});
-
-// Calcular la suma del dinero total del dinero cobrado
-const totalMoneyCollected = computed(() => {
-  const sum = props.orders.reduce((sum, order) => sum + order.money_collected, 0);
-  return sum;
-});
-
-// Calcular la suma total de salsas
-const totalSauces = computed(() => {
-  const sum = props.orders.reduce((sum, order) => sum + order.sauces, 0);
-  return sum;
-});
-
-// MODAL 
-const isAssignModalOpen = ref(false);
-
-const openAssignModal = () => {
-    isAssignModalOpen.value = true;
-};
-const closeAssignModal = () => {
-    isAssignModalOpen.value = false;
-    idsTildados = [];
-    nombresTildados = [];
-
-    // Destildar todos los checkboxes
-    checkboxes.value.forEach((checkbox) => {
-      checkbox.checked = false;
-    });
-};
-// FIN MODAL
+import { acountants } from '../composables/accountants';
+import { useMassAssignButton  } from '../composables/useMassAssignButton';
 
 const props = defineProps({
     orders: {
@@ -478,6 +392,25 @@ const props = defineProps({
     list_type: String,
     user_has_orders: Boolean
 });
+
+const {
+      totalPortions,
+      totalBatata,
+      totalSalesMoney,
+      totalMoneyCollected,
+      totalSauces
+    } = acountants(props);
+
+const {
+  checkboxes,
+  boton,
+  boton_desk,
+  isAssignModalOpen,
+  openAssignModal,
+  closeAssignModal,
+  idsTildados,
+  nombresTildados
+} = useMassAssignButton(props.orders);
 
 // BUSCAR ORDENES
 const search = ref(null);
