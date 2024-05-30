@@ -57,8 +57,8 @@
                     <thead class="bg-gray-900">
                         <tr>
                             <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? 'Ventas de:' : 'Rover encargado' }}</th>
-                            <th class="px-4 py-2 border border-gray-600">Nombre</th>
                             <th class="px-4 py-2 border border-gray-600">Apellido</th>
+                            <th class="px-4 py-2 border border-gray-600">Nombre</th>
                             <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                             <th class="px-4 py-2 border border-gray-600">Dirección</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
@@ -69,10 +69,10 @@
                             <th class="px-4 py-2 border border-gray-600">Importe</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Salsas</th>
                             <th class="px-4 py-2 border border-gray-600">Observaciones</th>
-                            <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
-                            <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
                             <th class="px-4 py-2 border border-gray-600">A cobrar</th>
                             <th class="px-4 py-2 border border-gray-600">MP</th>
+                            <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
+                            <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
                             <th class="px-4 py-2 border border-gray-600" style="z-index: 10;">Acciones</th>
                         </tr>
                     </thead>
@@ -85,22 +85,22 @@
                             </th>
                             <th class="px-4 py-2 border border-gray-600" v-else="order.user_id">-</th>
 
-                            <td @click="startEditing(index, 'name')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'name-' + index" :class="{'name': !isEditing(index, 'name'), 'hidden': isEditing(index, 'name') || (loadingName && loadingNameIndex === index)}">
-                                {{ order.name }}
-                              </div>
-                              <input v-show="isEditing(index, 'name')" type="text" v-model="editedName" @blur="stopEditing(index, 'name', order)" @keydown.enter="stopEditing(index, 'name', order)" class="text-black w-full">
-                              <div v-if="loadingName && loadingNameIndex === index">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
-                              </div>
-                            </td>
-
                             <td @click="startEditing(index, 'last_name')" class="px-4 py-2 border border-gray-600">
                               <div :id="'last_name-' + index" :class="{'last_name': !isEditing(index, 'last_name'), 'hidden': isEditing(index, 'last_name') || (loadingLastName && loadingLastNameIndex === index)}" class="w-[128px]">
                                 {{ order.last_name }}
                               </div>
                               <input v-show="isEditing(index, 'last_name')" type="text" v-model="editedLastName" @blur="stopEditing(index, 'last_name', order)" @keydown.enter="stopEditing(index, 'last_name', order)" class="text-black w-full">
                               <div v-if="loadingLastName && loadingLastNameIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
+                            <td @click="startEditing(index, 'name')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'name-' + index" :class="{'name': !isEditing(index, 'name'), 'hidden': isEditing(index, 'name') || (loadingName && loadingNameIndex === index)}" class="w-[128px]">
+                                {{ order.name }}
+                              </div>
+                              <input v-show="isEditing(index, 'name')" type="text" v-model="editedName" @blur="stopEditing(index, 'name', order)" @keydown.enter="stopEditing(index, 'name', order)" class="text-black w-full">
+                              <div v-if="loadingName && loadingNameIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
                             </td>
@@ -203,16 +203,6 @@
                             </td>
                             <td v-else class="px-4 py-2 border border-gray-600">-</td>
 
-
-                            <td class="px-4 py-2 border border-gray-600">
-                              <div class="w-20 overflow-x-auto">
-                                {{ order.updated_at }}   
-                              </div>
-                              <div>
-                                {{ order.last_edition }} 
-                              </div>
-                            </td>
-
                             <td @click="startEditing(index, 'money_collected')" class="px-4 py-2 border border-gray-600">
                               <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
                                 ${{ order.money_collected }}
@@ -222,8 +212,6 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>
                             </td>
-
-                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
 
                             <td class="px-4 py-2 border border-gray-600">
                               <label :for="'mp-checkbox-' + order.id" class="mr-2">
@@ -240,6 +228,18 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>                    
                             </td>
+
+                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
+
+                            <td class="px-4 py-2 border border-gray-600">
+                              <div class="w-20 overflow-x-auto">
+                                {{ order.updated_at }}   
+                              </div>
+                              <div>
+                                {{ order.last_edition }} 
+                              </div>
+                            </td>
+
                             <td class="border border-gray-600">
                               <td class="border border-gray-600" v-if="$page.props.userRoles.includes('Admin', 'Logistica') || $page.props.userRoles.includes('Logistica')">
                                 <!-- <input type="checkbox" class="checkbox w-9 h-9"> -->
