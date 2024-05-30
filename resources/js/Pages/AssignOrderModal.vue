@@ -23,36 +23,54 @@
                                 </div>
     
                                 <div class="flex justify-center">
-                                    <form @submit.prevent="assign" class="text-white w-96 p-2 md:p-0">
-                                        <div class="p-2 border-b border-gray-600">
-                                            <h1 class="text-center text-[45px]">Asignar ordenes</h1>
-                                        </div>
+                                    <form @submit.prevent="assign" class="text-white w-[500px] p-2 md:p-0">
                                         <div class="border border-gray-600 mt-2 rounded-md">
-                                            <h2 class="text-xl text-gray-400 p-2">Asignar a:</h2>
-                                            <div class="space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
-                                                <div class="space-x-2">
-                                                    <label for="" class="text-">Rover:</label>
-                                                    <select class="bg-gray-900" v-model="form.rover">
-                                                        <option :value="null">Seleccionar Rover</option>
-                                                        <option v-for="(rover, index) in rovers" :key="rover.id" :value="rover">{{ rover.name }}</option>
-                                                    </select>
-                                                </div>
+                                            <h2 class="text-[30px] text-gray-100 p-2">Ordenes seleccionadas:</h2>
+                                            <div class="space-y-4 mb-4 text-[20px] sm:text-[22px]">
+                                                <table class="min-w-full bg-gray-800">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="py-1 px-1 text-center border bg-slate-700 border-gray-600 text-gray-200">Nombre</th>
+                                                            <th class="py-1 px-1 text-center border bg-slate-700 border-gray-600 text-gray-200">Porciones</th>
+                                                            <th class="py-1 px-1 text-center border bg-slate-700 border-gray-600 text-gray-200">Salsas</th>
+                                                            <th class="py-1 px-1 text-center border bg-slate-700 border-gray-600 text-gray-200">Monto</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="order in ordenesTildadas" :key="order.id" class="border-b border-gray-700">
+                                                            <td class="py-1 px-1 text-center border border-gray-600 text-gray-200">{{ order.name }} {{ order.last_name }}</td>
+                                                            <td class="py-1 px-1 text-center border border-gray-600 text-gray-200">{{ order.portions }}</td>
+                                                            <td class="py-1 px-1 text-center border border-gray-600 text-gray-200">{{ order.sauces }}</td>
+                                                            <td class="py-1 px-1 text-center border border-gray-600 text-gray-200">${{ order.amount }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="py-1 px-1 text-center border bg-gray-500 border-gray-600 text-gray-200">Totales</td>
+                                                            <td class="py-1 px-1 text-center border bg-gray-500 border-gray-600 text-gray-200">{{ totalSelectedPortions }}</td>
+                                                            <td class="py-1 px-1 text-center border bg-gray-500 border-gray-600 text-gray-200">{{ totalSelectedSauces }}</td>
+                                                            <td class="py-1 px-1 text-center border bg-gray-500 border-gray-600 text-gray-200">${{ totalSelectedAmount }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                         <div class="border border-gray-600 mt-2 rounded-md">
-                                            <h2 class="text-xl text-gray-400 p-2">Ordenes a asignar:</h2>
-                                            <div class="space-y-4 pl-2 mb-4 text-[20px] sm:text-[22px]">
-                                                <div>
-                                                    <p v-for="cliente in nombresTildados">
-                                                        - <span class="text-gray-200">{{ cliente }}</span>
-                                                    </p>
+                                            <h2 class="text-xl text-gray-400 p-2">Asiganción masiva:</h2>
+                                            <div class="items-center space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
+                                                <div class="flex items-center space-x-2">
+                                                    <div>
+                                                        <label for="" class="text-">Rover:</label>
+                                                        <select class="bg-gray-900" v-model="form.rover">
+                                                            <option :value="null">Seleccionar Rover</option>
+                                                            <option v-for="(rover, index) in rovers" :key="rover.id" :value="rover">{{ rover.name }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button class="bg-indigo-500 hover:bg-indigo-600 py-1 px-4 rounded-md text-2xl">
+                                                            Asignar ordenes
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="flex justify-center mt-4">
-                                            <button class="bg-indigo-500 hover:bg-indigo-600 py-2 px-4 rounded-md text-3xl">
-                                                Asignar
-                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -77,7 +95,10 @@ const props = defineProps({
         type: Object,
     },
     idsTildados: Array,
-    nombresTildados: Array
+    ordenesTildadas: Array,
+    totalSelectedAmount: Number,
+    totalSelectedPortions: Number,
+    totalSelectedSauces: Number,
 });
 
 console.log(props.idsTildados);

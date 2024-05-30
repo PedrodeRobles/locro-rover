@@ -20,7 +20,7 @@
                 </p>
                 <div class="hidden md:block">
                   <button id="boton-desk" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 cursor-pointer text-xl animate__animated animate__fadeIn">
-                    Asignar ordenes masivamente
+                    Gestionar ordenes
                   </button>
                 </div>
                 <div @click="openNewOrder()" class="rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-1 mx-2 hidden md:block md:flex md:items-center">
@@ -46,7 +46,7 @@
                   <p class="text-xl">Agregar orden</p>
               </div>
               <button id="boton" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 ml-2 animate__animated animate__fadeIn">
-                Asignar ordenes masivamente
+                Gestionar ordenes
               </button>
               <div class="flex justify-center px-2">
                   <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
@@ -293,7 +293,15 @@
         </div>
     </div>
     <FormOrderModal v-if="isFormModalOpen" :closeModal="closeEditModal"/>
-    <AssignOrderModal v-if="isAssignModalOpen" :closeModal="closeAssignModal" :rovers="rovers" :idsTildados="idsTildados" :nombresTildados="nombresTildados"/>
+    <AssignOrderModal v-if="isAssignModalOpen" 
+      :closeModal="closeAssignModal" 
+      :rovers="rovers" :idsTildados="idsTildados" 
+      :ordenesTildadas="ordenesTildadas" 
+      :preciosDeOrdenes="preciosDeOrdenes" 
+      :totalSelectedAmount="totalSelectedAmount"
+      :totalSelectedPortions="totalSelectedPortions"
+      :totalSelectedSauces="totalSelectedSauces"
+    />
 </template>
 
 <style scoped>
@@ -401,8 +409,12 @@ const {
       openAssignModal,
       closeAssignModal,
       idsTildados,
-      nombresTildados,
-      updateCheckboxListeners
+      ordenesTildadas,
+      updateCheckboxListeners,
+      preciosDeOrdenes,
+      totalSelectedAmount,
+      totalSelectedPortions,
+      totalSelectedSauces
     } = useMassAssignButton(props.orders);
 
 // BUSCAR ORDENES

@@ -7,7 +7,10 @@ export function useMassAssignButton(orders) {
     const boton_desk = ref(null);
     const isAssignModalOpen = ref(false);
     const idsTildados = ref([]);
-    const nombresTildados = ref([]);
+    const ordenesTildadas = ref([]);
+    const totalSelectedAmount = ref(0);
+    const totalSelectedPortions = ref(0);
+    const totalSelectedSauces = ref(0);
 
     const openAssignModal = () => {
         isAssignModalOpen.value = true;
@@ -16,7 +19,10 @@ export function useMassAssignButton(orders) {
     const closeAssignModal = () => {
         isAssignModalOpen.value = false;
         idsTildados.value = [];
-        nombresTildados.value = [];
+        ordenesTildadas.value = [];
+        totalSelectedAmount.value = 0;
+        totalSelectedPortions.value = 0;
+        totalSelectedSauces.value = 0;
 
         // Destildar todos los checkboxes
         checkboxes.value.forEach((checkbox) => {
@@ -26,6 +32,33 @@ export function useMassAssignButton(orders) {
         // Ocultar los botones
         boton.value.classList.add('hidden');
         boton_desk.value.classList.add('hidden');
+    };
+
+    const recalculateTotalSelectedAmount = () => {
+        totalSelectedAmount.value = idsTildados.value.reduce((sum, id) => {
+            const order = orders.find(order => order.id === id);
+            return sum + (order ? order.amount : 0);
+        }, 0);
+    };
+
+    const recalculateTotalPortions = () => {
+        totalSelectedPortions.value = idsTildados.value.reduce((sum, id) => {
+            const order = orders.find(order => order.id === id);
+            return sum + (order ? order.portions : 0);
+        }, 0);
+    };
+
+    const recalculateTotalSauces = () => {
+        totalSelectedSauces.value = idsTildados.value.reduce((sum, id) => {
+            const order = orders.find(order => order.id === id);
+            return sum + (order ? order.sauces : 0);
+        }, 0);
+    };
+
+    const recalculateOrdenesTildadas = () => {
+        ordenesTildadas.value = idsTildados.value.map(id => {
+            return orders.find(order => order.id === id);
+        }).filter(order => order !== undefined);
     };
 
     const updateCheckboxListeners = () => {
@@ -38,7 +71,7 @@ export function useMassAssignButton(orders) {
             const order = orders.find(o => o.id === orderId);
             if (!order) return;
 
-            const orderName = `${order.name} ${order.last_name}`;
+            // const orderName = `${order.name} ${order.last_name}`;
 
             checkbox.removeEventListener('change', handleCheckboxChange);
             checkbox.addEventListener('change', handleCheckboxChange);
@@ -59,12 +92,24 @@ export function useMassAssignButton(orders) {
                 if (checkbox.checked) {
                     if (!idsTildados.value.includes(orderId)) {
                         idsTildados.value.push(orderId);
-                        nombresTildados.value.push(orderName);
+                        ordenesTildadas.value.push(order);
+                        totalSelectedAmount.value += order.amount;
+                        totalSelectedPortions.value += order.portions;
+                        totalSelectedSauces.value += order.sauces;
                     }
                 } else {
-                    idsTildados.value = idsTildados.value.filter(id => id !== orderId);
-                    nombresTildados.value = nombresTildados.value.filter(name => name !== orderName);
+                    if (idsTildados.value.includes(orderId)) {
+                        idsTildados.value = idsTildados.value.filter(id => id !== orderId);
+                        ordenesTildadas.value = ordenesTildadas.value.filter(order => order !== order);
+                        totalSelectedAmount.value -= order.amount;
+                        totalSelectedPortions.value -= order.portions;
+                        totalSelectedSauces.value -= order.sauces;
+                    }
                 }
+                recalculateTotalSelectedAmount();
+                recalculateTotalPortions();
+                recalculateTotalSauces();
+                recalculateOrdenesTildadas();
             }
         });
     };
@@ -82,7 +127,10 @@ export function useMassAssignButton(orders) {
         openAssignModal,
         closeAssignModal,
         idsTildados,
-        nombresTildados,
-        updateCheckboxListeners 
+        ordenesTildadas,
+        updateCheckboxListeners,
+        totalSelectedAmount,
+        totalSelectedPortions,
+        totalSelectedSauces
     };
 }
