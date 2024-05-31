@@ -301,6 +301,7 @@
       :totalSelectedAmount="totalSelectedAmount"
       :totalSelectedPortions="totalSelectedPortions"
       :totalSelectedSauces="totalSelectedSauces"
+      @ordersUpdated="handleOrdersUpdated"
     />
 </template>
 
@@ -421,24 +422,42 @@ const {
 const search = ref(null);
 
 watch(search, (value) => {
-      const route = props.list_type === 'general' ? '/' : '/my-list';
-      router.get(route, { search: value }, {
-        preserveState: true,
-        replace: true,
-        onSuccess: () => {
-          updateCheckboxListeners();  // Asegurarnos de actualizar los listeners después de la búsqueda
+  const route = props.list_type === 'general' ? '/' : '/my-list';
+  router.get(route, { search: value }, {
+    preserveState: true,
+    replace: true,
+    onSuccess: () => {
+      updateCheckboxListeners();  // Asegurarnos de actualizar los listeners después de la búsqueda
+    }
+  });
+});
+
+watch(() => props.orders, () => {
+  updateCheckboxListeners();  // Asegurarnos de actualizar los listeners cuando las órdenes cambien
+}, { deep: true });
+
+onMounted(() => {
+  updateCheckboxListeners();
+});
+
+// Función para actualizar las órdenes en el estado local
+function updateOrders(newOrders) {
+    console.log(newOrders);
+    newOrders.forEach(updatedOrder => {
+        const index = props.orders.findIndex(order => order.id === updatedOrder.id);
+        if (index !== -1) {
+            props.orders[index] = updatedOrder;
+            console.log(updatedOrder);
+            console.log(props.orders[index].to_collect)
         }
-      });
     });
+    updateCheckboxListeners();
+}
 
-    watch(() => props.orders, () => {
-      updateCheckboxListeners();  // Asegurarnos de actualizar los listeners cuando las órdenes cambien
-    }, { deep: true });
-
-    onMounted(() => {
-      updateCheckboxListeners();
-    });
-
+// Función para manejar el evento personalizado de actualización de órdenes
+function handleOrdersUpdated(newOrders) {
+    updateOrders(newOrders);
+}
 
 const {
       totalPortions,

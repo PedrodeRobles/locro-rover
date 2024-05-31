@@ -23,10 +23,10 @@
                                 </div>
     
                                 <div class="flex justify-center">
-                                    <form @submit.prevent="assign" class="text-white w-[500px] p-2 md:p-0">
+                                    <div class="text-white w-full md:w-[500px] p-2 md:p-0">
                                         <div class="border border-gray-600 mt-2 rounded-md">
                                             <h2 class="text-[30px] text-gray-100 p-2">Ordenes seleccionadas:</h2>
-                                            <div class="space-y-4 mb-4 text-[20px] sm:text-[22px]">
+                                            <div class="space-y-4 mb-4 text-[20px] sm:text-[22px] overflow-x-auto">
                                                 <table class="min-w-full bg-gray-800">
                                                     <thead>
                                                         <tr>
@@ -51,28 +51,49 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                            </div>
-                                        </div>
-                                        <div class="border border-gray-600 mt-2 rounded-md">
-                                            <h2 class="text-xl text-gray-400 p-2">Asiganción masiva:</h2>
-                                            <div class="items-center space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
-                                                <div class="flex items-center space-x-2">
-                                                    <div>
-                                                        <label for="" class="text-">Rover:</label>
-                                                        <select class="bg-gray-900" v-model="form.rover">
-                                                            <option :value="null">Seleccionar Rover</option>
-                                                            <option v-for="(rover, index) in rovers" :key="rover.id" :value="rover">{{ rover.name }}</option>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <button class="bg-indigo-500 hover:bg-indigo-600 py-1 px-4 rounded-md text-2xl">
-                                                            Asignar ordenes
-                                                        </button>
-                                                    </div>
+
+                                                <div class="flex justify-center">
+                                                    <button @click="displayPaymentQuestion()" class="bg-green-500 hover:bg-green-600 p-1 rounded-md">
+                                                        Cobrar el total de las ordenes
+                                                    </button>
+                                                </div>
+                                                <div class="hidden flex justify-center space-x-1 md:space-x-4 animate__animated animate__fadeIn" id="payment_question">
+                                                    <p class="text-green-300">
+                                                        ¿Paga por Mercado pago?
+                                                    </p>
+                                                    <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                        Sí
+                                                    </button>
+                                                    <button @click="payOrders(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                        No
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+
+                                        <form @submit.prevent="assign">
+                                            <div class="border border-gray-600 mt-2 rounded-md">
+                                                <h2 class="text-xl text-white p-2">Asignación masiva:</h2>
+                                                <div class="items-center space-y-4 pl-2 mb-4 text-[22px] sm:text-[25px]">
+                                                    <div class="md:flex space-y-2 md:space-y-0 items-center space-x-2">
+                                                        <div>
+                                                            <label for="" class="text-xl">Rover: </label>
+                                                            <select class="bg-gray-900" v-model="form.rover">
+                                                                <option :value="null">Seleccionar Rover</option>
+                                                                <option v-for="(rover, index) in rovers" :key="rover.id" :value="rover">{{ rover.name }}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <button class="bg-indigo-500 hover:bg-indigo-600 py-1 px-4 rounded-md text-2xl">
+                                                                Asignar ordenes
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -84,10 +105,11 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import 'vue3-toastify/dist/index.css';
 import { toast } from 'vue3-toastify';
+import 'animate.css';
 
 const props = defineProps({
     closeModal: Function,
@@ -100,8 +122,6 @@ const props = defineProps({
     totalSelectedPortions: Number,
     totalSelectedSauces: Number,
 });
-
-console.log(props.idsTildados);
 
 const form = reactive({
     rover: null,
@@ -122,4 +142,31 @@ function assign() {
     }
 }
 
+const payment_question = ref(null);
+
+function displayPaymentQuestion() {
+    payment_question.value = document.querySelector('#payment_question');
+    payment_question.value.classList.remove('hidden');
+}
+
+
+const emit = defineEmits(['ordersUpdated']);
+
+async function payOrders(mp) {
+    try {
+        if (props.idsTildados.length === 0) {
+            toast.info('No hay órdenes seleccionadas. Selecciónalas y vuelve a intentarlo', { autoClose: 4000 });
+        } else {
+            const response = await axios.put('/order/payOrders', { ordersID: props.idsTildados, mp: mp });
+
+            props.closeModal();
+            toast.success('¡Órdenes pagadas con éxito!', { autoClose: 4000 });
+
+            emit('ordersUpdated', response.data.orders);  // Emitir evento con órdenes actualizadas
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        toast.error('¡Error al pagar órdenes!');
+    }
+}
 </script>

@@ -208,4 +208,30 @@ class OrderController extends Controller
             $order->save();
         }
     }
+
+    public function payOrders(Request $request)
+    {
+        $orders_id = $request->input('ordersID');
+        $mp = $request->input('mp');
+
+        $orders = Order::whereIn('id', $orders_id)->get();
+
+        foreach ($orders as $order) {
+            $order->money_collected = $order->amount;
+            $order->mp = $mp;
+            $this->calculateToCollect($order);
+            $order->last_edition = Auth::user()->name . ' Cobro esta orden';
+            $order->save();
+        }
+
+        // Transforma las órdenes antes de devolverlas
+        $transformedOrders = $orders->map(function ($order) {
+            return OrderUtils::getOrderArray($order);
+        });
+
+        return response()->json([
+            'message' => 'Órdenes pagadas con éxito',
+            'orders' => $transformedOrders
+        ]);
+    }
 }
