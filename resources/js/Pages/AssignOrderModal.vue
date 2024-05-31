@@ -61,11 +61,11 @@
                                                     <p class="text-green-300">
                                                         ¿Paga por Mercado pago?
                                                     </p>
-                                                    <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
-                                                        Sí
-                                                    </button>
                                                     <button @click="payOrders(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
                                                         No
+                                                    </button>
+                                                    <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                        Sí
                                                     </button>
                                                 </div>
                                             </div>
