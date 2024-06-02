@@ -22,6 +22,7 @@ class Order extends Model
         'to_collect',
         'mp',
         'last_edition',
+        'withdrawal',
     ];
 
     public function client()

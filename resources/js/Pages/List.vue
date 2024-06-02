@@ -62,7 +62,7 @@
                             <th class="px-4 py-2 border border-gray-600">Teléfono</th>
                             <th class="px-4 py-2 border border-gray-600">Dirección</th>
                             <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Cod. Postal</th>
-                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">¿Retira?</th>
+                            <th v-if="!$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">¿Delivery?</th>
                             <th class="px-4 py-2 border border-gray-600">{{ $page.props.pastelitosEvent ? '1/2 Membrillo' : 'Cantidad' }}</th>
                             <th v-if="$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">1/2 Batata</th>
                             <th v-if="$page.props.pastelitosEvent" class="px-4 py-2 border border-gray-600">Docenas</th>
@@ -72,6 +72,7 @@
                             <th class="px-4 py-2 border border-gray-600">A cobrar</th>
                             <th class="px-4 py-2 border border-gray-600">MP</th>
                             <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
+                            <th class="px-4 py-2 border border-gray-600">Retiró orden</th>
                             <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
                             <th class="px-4 py-2 border border-gray-600" style="z-index: 10;">Acciones</th>
                         </tr>
@@ -203,15 +204,7 @@
                             </td>
                             <td v-else class="px-4 py-2 border border-gray-600">-</td>
 
-                            <td @click="startEditing(index, 'money_collected')" class="px-4 py-2 border border-gray-600">
-                              <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
-                                ${{ order.money_collected }}
-                              </div>
-                              <input v-show="isEditing(index, 'money_collected')" type="number" v-model="editedMoneyCollected" @blur="stopEditing(index, 'money_collected', order)" class="text-black w-20">
-                              <div v-if="loadingMoneyCollected && loadingMoneyCollectedIndex == index">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
-                              </div>
-                            </td>
+                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
 
                             <td class="px-4 py-2 border border-gray-600">
                               <label :for="'mp-checkbox-' + order.id" class="mr-2">
@@ -229,7 +222,33 @@
                               </div>                    
                             </td>
 
-                            <td class="px-4 py-2 border border-gray-600">${{ order.to_collect }}</td>
+                            <td @click="startEditing(index, 'money_collected')" class="px-4 py-2 border border-gray-600">
+                              <div :id="'money_collected-' + index" :class="{'money_collected': !isEditing(index, 'money_collected'), 'hidden': isEditing(index, 'money_collected') || (loadingMoneyCollected && loadingMoneyCollectedIndex == index)}">
+                                ${{ order.money_collected }}
+                              </div>
+                              <input v-show="isEditing(index, 'money_collected')" type="number" v-model="editedMoneyCollected" @blur="stopEditing(index, 'money_collected', order)" class="text-black w-20">
+                              <div v-if="loadingMoneyCollected && loadingMoneyCollectedIndex == index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>
+                            </td>
+
+                            <td class="px-4 py-2 border border-gray-600">
+                              <div>
+                                <label :for="'withdrawal-checkbox-' + order.id" class="mr-2">
+                                  {{ order.withdrawal ? 'SI' : 'NO' }}
+                                </label>
+                              </div>
+                              <input
+                                type="checkbox"
+                                v-model="order.withdrawal"
+                                @click="confirmUpdateWithdrawal(order, index, 'withdrawal', !order.withdrawal)"
+                                :id="'withdrawal-checkbox-' + order.id"
+                                class="cursor-pointer"
+                              />
+                              <div v-if="loadingMP && loadingMPIndex === index">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+                              </div>                    
+                            </td>
 
                             <td class="px-4 py-2 border border-gray-600">
                               <div class="w-20 overflow-x-auto">
@@ -380,8 +399,7 @@ tfoot th:first-child {
 </style>
 
 <script setup>
-import { defineProps } from 'vue';
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import FormOrderModal from './NewOrder.vue';
@@ -662,6 +680,28 @@ const updateMoneyCollected = (order, index, field) => {
 }
 // FIN EDITAR DINERO COBRADO
 
+// EDITAR RETIRÓ ORDEN
+const loadingWithdrawal = ref(false);
+const loadingWithdrawalIndex = ref(null);
+
+const confirmUpdateWithdrawal = (order, index, field, value) => {
+    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name}${value ? "" : " NO"} retira sus orden?`;
+
+    if (!confirm(confirmationText)) {
+      // Si se cancela el confirm, revertir el cambio en el checkbox
+      event.preventDefault();
+    } else {
+      loadingWithdrawal.value = true;
+      loadingWithdrawalIndex.value = index;
+
+      const dataToUpdate = {
+          [field]: value,
+      };
+      updateOrder(order.id, index, field, dataToUpdate);
+    }
+}
+// FIN EDITAR RETIRÓ ORDEN
+
 
 // EDITAR MERCADO PAGO
 const loadingMP = ref(false);
@@ -788,6 +828,8 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
     loadingMoneyCollectedIndex.value = null;
     loadingMP.value = false;
     loadingMPIndex.value = null;
+    loadingWithdrawal.value = false;
+    loadingWithdrawalIndex.value = null;
     }
 }
 // FIN FUNCION MAIN PARA EDITAR ORDENES

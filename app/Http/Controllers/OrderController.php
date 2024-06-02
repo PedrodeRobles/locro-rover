@@ -69,6 +69,10 @@ class OrderController extends Controller
             $columnName = 'cobro';
         }
 
+        if ($field == 'withdrawal') {
+            $columnName = 'Retiro de orden';
+        }
+
         if ($field == 'mp') {
             $columnName = 'forma de pago';
         }
