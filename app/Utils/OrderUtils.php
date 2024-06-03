@@ -45,7 +45,7 @@ class OrderUtils
             'sauces'          => $order->sauces,
             'amount'          => $order->amount,
             'money_collected' => $order->money_collected,
-            'withdrawal' => $order->withdrawal,
+            'withdrawal'      => (bool)$order->withdrawal,
             'to_collect'      => $order->to_collect,
             'mp'              => (bool)$order->mp,
             'last_edition'    => $order->last_edition,

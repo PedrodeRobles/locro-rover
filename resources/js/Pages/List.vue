@@ -214,7 +214,6 @@
                                 type="checkbox"
                                 v-model="order.mp"
                                 @click="confirmUpdateMP(order, index, 'mp', !order.mp)"
-                                :id="'mp-checkbox-' + order.id"
                                 class="cursor-pointer"
                               />
                               <div v-if="loadingMP && loadingMPIndex === index">
@@ -242,10 +241,9 @@
                                 type="checkbox"
                                 v-model="order.withdrawal"
                                 @click="confirmUpdateWithdrawal(order, index, 'withdrawal', !order.withdrawal)"
-                                :id="'withdrawal-checkbox-' + order.id"
                                 class="cursor-pointer"
                               />
-                              <div v-if="loadingMP && loadingMPIndex === index">
+                              <div v-if="loadingWithdrawal && loadingWithdrawalIndex === index">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-dasharray="15" stroke-dashoffset="15" stroke-linecap="round" stroke-width="2" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
                               </div>                    
                             </td>
@@ -460,7 +458,7 @@ onMounted(() => {
 
 // Función para actualizar las órdenes en el estado local
 function updateOrders(newOrders) {
-    console.log(newOrders);
+    // console.log(newOrders);
     newOrders.forEach(updatedOrder => {
         const index = props.orders.findIndex(order => order.id === updatedOrder.id);
         if (index !== -1) {

@@ -61,12 +61,25 @@
                                                     <p class="text-green-300">
                                                         ¿Paga por Mercado pago?
                                                     </p>
-                                                    <button @click="payOrders(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                    <button @click="displayWithdrawalQuestion(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
                                                         No
                                                     </button>
-                                                    <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                    <button @click="displayWithdrawalQuestion(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
                                                         Sí
                                                     </button>
+                                                </div>
+                                                <div class="hidden flex justify-center space-x-[90px] md:space-x-[110px] animate__animated animate__fadeIn" id="withdrawal_question">
+                                                    <p class="text-green-300">
+                                                        ¿Retira ordenes?
+                                                    </p>
+                                                    <div class="space-x-1 md:space-x-4 flex">
+                                                        <button @click="payOrders(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                            No
+                                                        </button>
+                                                        <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                            Sí
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -143,25 +156,32 @@ function assign() {
 }
 
 const payment_question = ref(null);
+const withdrawal_question = ref(null);
+const pay_with_mp = ref(false);
 
 function displayPaymentQuestion() {
     payment_question.value = document.querySelector('#payment_question');
     payment_question.value.classList.remove('hidden');
 }
 
+function displayWithdrawalQuestion(mp) {
+    pay_with_mp.value = mp;
+    withdrawal_question.value = document.querySelector('#withdrawal_question');
+    withdrawal_question.value.classList.remove('hidden');
+}
 
 const emit = defineEmits(['ordersUpdated']);
 
-async function payOrders(mp) {
+async function payOrders(withdrawal) {
     try {
         if (props.idsTildados.length === 0) {
             toast.info('No hay órdenes seleccionadas. Selecciónalas y vuelve a intentarlo', { autoClose: 4000 });
         } else {
-            const response = await axios.put('/order/payOrders', { ordersID: props.idsTildados, mp: mp });
+            const response = await axios.put('/order/payOrders', { ordersID: props.idsTildados, mp: pay_with_mp.value, withdrawal: withdrawal });
 
             props.closeModal();
             toast.success('¡Órdenes pagadas con éxito!', { autoClose: 4000 });
-
+            pay_with_mp.value = false;
             emit('ordersUpdated', response.data.orders);  // Emitir evento con órdenes actualizadas
         }
     } catch (error) {

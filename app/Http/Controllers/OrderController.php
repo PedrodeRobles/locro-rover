@@ -217,12 +217,14 @@ class OrderController extends Controller
     {
         $orders_id = $request->input('ordersID');
         $mp = $request->input('mp');
+        $withdrawal = $request->input('withdrawal');
 
         $orders = Order::whereIn('id', $orders_id)->get();
 
         foreach ($orders as $order) {
             $order->money_collected = $order->amount;
             $order->mp = $mp;
+            $order->withdrawal = $withdrawal;
             $this->calculateToCollect($order);
             $order->last_edition = Auth::user()->name . ' Cobro esta orden';
             $order->save();
