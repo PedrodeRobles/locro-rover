@@ -10,6 +10,11 @@
             <div class="pb-2 pl-2 flex justify-between">
               <div class="hidden md:block">
                 <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
+                <select v-model="withdrawalFilter" class="bg-gray-700 rounded-md ml-2">
+                    <option value="all">Todas</option>
+                    <option value="1">Retiradas</option>
+                    <option value="0">Sin retirar</option>
+                </select>
               </div>
               <div class="flex items-center">
                 <p class="mx-2 text-lime-300 hidden md:block" v-if="$page.props.pastelitosEvent">
@@ -50,6 +55,11 @@
               </button>
               <div class="flex justify-center px-2">
                   <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
+                  <select v-model="withdrawalFilter" class="bg-gray-700 rounded-md">
+                      <option value="all">Todas</option>
+                      <option value="1">Retiradas</option>
+                      <option value="0">Sin retirar</option>
+                  </select>
               </div>
             </div>
             <div  id="table-scroll" class="table-scroll" >
@@ -436,16 +446,17 @@ const {
 
 // BUSCAR ORDENES
 const search = ref(null);
+const withdrawalFilter = ref('all'); // default "all"
 
-watch(search, (value) => {
-  const route = props.list_type === 'general' ? '/' : '/my-list';
-  router.get(route, { search: value }, {
-    preserveState: true,
-    replace: true,
-    onSuccess: () => {
-      updateCheckboxListeners();  // Asegurarnos de actualizar los listeners después de la búsqueda
-    }
-  });
+watch([search, withdrawalFilter], ([searchValue, withdrawalValue]) => {
+    const route = props.list_type === 'general' ? '/' : '/my-list';
+    router.get(route, { search: searchValue, withdrawal: withdrawalValue }, {
+        preserveState: true,
+        replace: true,
+        onSuccess: () => {
+            updateCheckboxListeners(); // Asegurarnos de actualizar los listeners después de la búsqueda
+        }
+    });
 });
 
 watch(() => props.orders, () => {

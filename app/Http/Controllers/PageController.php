@@ -18,27 +18,36 @@ class PageController extends Controller
         $year = Year::where('year', $currentYear)->first();
 
         $orders = Order::where('year_id', $year->id)
-            ->whereHas('client', function($query) use ($request) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('last_name', 'LIKE', "%$request->search%")
-                        ->orWhere('phone_number', 'LIKE', "%$request->search%")
-                        ->orWhere('direction', 'LIKE', "%$request->search%")
-                        ->orWhere('name', 'LIKE', "%$request->search%");
+        ->where(function($query) use ($request) {
+            if ($request->has('withdrawal') && ($request->withdrawal !== 'all')) {
+                $query->where('withdrawal', $request->withdrawal);
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('search') && $request->search) {
+                $query->whereHas('client', function($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('last_name', 'LIKE', "%{$request->search}%")
+                            ->orWhere('phone_number', 'LIKE', "%{$request->search}%")
+                            ->orWhere('direction', 'LIKE', "%{$request->search}%")
+                            ->orWhere('name', 'LIKE', "%{$request->search}%");
+                    });
+                })
+                ->orWhereHas('user', function($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('name', 'LIKE', "%{$request->search}%");
+                    });
                 });
-            })
-            ->orWhereHas('user', function($query) use ($request) {
-                $query->where(function ($q) use ($request) {
-                    $q->where('name', 'LIKE', "%$request->search%");
-                });
-            })
-            ->select('orders.*') // Seleccionamos todos los campos de la tabla orders
-            ->orderByRaw(
-                "(SELECT last_name FROM clients WHERE clients.id = orders.client_id) ASC"
-            )
-            ->get()
-            ->map(function($order) {
-                return OrderUtils::getOrderArray($order);
-            });
+            }
+        })
+        ->select('orders.*') // Seleccionamos todos los campos de la tabla orders
+        ->orderByRaw(
+            "(SELECT last_name FROM clients WHERE clients.id = orders.client_id) ASC"
+        )
+        ->get()
+        ->map(function($order) {
+            return OrderUtils::getOrderArray($order);
+        });
 
         $rovers = User::where('active', 1)->orderBy('name')->get();
 
@@ -60,21 +69,38 @@ class PageController extends Controller
         $currentYear = Carbon::now()->year;
         $year = Year::where('year', $currentYear)->first();
 
-        $orders = Order::where('user_id', $user_auth_id)
-        ->where('year_id', $year->id)
-        ->whereHas('client', function($query) use ($request) {
-            $query->where(function ($q) use ($request) {
-                $q->where('last_name', 'LIKE', "%$request->search%")
-                    ->orWhere('phone_number', 'LIKE', "%$request->search%")
-                    ->orWhere('direction', 'LIKE', "%$request->search%")
-                    ->orWhere('name', 'LIKE', "%$request->search%");
-            });
+        $orders = Order::where('year_id', $year->id)
+        ->where('user_id', $user_auth_id)
+        ->where(function($query) use ($request) {
+            if ($request->has('withdrawal') && ($request->withdrawal !== 'all')) {
+                $query->where('withdrawal', $request->withdrawal);
+            }
         })
+        ->where(function($query) use ($request) {
+            if ($request->has('search') && $request->search) {
+                $query->whereHas('client', function($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('last_name', 'LIKE', "%{$request->search}%")
+                            ->orWhere('phone_number', 'LIKE', "%{$request->search}%")
+                            ->orWhere('direction', 'LIKE', "%{$request->search}%")
+                            ->orWhere('name', 'LIKE', "%{$request->search}%");
+                    });
+                })
+                ->orWhereHas('user', function($query) use ($request) {
+                    $query->where(function ($q) use ($request) {
+                        $q->where('name', 'LIKE', "%{$request->search}%");
+                    });
+                });
+            }
+        })
+        ->select('orders.*') // Seleccionamos todos los campos de la tabla orders
+        ->orderByRaw(
+            "(SELECT last_name FROM clients WHERE clients.id = orders.client_id) ASC"
+        )
         ->get()
         ->map(function($order) {
             return OrderUtils::getOrderArray($order);
-        })
-        ->sortBy('id');
+        });
 
         $userHasOrders = Order::where('user_id', $user_auth_id)
             ->where('year_id', $year->id)

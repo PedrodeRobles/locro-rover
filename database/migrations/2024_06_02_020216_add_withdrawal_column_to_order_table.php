@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->boolean('withdrawal')->after('take_away')->nullable();
+            $table->boolean('withdrawal')->after('take_away')->default(0);
         });
     }
 
