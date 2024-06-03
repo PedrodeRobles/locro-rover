@@ -22,6 +22,7 @@ Route::middleware(['auth', 'active-user'])->group(function() {
     Route::put('/order/{order:id}/assignMeOrder', [OrderController::class, 'assignMeOrder'])->name('order.assignMeOrder');
     Route::put('/order/assignOrders', [OrderController::class, 'assignOrders'])->name('order.assignOrders');
     Route::put('/order/payOrders', [OrderController::class, 'payOrders'])->name('order.payOrders');
+    Route::put('/order/withdrawOrders', [OrderController::class, 'withdrawOrders'])->name('order.withdrawOrders');
     
     Route::post('/client/create', [ClientController::class, 'store'])->name('client.store');
     Route::put('/client/{order:id}/edit/{field}', [ClientController::class, 'updateFromOrder'])->name('client.updateFromOrder');

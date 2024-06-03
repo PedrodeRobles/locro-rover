@@ -53,7 +53,28 @@
                                                 </table>
 
                                                 <div class="flex justify-center">
-                                                    <button @click="displayPaymentQuestion()" class="bg-green-500 hover:bg-green-600 p-1 rounded-md">
+                                                    <button @click="displayWithdrawalQuestion()" class="bg-blue-500 hover:bg-blue-600 p-1 rounded-md">
+                                                        Retirar ordenes
+                                                    </button>
+                                                </div>
+                                                <div class="hidden flex justify-center space-x-1 md:space-x-4 animate__animated animate__fadeIn" id="withdrawal_question">
+                                                    <p class="text-green-300">
+                                                        ¿Deseas retirar ordenes?
+                                                    </p>
+                                                    <button @click="withdrawOrders(false)" class="bg-red-500 hover:bg-red-600 p-1 w-10 rounded-md">
+                                                        No
+                                                    </button>
+                                                    <button @click="withdrawOrders(true)" class="bg-green-500 hover:bg-green-600 p-1 w-10 rounded-md">
+                                                        Sí
+                                                    </button>
+                                                </div>
+                                                <div class="hidden flex items-center justify-center space-x-1 animate__animated animate__fadeIn" id="done_withdraw">
+                                                    <p>Hecho</p>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="bg-green-600 rounded-full" width="22" height="22" viewBox="0 0 24 24"><path fill="#ffffff" d="m9 16.2l-3.5-3.5a.984.984 0 0 0-1.4 0a.984.984 0 0 0 0 1.4l4.19 4.19c.39.39 1.02.39 1.41 0L20.3 7.7a.984.984 0 0 0 0-1.4a.984.984 0 0 0-1.4 0z"/></svg>
+                                                </div>
+
+                                                <div class="flex justify-center">
+                                                    <button @click="displayPaymentQuestion()" class="bg-blue-500 hover:bg-blue-600 p-1 rounded-md">
                                                         Cobrar el total de las ordenes
                                                     </button>
                                                 </div>
@@ -61,25 +82,16 @@
                                                     <p class="text-green-300">
                                                         ¿Paga por Mercado pago?
                                                     </p>
-                                                    <button @click="displayWithdrawalQuestion(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                    <button @click="payOrders(false)" class="bg-red-500 hover:bg-red-600 p-1 w-10 rounded-md">
                                                         No
                                                     </button>
-                                                    <button @click="displayWithdrawalQuestion(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
+                                                    <button @click="payOrders(true)" class="bg-green-500 hover:bg-green-600 p-1 w-10 rounded-md">
                                                         Sí
                                                     </button>
                                                 </div>
-                                                <div class="hidden flex justify-center space-x-[90px] md:space-x-[110px] animate__animated animate__fadeIn" id="withdrawal_question">
-                                                    <p class="text-green-300">
-                                                        ¿Retira ordenes?
-                                                    </p>
-                                                    <div class="space-x-1 md:space-x-4 flex">
-                                                        <button @click="payOrders(false)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
-                                                            No
-                                                        </button>
-                                                        <button @click="payOrders(true)" class="bg-blue-500 hover:bg-blue-600 p-1 w-10 rounded-md">
-                                                            Sí
-                                                        </button>
-                                                    </div>
+                                                <div class="hidden flex items-center justify-center space-x-1 animate__animated animate__fadeIn" id="done_pay">
+                                                    <p>Hecho</p>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="bg-green-600 rounded-full" width="22" height="22" viewBox="0 0 24 24"><path fill="#ffffff" d="m9 16.2l-3.5-3.5a.984.984 0 0 0-1.4 0a.984.984 0 0 0 0 1.4l4.19 4.19c.39.39 1.02.39 1.41 0L20.3 7.7a.984.984 0 0 0 0-1.4a.984.984 0 0 0-1.4 0z"/></svg>
                                                 </div>
                                             </div>
                                         </div>
@@ -157,36 +169,56 @@ function assign() {
 
 const payment_question = ref(null);
 const withdrawal_question = ref(null);
-const pay_with_mp = ref(false);
+const done_pay = ref(null);
+const done_withdraw = ref(null);
 
 function displayPaymentQuestion() {
     payment_question.value = document.querySelector('#payment_question');
     payment_question.value.classList.remove('hidden');
 }
 
-function displayWithdrawalQuestion(mp) {
-    pay_with_mp.value = mp;
+function displayWithdrawalQuestion() {
     withdrawal_question.value = document.querySelector('#withdrawal_question');
     withdrawal_question.value.classList.remove('hidden');
 }
 
 const emit = defineEmits(['ordersUpdated']);
 
-async function payOrders(withdrawal) {
+async function payOrders(mp) {
     try {
         if (props.idsTildados.length === 0) {
             toast.info('No hay órdenes seleccionadas. Selecciónalas y vuelve a intentarlo', { autoClose: 4000 });
         } else {
-            const response = await axios.put('/order/payOrders', { ordersID: props.idsTildados, mp: pay_with_mp.value, withdrawal: withdrawal });
+            const response = await axios.put('/order/payOrders', { ordersID: props.idsTildados, mp: mp });
 
-            props.closeModal();
+            payment_question.value.classList.add('hidden');
+            done_pay.value = document.querySelector('#done_pay');
+            done_pay.value.classList.remove('hidden');
             toast.success('¡Órdenes pagadas con éxito!', { autoClose: 4000 });
-            pay_with_mp.value = false;
             emit('ordersUpdated', response.data.orders);  // Emitir evento con órdenes actualizadas
         }
     } catch (error) {
         console.error('Error:', error);
         toast.error('¡Error al pagar órdenes!');
+    }
+}
+
+async function withdrawOrders(withdraw) {
+    try {
+        if (props.idsTildados.length === 0) {
+            toast.info('No hay órdenes seleccionadas. Selecciónalas y vuelve a intentarlo', { autoClose: 4000 });
+        } else {
+            const response = await axios.put('/order/withdrawOrders', { ordersID: props.idsTildados, withdraw: withdraw });
+
+            withdrawal_question.value.classList.add('hidden');
+            done_withdraw.value = document.querySelector('#done_withdraw');
+            done_withdraw.value.classList.remove('hidden');
+            toast.success('¡Órdenes retiradas con éxito!', { autoClose: 4000 });
+            emit('ordersUpdated', response.data.orders);  // Emitir evento con órdenes actualizadas
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        toast.error('¡Error al retirar órdenes!');
     }
 }
 </script>

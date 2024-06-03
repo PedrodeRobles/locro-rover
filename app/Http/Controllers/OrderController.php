@@ -217,14 +217,12 @@ class OrderController extends Controller
     {
         $orders_id = $request->input('ordersID');
         $mp = $request->input('mp');
-        $withdrawal = $request->input('withdrawal');
 
         $orders = Order::whereIn('id', $orders_id)->get();
 
         foreach ($orders as $order) {
             $order->money_collected = $order->amount;
             $order->mp = $mp;
-            $order->withdrawal = $withdrawal;
             $this->calculateToCollect($order);
             $order->last_edition = Auth::user()->name . ' Cobro esta orden';
             $order->save();
@@ -237,6 +235,29 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Órdenes pagadas con éxito',
+            'orders' => $transformedOrders
+        ]);
+    }
+
+    public function withdrawOrders(Request $request)
+    {
+        $orders_id = $request->input('ordersID');
+        $withdraw = $request->input('withdraw');
+        $orders = Order::whereIn('id', $orders_id)->get();
+
+        foreach ($orders as $order) {
+            $order->withdrawal = $withdraw;
+            $order->last_edition = Auth::user()->name . ' marcó como retirada';
+            $order->save();
+        }
+
+        // Transforma las órdenes antes de devolverlas
+        $transformedOrders = $orders->map(function ($order) {
+            return OrderUtils::getOrderArray($order);
+        });
+
+        return response()->json([
+            'message' => 'Órdenes retiradas con éxito',
             'orders' => $transformedOrders
         ]);
     }
