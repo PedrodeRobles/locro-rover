@@ -68,7 +68,7 @@
                                                     <input type="number" placeholder="Ingrese cantidad" class="bg-gray-900" v-model="form.batata">
                                                 </div>
                                                 <div class="space-x-2">
-                                                    <label for="">¿Retira?:</label>
+                                                    <label for="">¿Delivery?:</label>
                                                     <input type="checkbox" class="bg-gray-700 w-10 h-10" v-model="form.take_away">
                                                 </div>
                                                 <div class="space-x-2">

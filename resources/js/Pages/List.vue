@@ -4,7 +4,7 @@
 
         <div class="bg-gray-800 text-white pt-20">
             <p class="mx-2 text-lime-300 mb-2 hidden md:block">
-              {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+              {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'Porciones: ' + totalPortions * 2 }}
               <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
             </p>
             <div class="pb-2 pl-2 flex justify-between">
@@ -37,7 +37,7 @@
 
             <div class="mb-2 md:hidden space-y-2">
               <p class="mx-2 text-lime-300">
-                {{ $page.props.pastelitosEvent ? 'Docenas vendidas: ' + $page.props.quantitySold : 'Porciones vendidas: ' + $page.props.quantitySold }}
+                {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'Porciones: ' + totalPortions*2 }}
                 <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
               </p>
               <p class="mx-2 text-lime-300" v-if="$page.props.pastelitosEvent">
@@ -469,13 +469,10 @@ onMounted(() => {
 
 // Función para actualizar las órdenes en el estado local
 function updateOrders(newOrders) {
-    // console.log(newOrders);
     newOrders.forEach(updatedOrder => {
         const index = props.orders.findIndex(order => order.id === updatedOrder.id);
         if (index !== -1) {
             props.orders[index] = updatedOrder;
-            console.log(updatedOrder);
-            console.log(props.orders[index].to_collect)
         }
     });
     updateCheckboxListeners();
