@@ -19,8 +19,18 @@ class PageController extends Controller
 
         $orders = Order::where('year_id', $year->id)
         ->where(function($query) use ($request) {
-            if ($request->has('withdrawal') && ($request->withdrawal !== 'all')) {
-                $query->where('withdrawal', $request->withdrawal);
+            if ($request->has('retirada') && ($request->retirada !== 'all')) {
+                $query->where('withdrawal', $request->retirada);
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('mp') && ($request->mp !== 'all')) {
+                $query->where('mp', $request->mp);
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('delivery') && ($request->delivery !== 'all')) {
+                $query->where('take_away', $request->delivery);
             }
         })
         ->where(function($query) use ($request) {
@@ -74,6 +84,16 @@ class PageController extends Controller
         ->where(function($query) use ($request) {
             if ($request->has('withdrawal') && ($request->withdrawal !== 'all')) {
                 $query->where('withdrawal', $request->withdrawal);
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('mp') && ($request->mp !== 'all')) {
+                $query->where('mp', $request->mp);
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('delivery') && ($request->delivery !== 'all')) {
+                $query->where('take_away', $request->delivery);
             }
         })
         ->where(function($query) use ($request) {

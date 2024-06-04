@@ -8,13 +8,15 @@
               <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
             </p>
             <div class="pb-2 pl-2 flex justify-between">
-              <div class="hidden md:block">
-                <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
-                <select v-model="withdrawalFilter" class="bg-gray-700 rounded-md ml-2">
-                    <option value="all">Todas</option>
-                    <option value="1">Retiradas</option>
-                    <option value="0">Sin retirar</option>
-                </select>
+              <div class="hidden md:block md:flex md:items-center md:space-x-2">
+                <div>
+                  <input type="text" v-model="search" class="bg-gray-700 rounded-md w-80" placeholder="Buscar por nombre/apellido/tel./direc.">
+                </div>
+                <div>
+                  <button class="bg-blue-500 hover:bg-blue-400 p-2 rounded-md" @click="openFilterModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 16 16"><path fill="#ffffff" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5zM1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5H5V1zM10 15V1H6v14zm1 0h3.5a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H11z"/></svg>
+                  </button>
+                </div>
               </div>
               <div class="flex items-center">
                 <p class="mx-2 text-lime-300 hidden md:block" v-if="$page.props.pastelitosEvent">
@@ -53,13 +55,13 @@
               <button id="boton" @click="openAssignModal()" class="hidden rounded-md bg-indigo-800 p-2 ml-2 animate__animated animate__fadeIn">
                 Gestionar ordenes
               </button>
-              <div class="flex justify-center px-2">
+              <div class="flex justify-center px-2 space-x-1">
                   <input type="text" v-model="search" class="bg-gray-700 rounded-md w-full" placeholder="Buscar por nombre/apellido/tel./direc.">
-                  <select v-model="withdrawalFilter" class="bg-gray-700 rounded-md">
-                      <option value="all">Todas</option>
-                      <option value="1">Retiradas</option>
-                      <option value="0">Sin retirar</option>
-                  </select>
+                  <div>
+                    <button class="bg-blue-500 hover:bg-blue-400 p-2 rounded-md" @click="openFilterModal()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 16 16"><path fill="#ffffff" d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5zM1.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5H5V1zM10 15V1H6v14zm1 0h3.5a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H11z"/></svg>
+                    </button>
+                  </div>
               </div>
             </div>
             <div  id="table-scroll" class="table-scroll" >
@@ -330,6 +332,8 @@
       :totalSelectedSauces="totalSelectedSauces"
       @ordersUpdated="handleOrdersUpdated"
     />
+    <FilterOrdersModal v-if="isFilterModalOpen" @update:filters="filters = $event" :closeModal="closeFilterModal"/>
+    
 </template>
 
 <style scoped>
@@ -412,6 +416,7 @@ import { router } from '@inertiajs/vue3';
 import axios from 'axios';
 import FormOrderModal from './NewOrder.vue';
 import AssignOrderModal from './AssignOrderModal.vue';
+import FilterOrdersModal from './FilterOrdersModal.vue';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import 'animate.css';
@@ -430,6 +435,17 @@ const props = defineProps({
     user_has_orders: Boolean
 });
 
+// MODAL FILTROS
+const isFilterModalOpen = ref(false);
+
+const openFilterModal = () => {
+    isFilterModalOpen.value = true;
+};
+const closeFilterModal = () => {
+    isFilterModalOpen.value = false;
+};
+// FIN MODAL FILTROS
+
 // Inicializa useMassAssignButton
 const {
       isAssignModalOpen,
@@ -446,11 +462,15 @@ const {
 
 // BUSCAR ORDENES
 const search = ref(null);
-const withdrawalFilter = ref('all'); // default "all"
+const filters = ref({ 
+  withdrawal: 'all',
+  MPFilter: 'all',
+  takeAwayFilter: 'all'
+}); // default "all"
 
-watch([search, withdrawalFilter], ([searchValue, withdrawalValue]) => {
+watch([search, filters], ([searchValue, filtersValue]) => {
     const route = props.list_type === 'general' ? '/' : '/my-list';
-    router.get(route, { search: searchValue, withdrawal: withdrawalValue }, {
+    router.get(route, { search: searchValue, retirada: filtersValue.withdrawal, mp: filtersValue.MPFilter, delivery: filtersValue.takeAwayFilter }, {
         preserveState: true,
         replace: true,
         onSuccess: () => {
