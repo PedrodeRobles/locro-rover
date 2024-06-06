@@ -31,8 +31,31 @@
                 Exportar listado de ordenes
             </div>
         </a>
+
+        <div class="flex justify-center text-white">
+            <button @click="openMadePortionsModal" class="bg-blue-600 p-2 rounded-md">
+                Definir porciones hechas
+            </button>
+        </div>
+        <MadePortionsModal v-if="isMadePortionsModalOpen" :closeModal="closeMadePortionsModal"/>
+
     </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import MadePortionsModal from './MadePortionsModal.vue';
+
+
+// MODAL PORCIONES HECHAS
+const isMadePortionsModalOpen = ref(false);
+
+const openMadePortionsModal = () => {
+    isMadePortionsModalOpen.value = true;
+};
+const closeMadePortionsModal = () => {
+    isMadePortionsModalOpen.value = false;
+};
+// FIN MODAL PORCIONES HECHAS
+
 </script>

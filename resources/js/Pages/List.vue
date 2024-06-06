@@ -4,8 +4,10 @@
 
         <div class="bg-gray-800 text-white pt-20">
             <p class="mx-2 text-lime-300 mb-2 hidden md:block">
-              {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'Porciones: ' + totalPortions * 2 }}
-              <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
+              {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'P. vendidas/retiradas: ' + totalPortions*2 + '/'+ totalWithdrawalPortions }}
+              <span v-if="!$page.props.pastelitosEvent" class="mx-2">Salsas: {{ totalSauces }}</span>
+              <span v-if="!$page.props.pastelitosEvent" class="text-amber-400">P. hechas: {{ currentYear.made_portions }}</span>
+              <span v-if="!$page.props.pastelitosEvent" class="mx-2">Quedan: {{ totalRemainingPortions }}</span>
             </p>
             <div class="pb-2 pl-2 flex justify-between">
               <div class="hidden md:block md:flex md:items-center md:space-x-2">
@@ -38,9 +40,14 @@
             </div>
 
             <div class="mb-2 md:hidden space-y-2">
+
               <p class="mx-2 text-lime-300">
-                {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'Porciones: ' + totalPortions*2 }}
-                <span v-if="!$page.props.pastelitosEvent" class="mx-4">Salsas: {{ totalSauces }}</span>
+                {{ $page.props.pastelitosEvent ? 'Docenas: ' + totalPortions : 'P. vendidas/retiradas: ' + totalPortions*2 + '/'+ totalWithdrawalPortions }}
+                <span v-if="!$page.props.pastelitosEvent" class="mx-2">Salsas: {{ totalSauces }}</span>
+              </p>
+              <p class="mx-2 text-lime-300">
+                <span v-if="!$page.props.pastelitosEvent" class="text-amber-400">P. hechas: {{ currentYear.made_portions }}</span>
+                <span v-if="!$page.props.pastelitosEvent" class="mx-2">Quedan: {{ totalRemainingPortions }}</span>
               </p>
               <p class="mx-2 text-lime-300" v-if="$page.props.pastelitosEvent">
                 M: {{ totalPortions  }} B: {{ totalBatata }}
@@ -48,6 +55,7 @@
               <p class="mx-2 text-lime-300">
                 Ventas: ${{ totalSalesMoney }} Recaudado: ${{ totalMoneyCollected }}
               </p>
+
               <div @click="openNewOrder()" class="flex items-center rounded-md bg-green-500 hover:bg-green-400 cursor-pointer p-2 mx-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"/></svg>
                   <p class="text-xl">Agregar orden</p>
@@ -430,6 +438,7 @@ const props = defineProps({
     rovers: {
         type: Object,
     },
+    currentYear: Object,
     user_auth_name: String,
     list_type: String,
     user_has_orders: Boolean
@@ -508,8 +517,10 @@ const {
       totalBatata,
       totalSalesMoney,
       totalMoneyCollected,
-      totalSauces
-    } = acountants(props);
+      totalSauces,
+      totalWithdrawalPortions,
+      totalRemainingPortions
+    } = acountants(props, props.currentYear.made_portions);
 
 const formatObservation = (observation) => {
   // Asegúrate de tener esta función en tu código
@@ -840,7 +851,7 @@ async function updateOrder(orderId, index, field, dataToUpdate) {
   
         editingIndex.value = null;
   
-        await toast.success(`Orden de ${props.orders[index].name} editada con éxito!`, { autoClose: 4000 });
+        await toast.success(`Orden de ${props.orders[index].name} editada con éxito!`, { autoClose: 2000 });
       }
     } catch (error) {
         console.error('Error al realizar la operación:', error);
@@ -870,7 +881,7 @@ async function updateClient(order_id, index, field, dataToUpdate) {
         props.orders[index] = response.data.order;
   
         editingIndex.value = null;
-        await toast.success(`Cliente ${props.orders[index].name} editado con éxito!`, { autoClose: 4000 });
+        await toast.success(`Cliente ${props.orders[index].name} editado con éxito!`, { autoClose: 2000 });
       }
     } catch (error) {
         console.error('Error al realizar la operación:', error);

@@ -179,4 +179,13 @@ class AdminController extends Controller
         $user->active = 1;
         $user->save();
     }
+
+    public function difineMadePortions(Request $request)
+    {
+        $currentYear = Carbon::now()->year;
+        $getCurrentYear = Year::where('year', $currentYear)->first();
+
+        $getCurrentYear->made_portions = $request->madePortions;
+        $getCurrentYear->save();
+    }
 }

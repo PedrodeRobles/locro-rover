@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-export function acountants(props) {
+export function acountants(props, made_portions) {
     // Calcular la suma de portions
     const totalPortions = computed(() => {
         const sum = props.orders.reduce((sum, order) => sum + order.portions, 0);
@@ -11,6 +11,22 @@ export function acountants(props) {
     const totalBatata = computed(() => {
         const sum = props.orders.reduce((sum, order) => sum + order.batata, 0);
         return sum / 2;
+    });
+
+    // Calcular la suma de porciones retiradas
+    const totalWithdrawalPortions = computed(() => {
+        const sum = props.orders.reduce((sum, order) => {
+            if (order.withdrawal == 1) {
+                return sum + order.portions;
+            }
+            return sum;
+        }, 0);
+        return sum;
+    });
+
+    // Calcular la suma de porciones restantes
+    const totalRemainingPortions = computed(() => {
+        return made_portions - totalWithdrawalPortions.value;
     });
 
     // Calcular la suma del dinero total de ventas
@@ -36,6 +52,8 @@ export function acountants(props) {
         totalBatata,
         totalSalesMoney,
         totalMoneyCollected,
-        totalSauces
+        totalSauces,
+        totalWithdrawalPortions,
+        totalRemainingPortions
     };
 }

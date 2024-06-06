@@ -52,6 +52,7 @@ Route::middleware(['auth', 'active-user'])->group(function() {
         Route::put('/admin/users/{user_id}/softDelete', [AdminController::class, 'softDelete'])->name('admin.users.soft-delete');
         Route::get('/admin/users/softDeleted', [AdminController::class, 'softDeletedUsers'])->name('admin.users.soft-deleted');
         Route::put('/admin/users/{user_id}/rollbackUser', [AdminController::class, 'rollbackUser'])->name('admin.users.rollback-user');
+        Route::put('/admin/difineMadePortions', [AdminController::class, 'difineMadePortions'])->name('admin.difineMadePortions');
     });
 });
 

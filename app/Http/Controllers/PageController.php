@@ -64,7 +64,8 @@ class PageController extends Controller
         return Inertia::render('List',[
             'orders' => $orders,
             'list_type' => 'general',
-            'rovers' => $rovers
+            'rovers' => $rovers,
+            'currentYear' => $year,
         ]);
     }
 
@@ -130,7 +131,8 @@ class PageController extends Controller
             'orders'          => $orders,
             'user_auth_name'  => auth()->user()->name,
             'list_type'       => 'my_list',
-            'user_has_orders' => $userHasOrders
+            'user_has_orders' => $userHasOrders,
+            'currentYear' => $year,
         ]);
     }
 
