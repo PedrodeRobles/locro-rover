@@ -25,12 +25,26 @@ class PageController extends Controller
         })
         ->where(function($query) use ($request) {
             if ($request->has('mp') && ($request->mp !== 'all')) {
-                $query->where('mp', $request->mp);
+                if ($request->mp == 0) {
+                    $query->where(function($q) {
+                        $q->where('mp', 0)
+                            ->orWhereNull('mp');
+                    });
+                } else {
+                    $query->where('mp', $request->mp);
+                }
             }
         })
         ->where(function($query) use ($request) {
             if ($request->has('delivery') && ($request->delivery !== 'all')) {
-                $query->where('take_away', $request->delivery);
+                if ($request->delivery == 0) {
+                    $query->where(function($q) {
+                        $q->where('take_away', 0)
+                            ->orWhereNull('take_away');
+                    });
+                } else {
+                    $query->where('take_away', $request->delivery);
+                }
             }
         })
         ->where(function($query) use ($request) {
