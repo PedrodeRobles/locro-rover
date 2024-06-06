@@ -466,7 +466,8 @@ const {
       preciosDeOrdenes,
       totalSelectedAmount,
       totalSelectedPortions,
-      totalSelectedSauces
+      totalSelectedSauces,
+      setOrders // Función para actualizar las órdenes
     } = useMassAssignButton(props.orders);
 
 // BUSCAR ORDENES
@@ -489,6 +490,7 @@ watch([search, filters], ([searchValue, filtersValue]) => {
 });
 
 watch(() => props.orders, () => {
+  setOrders(props.orders); // Actualiza las órdenes en el composable sin reinicializarlo
   updateCheckboxListeners();  // Asegurarnos de actualizar los listeners cuando las órdenes cambien
 }, { deep: true });
 
@@ -504,6 +506,7 @@ function updateOrders(newOrders) {
             props.orders[index] = updatedOrder;
         }
     });
+    setOrders(props.orders); // Actualiza las órdenes en el composable sin reinicializarlo
     updateCheckboxListeners();
 }
 

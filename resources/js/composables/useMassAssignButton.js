@@ -1,7 +1,7 @@
-// resources/js/Composables/useMassAssignButton.js
 import { ref, onMounted, watch } from 'vue';
 
-export function useMassAssignButton(orders) {
+export function useMassAssignButton(initialOrders) {
+    const orders = ref(initialOrders);
     const checkboxes = ref([]);
     const boton = ref(null);
     const boton_desk = ref(null);
@@ -36,28 +36,28 @@ export function useMassAssignButton(orders) {
 
     const recalculateTotalSelectedAmount = () => {
         totalSelectedAmount.value = idsTildados.value.reduce((sum, id) => {
-            const order = orders.find(order => order.id === id);
+            const order = orders.value.find(order => order.id === id);
             return sum + (order ? order.amount : 0);
         }, 0);
     };
 
     const recalculateTotalPortions = () => {
         totalSelectedPortions.value = idsTildados.value.reduce((sum, id) => {
-            const order = orders.find(order => order.id === id);
+            const order = orders.value.find(order => order.id === id);
             return sum + (order ? order.portions : 0);
         }, 0);
     };
 
     const recalculateTotalSauces = () => {
         totalSelectedSauces.value = idsTildados.value.reduce((sum, id) => {
-            const order = orders.find(order => order.id === id);
+            const order = orders.value.find(order => order.id === id);
             return sum + (order ? order.sauces : 0);
         }, 0);
     };
 
     const recalculateOrdenesTildadas = () => {
         ordenesTildadas.value = idsTildados.value.map(id => {
-            return orders.find(order => order.id === id);
+            return orders.value.find(order => order.id === id);
         }).filter(order => order !== undefined);
     };
 
@@ -68,10 +68,8 @@ export function useMassAssignButton(orders) {
 
         checkboxes.value.forEach((checkbox) => {
             const orderId = parseInt(checkbox.getAttribute('data-order-id'));
-            const order = orders.find(o => o.id === orderId);
+            const order = orders.value.find(o => o.id === orderId);
             if (!order) return;
-
-            // const orderName = `${order.name} ${order.last_name}`;
 
             checkbox.removeEventListener('change', handleCheckboxChange);
             checkbox.addEventListener('change', handleCheckboxChange);
@@ -100,7 +98,7 @@ export function useMassAssignButton(orders) {
                 } else {
                     if (idsTildados.value.includes(orderId)) {
                         idsTildados.value = idsTildados.value.filter(id => id !== orderId);
-                        ordenesTildadas.value = ordenesTildadas.value.filter(order => order !== order);
+                        ordenesTildadas.value = ordenesTildadas.value.filter(o => o.id !== orderId);
                         totalSelectedAmount.value -= order.amount;
                         totalSelectedPortions.value -= order.portions;
                         totalSelectedSauces.value -= order.sauces;
@@ -112,6 +110,14 @@ export function useMassAssignButton(orders) {
                 recalculateOrdenesTildadas();
             }
         });
+    };
+
+    const setOrders = (newOrders) => {
+        orders.value = newOrders;
+        recalculateTotalSelectedAmount();
+        recalculateTotalPortions();
+        recalculateTotalSauces();
+        recalculateOrdenesTildadas();
     };
 
     onMounted(() => {
@@ -131,6 +137,7 @@ export function useMassAssignButton(orders) {
         updateCheckboxListeners,
         totalSelectedAmount,
         totalSelectedPortions,
-        totalSelectedSauces
+        totalSelectedSauces,
+        setOrders // Retorna la nueva función
     };
 }
