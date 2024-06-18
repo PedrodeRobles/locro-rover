@@ -457,18 +457,19 @@ const closeFilterModal = () => {
 
 // Inicializa useMassAssignButton
 const {
-      isAssignModalOpen,
-      openAssignModal,
-      closeAssignModal,
-      idsTildados,
-      ordenesTildadas,
-      updateCheckboxListeners,
-      preciosDeOrdenes,
-      totalSelectedAmount,
-      totalSelectedPortions,
-      totalSelectedSauces,
-      setOrders // Función para actualizar las órdenes
-    } = useMassAssignButton(props.orders);
+    isAssignModalOpen,
+    openAssignModal,
+    closeAssignModal,
+    idsTildados,
+    ordenesTildadas,
+    updateCheckboxListeners,
+    totalSelectedAmount,
+    totalSelectedPortions,
+    totalSelectedSauces,
+    setOrders,
+    recalculateTotals,
+    allSelectedOrders
+} = useMassAssignButton(props.orders);
 
 // BUSCAR ORDENES
 const search = ref(null);
@@ -476,27 +477,49 @@ const filters = ref({
   withdrawal: 'all',
   MPFilter: 'all',
   takeAwayFilter: 'all'
-}); // default "all"
+});
 
 watch([search, filters], ([searchValue, filtersValue]) => {
     const route = props.list_type === 'general' ? '/' : '/my-list';
     router.get(route, { search: searchValue, retirada: filtersValue.withdrawal, mp: filtersValue.MPFilter, delivery: filtersValue.takeAwayFilter }, {
         preserveState: true,
         replace: true,
-        onSuccess: () => {
-            updateCheckboxListeners(); // Asegurarnos de actualizar los listeners después de la búsqueda
+        onSuccess: (page) => {
+            const filteredOrders = page.props.orders || [];
+            if (filteredOrders) {
+                // Combina las órdenes seleccionadas con las filtradas para mantener la selección
+                const updatedOrders = mergeOrdersWithSelected(filteredOrders, allSelectedOrders.value);
+                setOrders(updatedOrders); // Actualiza las órdenes
+                recalculateTotals(); // Recalcula los totales basados en las órdenes actuales y seleccionadas
+                updateCheckboxListeners(); // Asegura la actualización de los listeners después de la búsqueda
+            }
         }
     });
 });
 
 watch(() => props.orders, () => {
-  setOrders(props.orders); // Actualiza las órdenes en el composable sin reinicializarlo
-  updateCheckboxListeners();  // Asegurarnos de actualizar los listeners cuando las órdenes cambien
+    setOrders(props.orders); // Actualiza las órdenes en el composable sin reinicializarlo
+    recalculateTotals(); // Recalcula los totales después de actualizar las órdenes
+    updateCheckboxListeners(); // Asegura la actualización de los listeners cuando las órdenes cambian
 }, { deep: true });
 
 onMounted(() => {
-  updateCheckboxListeners();
+    updateCheckboxListeners();
 });
+
+// Función para combinar órdenes seleccionadas con las filtradas
+const mergeOrdersWithSelected = (filteredOrders, selectedOrders) => {
+    const mergedOrders = [...filteredOrders];
+
+    // Agregar las órdenes seleccionadas que no están en las filtradas
+    selectedOrders.forEach(selectedOrder => {
+        if (!mergedOrders.some(order => order.id === selectedOrder.id)) {
+            mergedOrders.push(selectedOrder);
+        }
+    });
+
+    return mergedOrders;
+};
 
 // Función para actualizar las órdenes en el estado local
 function updateOrders(newOrders) {

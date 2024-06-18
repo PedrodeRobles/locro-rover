@@ -1,7 +1,8 @@
 import { ref, onMounted, watch } from 'vue';
 
 export function useMassAssignButton(initialOrders) {
-    const orders = ref(initialOrders);
+    const orders = ref([...initialOrders]);
+    const allSelectedOrders = ref([]); // Mantiene todas las órdenes seleccionadas
     const checkboxes = ref([]);
     const boton = ref(null);
     const boton_desk = ref(null);
@@ -24,14 +25,19 @@ export function useMassAssignButton(initialOrders) {
         totalSelectedPortions.value = 0;
         totalSelectedSauces.value = 0;
 
-        // Destildar todos los checkboxes
         checkboxes.value.forEach((checkbox) => {
             checkbox.checked = false;
         });
 
-        // Ocultar los botones
         boton.value.classList.add('hidden');
         boton_desk.value.classList.add('hidden');
+    };
+
+    const recalculateTotals = () => {
+        recalculateTotalSelectedAmount();
+        recalculateTotalPortions();
+        recalculateTotalSauces();
+        recalculateOrdenesTildadas();
     };
 
     const recalculateTotalSelectedAmount = () => {
@@ -75,10 +81,8 @@ export function useMassAssignButton(initialOrders) {
             checkbox.addEventListener('change', handleCheckboxChange);
 
             function handleCheckboxChange() {
-                // Verificar si al menos un checkbox está marcado
                 const alMenosUnoMarcado = [...checkboxes.value].some(checkbox => checkbox.checked);
 
-                // Mostrar u ocultar el botón según el resultado
                 if (alMenosUnoMarcado) {
                     boton.value.classList.remove('hidden');
                     boton_desk.value.classList.remove('hidden');
@@ -94,6 +98,7 @@ export function useMassAssignButton(initialOrders) {
                         totalSelectedAmount.value += order.amount;
                         totalSelectedPortions.value += order.portions;
                         totalSelectedSauces.value += order.sauces;
+                        allSelectedOrders.value.push(order); // Añadir a la lista global de órdenes seleccionadas
                     }
                 } else {
                     if (idsTildados.value.includes(orderId)) {
@@ -102,22 +107,17 @@ export function useMassAssignButton(initialOrders) {
                         totalSelectedAmount.value -= order.amount;
                         totalSelectedPortions.value -= order.portions;
                         totalSelectedSauces.value -= order.sauces;
+                        allSelectedOrders.value = allSelectedOrders.value.filter(o => o.id !== orderId); // Remover de la lista global
                     }
                 }
-                recalculateTotalSelectedAmount();
-                recalculateTotalPortions();
-                recalculateTotalSauces();
-                recalculateOrdenesTildadas();
+                recalculateTotals(); // Recalcula totales después de cambios en la selección
             }
         });
     };
 
     const setOrders = (newOrders) => {
-        orders.value = newOrders;
-        recalculateTotalSelectedAmount();
-        recalculateTotalPortions();
-        recalculateTotalSauces();
-        recalculateOrdenesTildadas();
+        orders.value = [...newOrders];
+        recalculateTotals();
     };
 
     onMounted(() => {
@@ -138,6 +138,8 @@ export function useMassAssignButton(initialOrders) {
         totalSelectedAmount,
         totalSelectedPortions,
         totalSelectedSauces,
-        setOrders // Retorna la nueva función
+        setOrders,
+        recalculateTotals,
+        allSelectedOrders // Añadido para acceder a la lista global
     };
 }
