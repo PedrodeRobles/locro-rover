@@ -28,6 +28,8 @@ Route::middleware(['auth', 'active-user'])->group(function() {
     Route::put('/client/{order:id}/edit/{field}', [ClientController::class, 'updateFromOrder'])->name('client.updateFromOrder');
     Route::post('/client/{order:id}/add-order', [ClientController::class, 'addOrder'])->name('client.addOrder');
 
+    Route::get('/estadisticas', [PageController::class, 'statistics'])->name('statistics');
+
     Route::middleware(['role:Admin,Logistica'])->group(function() {
         Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
         Route::get('/client/create', [ClientController::class, 'create'])->name('client.create');

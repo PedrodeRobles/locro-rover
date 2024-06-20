@@ -1,7 +1,7 @@
 <template>
     <div class="fixed w-full">
         <header class="flex items-center justify-between py-2 px-2 md:px-4 md:px-10 bg-red-800 text-white">
-            <div class="flex items-center space-x-4 md:space-x-12">
+            <div class="flex items-center space-x-3 md:space-x-12">
                 <!-- <img src="../../img/rover-logo.png" alt="Logo" class="w-10"> -->
                 <img v-if="$page.props.pastelitosEvent" src="../../img/logo-unidad.png" alt="" class="w-12">
                 <img v-else src="../../img/rover-logo.png" alt="" class="w-10">
@@ -25,6 +25,11 @@
                         <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
                     </svg>
                     <p class="hidden md:block">Panel de control</p>
+                </Link>
+
+                <Link :href="route('statistics')" class="flex items-center bg-fuchsia-600 p-4 md:p-2 rounded-lg cursor-pointer hover:bg-fuchsia-600 space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 14 14"><path fill="#ffffff" fill-rule="evenodd" d="M9.997.22a.75.75 0 0 1 .819-.163l2.127.882a.75.75 0 0 1 .408.977l-.869 2.127a.75.75 0 0 1-1.386.006l-.343-.82L2.115 6.92a.75.75 0 1 1-.59-1.38l8.649-3.695l-.337-.805a.75.75 0 0 1 .16-.82m2.753 5.26a1 1 0 0 1 1 1v7a.5.5 0 0 1-.5.5h-2.5a.5.5 0 0 1-.5-.5v-7a1 1 0 0 1 1-1zM8.457 7.272a1 1 0 0 0-.707-.292h-1.5a1 1 0 0 0-1 1v5.5a.5.5 0 0 0 .5.5h2.5a.5.5 0 0 0 .5-.5v-5.5a1 1 0 0 0-.293-.708M2.75 8.48a1 1 0 0 1 1 1v4a.5.5 0 0 1-.5.5H.75a.5.5 0 0 1-.5-.5v-4a1 1 0 0 1 1-1z" clip-rule="evenodd"/></svg>
+                    <p class="hidden md:block">Estadísticas</p>
                 </Link>
 
             </div>

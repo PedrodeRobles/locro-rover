@@ -154,4 +154,19 @@ class PageController extends Controller
     {
         return Inertia::render('Guest'); 
     }
+
+    public function statistics() 
+    {
+        $active_users = User::where('active', 1)->get()
+            ->map(function ($user) {
+                return [
+                    'name' => $user->name,
+                    'total_portions' => $user->total_portions,
+                ];
+            });
+
+        return Inertia::render('Statistics', [
+            'activeUsers' => $active_users
+        ]); 
+    }
 }
