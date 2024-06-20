@@ -1,11 +1,12 @@
 <template>
     <Header></Header>
 
-    <div class="pt-20 text-white">
+    <div class="pt-20 text-white" style="height: 700px;"> <!-- Ajusta la altura según sea necesario -->
         <Bar
             id="my-chart-id"
             :options="chartOptions"
             :data="chartData"
+            class="md:mx-2"
         />
     </div>
 </template>
@@ -40,6 +41,7 @@ watchEffect(() => {
             label: 'Porciones vendidas',
             backgroundColor: '#3490dc',
             data: props.activeUsers.map(user => user.total_portions),
+            barThickness: 25,  // Ajusta el grosor de las barras
             datalabels: {
             anchor: 'end',
             align: 'end',
@@ -53,7 +55,16 @@ watchEffect(() => {
 
 const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: false,  // Permitir que la altura del gráfico cambie
+    aspectRatio: 1,  // Relación de aspecto 1:1
+    layout: {
+        padding: {
+            top: 10,
+            left: 20,
+            right: 20,
+            bottom: 10
+        }
+    },
     plugins: {
         legend: {
         display: true
@@ -64,15 +75,16 @@ const chartOptions = {
         },
         datalabels: {
         anchor: 'end',
-        align: 'top',
+        align: 'right',
         color: '#fff',
         font: {
             weight: 'bold'
         }
         }
     },
+    indexAxis: 'y',  // Cambia el gráfico de barras a orientación vertical
     scales: {
-        y: {
+        x: {
         beginAtZero: true
         }
     }

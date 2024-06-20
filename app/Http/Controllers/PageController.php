@@ -157,16 +157,19 @@ class PageController extends Controller
 
     public function statistics() 
     {
-        $active_users = User::where('active', 1)->get()
+        $active_users = User::where('active', 1)
+            ->with('orders')
+            ->get()
             ->map(function ($user) {
                 return [
                     'name' => $user->name,
                     'total_portions' => $user->total_portions,
                 ];
-            });
+            })
+            ->sortByDesc('total_portions');
 
         return Inertia::render('Statistics', [
-            'activeUsers' => $active_users
+            'activeUsers' => $active_users->values()->toArray()
         ]); 
     }
 }

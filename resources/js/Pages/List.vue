@@ -794,7 +794,7 @@ const loadingTakeAway = ref(false);
 const loadingTakeAwayIndex = ref(null);
 
 const confirmUpdateTakeAway = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name} ${value ? "SI" : "NO"} quiere retirar su orden?`;
+    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name} ${value ? "SI" : "NO"} quiere delivery para su orden?`;
 
     if (!confirm(confirmationText)) {
       // Si se cancela el confirm, revertir el cambio en el checkbox
