@@ -141,12 +141,16 @@ class PageController extends Controller
             ->where('year_id', $year->id)
             ->exists();
 
+        $rovers = User::where('active', 1)->orderBy('name')->get();
+
+
         return Inertia::render('List',[
             'orders'          => $orders,
             'user_auth_name'  => auth()->user()->name,
             'list_type'       => 'my_list',
             'user_has_orders' => $userHasOrders,
             'currentYear' => $year,
+            'rovers' => $rovers,
         ]);
     }
 

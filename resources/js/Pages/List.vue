@@ -92,7 +92,7 @@
                             <th class="px-4 py-2 border border-gray-600">A cobrar</th>
                             <th class="px-4 py-2 border border-gray-600">MP</th>
                             <th class="px-4 py-2 border border-gray-600">Dinero cobrado</th>
-                            <th class="px-4 py-2 border border-gray-600">Retiró orden</th>
+                            <th class="px-4 py-2 border border-gray-600">¿Retiró orden?</th>
                             <th class="px-4 py-2 border border-gray-600">Últ. edición</th>
                             <th class="px-4 py-2 border border-gray-600" style="z-index: 10;">Acciones</th>
                         </tr>
@@ -748,7 +748,7 @@ const loadingWithdrawal = ref(false);
 const loadingWithdrawalIndex = ref(null);
 
 const confirmUpdateWithdrawal = (order, index, field, value) => {
-    const confirmationText = `¿Confirmas que ${order.name} ${order.last_name}${value ? "" : " NO"} retira sus orden?`;
+    const confirmationText = `¿CONFIRMA QUE ${order.name} ${order.last_name}${value ? "" : " NO"} HA RETIRADO SU ORDEN?`;
 
     if (!confirm(confirmationText)) {
       // Si se cancela el confirm, revertir el cambio en el checkbox
