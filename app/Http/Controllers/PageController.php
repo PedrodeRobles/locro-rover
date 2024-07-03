@@ -20,7 +20,8 @@ class PageController extends Controller
         $orders = Order::where('year_id', $year->id)
         ->where(function($query) use ($request) {
             if ($request->has('retirada') && ($request->retirada !== 'all')) {
-                $query->where('withdrawal', $request->retirada);
+                $query->where('withdrawal', $request->retirada)
+                    ->where('portions', '>', 0);
             }
         })
         ->where(function($query) use ($request) {
@@ -28,10 +29,12 @@ class PageController extends Controller
                 if ($request->mp == 0) {
                     $query->where(function($q) {
                         $q->where('mp', 0)
-                            ->orWhereNull('mp');
+                            ->orWhereNull('mp')
+                            ->where('portions', '>', 0);
                     });
                 } else {
-                    $query->where('mp', $request->mp);
+                    $query->where('mp', $request->mp)
+                        ->where('portions', '>', 0);
                 }
             }
         })
@@ -40,10 +43,23 @@ class PageController extends Controller
                 if ($request->delivery == 0) {
                     $query->where(function($q) {
                         $q->where('take_away', 0)
-                            ->orWhereNull('take_away');
+                            ->orWhereNull('take_away')
+                            ->where('portions', '>', 0);
                     });
                 } else {
-                    $query->where('take_away', $request->delivery);
+                    $query->where('take_away', $request->delivery)
+                        ->where('portions', '>', 0);
+                }
+
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('portionsFilter') && ($request->portionsFilter !== 'all')) {
+                if ($request->portionsFilter == 1) {
+                    $query->where('portions', '>', 0);
+                } else {
+                    $query->where('portions', 0)
+                        ->orWhereNull('portions');
                 }
             }
         })
@@ -98,17 +114,44 @@ class PageController extends Controller
         ->where('user_id', $user_auth_id)
         ->where(function($query) use ($request) {
             if ($request->has('withdrawal') && ($request->withdrawal !== 'all')) {
-                $query->where('withdrawal', $request->withdrawal);
+                $query->where('withdrawal', $request->withdrawal)
+                    ->where('portions', '>', 0);
             }
         })
         ->where(function($query) use ($request) {
             if ($request->has('mp') && ($request->mp !== 'all')) {
-                $query->where('mp', $request->mp);
+                if ($request->mp == 0) {
+                    $query->where(function($q) {
+                        $q->where('mp', 0)
+                            ->orWhereNull('mp');
+                    });
+                } else {
+                    $query->where('mp', $request->mp);
+                }
             }
         })
         ->where(function($query) use ($request) {
             if ($request->has('delivery') && ($request->delivery !== 'all')) {
-                $query->where('take_away', $request->delivery);
+                if ($request->delivery == 0) {
+                    $query->where(function($q) {
+                        $q->where('take_away', 0)
+                            ->orWhereNull('take_away')
+                            ->where('portions', '>', 0);
+                    });
+                } else {
+                    $query->where('take_away', $request->delivery)
+                        ->where('portions', '>', 0);
+                }
+            }
+        })
+        ->where(function($query) use ($request) {
+            if ($request->has('portionsFilter') && ($request->portionsFilter !== 'all')) {
+                if ($request->portionsFilter == 1) {
+                    $query->where('portions', '>', 0);
+                } else {
+                    $query->where('portions', 0)
+                        ->orWhereNull('portions');
+                }
             }
         })
         ->where(function($query) use ($request) {

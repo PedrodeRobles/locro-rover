@@ -476,12 +476,13 @@ const search = ref(null);
 const filters = ref({ 
   withdrawal: 'all',
   MPFilter: 'all',
-  takeAwayFilter: 'all'
+  takeAwayFilter: 'all',
+  portionsFilter: 'all',
 });
 
 watch([search, filters], ([searchValue, filtersValue]) => {
     const route = props.list_type === 'general' ? '/' : '/my-list';
-    router.get(route, { search: searchValue, retirada: filtersValue.withdrawal, mp: filtersValue.MPFilter, delivery: filtersValue.takeAwayFilter }, {
+    router.get(route, { search: searchValue, retirada: filtersValue.withdrawal, mp: filtersValue.MPFilter, delivery: filtersValue.takeAwayFilter, portionsFilter: filtersValue.portionsFilter }, {
         preserveState: true,
         replace: true,
         onSuccess: (page) => {

@@ -51,6 +51,14 @@
                                                 <option value="0">Sin delivery</option>
                                             </select>
                                         </div>
+                                        <div class="flex items-center">
+                                            <p class="text-xl">Ordenes:</p>
+                                            <select v-model="portionsFilter" class="bg-gray-700 rounded-md ml-2">
+                                                <option value="all">Sin filtro</option>
+                                                <option value="1">Con porciones</option>
+                                                <option value="0">Sin porciones</option>
+                                            </select>
+                                        </div>
                                         <div class="flex justify-center">
                                             <button @click="sendFilters" class="bg-blue-600 hover:bg-blue-500 p-2 rounded-md text-xl">
                                                 Filtrar
@@ -78,6 +86,7 @@ const emit = defineEmits(['update:filters']);
 const withdrawalFilter = ref('all');
 const MPFilter = ref('all');
 const takeAwayFilter = ref('all');
+const portionsFilter = ref('all');
 
 // Define una función para alternar el estado de columnStates
 const sendFilters = () => {
@@ -86,6 +95,7 @@ const sendFilters = () => {
         withdrawal: withdrawalFilter.value,
         MPFilter: MPFilter.value,
         takeAwayFilter: takeAwayFilter.value,
+        portionsFilter: portionsFilter.value,
     }
     emit('update:filters', filters);
 }
