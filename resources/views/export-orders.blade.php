@@ -9,7 +9,7 @@
             <th>Direccion</th>
             @if (env('APP_EVENTO') != 'pastelitos')
                 <th>Cod. Postal</th>
-                <th>Retira? SI/NO</th>
+                <th>Delivery</th>
             @endif
             <th>{{ env('APP_EVENTO') == 'pastelitos' ? '1/2 Membrillo' : 'QTY' }}</th>
             @if (env('APP_EVENTO') == 'pastelitos')
